@@ -4,9 +4,9 @@ import './PlansSection.css';
 const PlansSection = () => {
   // Lite and Pro plan data with proper properties
   const litePlans = [
-    { title: 'Lite Plan A1', description: 'Description for A1', price: '9.99', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
-    { title: 'Lite Plan A2', description: 'Description for A2', price: '14.99', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
-    { title: 'Lite Plan A3', description: 'Description for A3', price: '9.99', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
+    { title: 'Free Trial', description: 'Description for A1', price: '0', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
+    { title: 'Free Trial', description: 'Description for A2', price: '0', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
+    { title: 'Free Trial', description: 'Description for A3', price: '0', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
     
   ];
 
@@ -23,14 +23,14 @@ const PlansSection = () => {
       <h2 className="plans-title">Subscription Plans</h2>
 
       {/* Lite Plans */}
-      <h3>Lite Plans</h3>
+      <h3>Current Plans</h3>
       <div className="lite-plans">
         <div className="plans-container">
           {litePlans.map((plan, index) => (
             <div key={index} className="plan">
               <div className="inner">
                 <span className="pricing">
-                  <span>${plan.price} <small>/ m</small></span>
+                  <span>₹{plan.price} <small>/ m</small></span>
                 </span>
                 <p className="title">{plan.title}</p>
                 <p className="info">{plan.description}</p>
@@ -59,7 +59,7 @@ const PlansSection = () => {
       </div>
 
       {/* Pro Plans */}
-      <h3>Pro Plans</h3>
+    {/*<h3>Pro Plans</h3>
       <div className="pro-plans">
         <div className="plans-container">
           {proPlans.map((plan, index) => (
@@ -92,7 +92,7 @@ const PlansSection = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div>*/}
     </section>
   );
 };
