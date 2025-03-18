@@ -1,12 +1,11 @@
 import React, {useContext} from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './DoctorHomeScreen.css';
 import { AuthContext } from '../../context/AuthContext';
 
 function DoctorHomeScreen() {
   const { auth,setAuth } = useContext(AuthContext);
   const firstName = auth.user?.firstName || 'Doctor'
-  const navigate = useNavigate();
   return (
     <div className="doctor-home-container">
       

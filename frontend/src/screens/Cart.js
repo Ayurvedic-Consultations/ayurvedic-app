@@ -1,6 +1,5 @@
 // src/components/CartScreen.js
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Cart.css';
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
@@ -13,7 +12,7 @@ const CartScreen = () => {
   
   const { auth } = useContext(AuthContext); // Access auth context
   const userId = auth?.user?.id; // Get userId
-  const userName = auth?.user?.firstName + ' ' + auth?.user?.lastName;
+  //const userName = auth?.user?.firstName + ' ' + auth?.user?.lastName;
 
   useEffect(() => {
     console.log("Cart Items:", cartItems);

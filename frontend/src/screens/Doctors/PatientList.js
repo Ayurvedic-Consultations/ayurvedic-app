@@ -165,6 +165,14 @@ function PatientList() {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -202,7 +210,7 @@ function PatientList() {
             previousAppointments.map((appointment) => (
               <div key={appointment._id} className="appointment-card-patient-list">
                 <h3>{appointment.patientName}</h3>
-                <p><strong>Date:</strong> {new Date(appointment.dateOfAppointment).toLocaleDateString()}</p>
+                <p><strong>Date:</strong> {formatDate(appointment.dateOfAppointment)}</p>
                 <p><strong>Time Slot:</strong> {appointment.timeSlot}</p>
                 <p><strong>Gender:</strong> {appointment.patientGender}</p>
                 <p><strong>Age:</strong> {appointment.patientAge}</p>
@@ -228,7 +236,7 @@ function PatientList() {
             deniedAppointments.map((appointment) => (
               <div key={appointment._id} className="appointment-card-patient-list">
                 <h3>{appointment.patientName}</h3>
-                <p><strong>Date:</strong> {new Date(appointment.dateOfAppointment).toLocaleDateString()}</p>
+                <p><strong>Date:</strong> {formatDate(appointment.dateOfAppointment)}</p>
                 <p><strong>Time Slot:</strong> {appointment.timeSlot}</p>
                 <p><strong>Gender:</strong> {appointment.patientGender}</p>
                 <p><strong>Age:</strong> {appointment.patientAge}</p>
