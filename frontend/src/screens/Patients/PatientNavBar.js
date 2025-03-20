@@ -198,6 +198,11 @@ function PatientNavBar() {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/appointed-doctor" activeClassName="active">
+                Appointed Doctor
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/treatments" activeClassName="active">
                 Treatments
               </NavLink>

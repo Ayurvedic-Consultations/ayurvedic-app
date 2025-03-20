@@ -96,13 +96,6 @@ function DietYogaComponent() {
               <p key={index}>{herb}</p>
             ))}
           </div>
-
-          <div className="actions">
-            <p>Do you want to order them now?</p>
-            <button className="order-button">Order Now</button>
-            <p>Do you need another dietitian?</p>
-            <button className="yes-button">Yes</button>
-          </div>
         </>
       )}
 
