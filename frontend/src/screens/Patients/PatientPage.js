@@ -69,11 +69,6 @@ function PatientPage() {
     navigate("/prakritidetermination"); // Redirect to Prakriti Determination form page
   };
 
-  const handleMatchDoctor = () => {
-    // Logic to match the doctor automatically
-    alert("Matching you with the perfect Ayurvedic doctor...");
-  };
-
   return (
     <div className="patient-container">
       <main className="content">
@@ -88,12 +83,9 @@ function PatientPage() {
         <div className="match-section">
           {isPrakritiFilled ? (
             <>
-              <button className="match-btn" onClick={handleMatchDoctor}>
-                Match Me Automatically
-              </button>
               <p>
-                Let us find the perfect Ayurvedic doctor for you based on your
-                needs.
+                Thank you filling the prakriti determination form. 
+                Now Let us find the perfect Ayurvedic doctor for you based on your needs.
               </p>
             </>
           ) : (
@@ -163,50 +155,6 @@ function PatientPage() {
             </div>
           </div>
         </section>
-
-        <div className="how-we-work">
-          <h2 className="hww-heading">How We Work?</h2>
-          <div className="hww-content">
-            <div className="hww-step">
-              <img src={step1Icon} alt="Step 1" className="hww-icon" />
-              <div className="hww-step-text">
-                <h3>Step 1: Consultation</h3>
-                <p>
-                  Get a detailed consultation with our expert Ayurvedic doctors.
-                </p>
-              </div>
-            </div>
-            <div className="hww-step">
-              <img src={step2Icon} alt="Step 2" className="hww-icon" />
-              <div className="hww-step-text">
-                <h3>Step 2: Diagnosis</h3>
-                <p>
-                  Receive a comprehensive diagnosis based on your health
-                  profile.
-                </p>
-              </div>
-            </div>
-            <div className="hww-step">
-              <img src={step3Icon} alt="Step 3" className="hww-icon" />
-              <div className="hww-step-text">
-                <h3>Step 3: Treatment Plan</h3>
-                <p>
-                  Follow a personalized treatment plan tailored to your needs.
-                </p>
-              </div>
-            </div>
-            <div className="hww-step">
-              <img src={step4Icon} alt="Step 4" className="hww-icon" />
-              <div className="hww-step-text">
-                <h3>Step 4: Follow-Up</h3>
-                <p>
-                  Engage in follow-up sessions to track your progress and adjust
-                  the plan if needed.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
