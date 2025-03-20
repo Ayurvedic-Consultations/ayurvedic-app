@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./AppointedDoctor.css";
 import RatingModal from "./RatingModal";
 import AppointmentTab from "./AppointmentTab";
-import { fetchDoctorData, handleDeleteRequest, fetchSupplements } from "./AppointmentUtils";
+import { fetchDoctorData, fetchSupplements } from "./AppointmentUtils";
 
 function AppointedDoctor() {
   const [activeTab, setActiveTab] = useState("Upcoming");
@@ -64,19 +64,6 @@ function AppointedDoctor() {
     } catch (error) {
       console.error("Error submitting rating and review:", error);
       alert("Failed to submit rating and review. Please try again.");
-    }
-  };
-
-  const handleDeleteAppointment = async (bookingId) => {
-    const success = await handleDeleteRequest(bookingId);
-    if (success) {
-      setDeniedDoctors((prevDeniedDoctors) =>
-        prevDeniedDoctors.filter((doctor) => doctor._id !== bookingId)
-      );
-      
-      setPreviousAppointments((prevDoctors) => 
-        prevDoctors.filter((doctor) => doctor._id !== bookingId)
-      );
     }
   };
 
@@ -216,7 +203,6 @@ function AppointedDoctor() {
           previousAppointments={previousAppointments}
           supplements={supplements}
           handlePayFees={handlePayFees}
-          handleDeleteRequest={handleDeleteAppointment}
           onRatingClick={(appointmentId) => {
             setCurrentAppointmentId(appointmentId);
             setIsModalOpen(true);
