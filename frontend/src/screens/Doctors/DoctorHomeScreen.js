@@ -22,7 +22,7 @@ function DoctorHomeScreen() {
         <Link to="/patient-list"><button className="option-btn">Patient List</button></Link>
         </div>
         <div className='right-side'>
-        <Link to="/analytics"><button className="option-btn">Analytics</button></Link> 
+        <Link to="/doctor-analytics"><button className="option-btn">Analytics</button></Link> 
         <Link to="/health-blogs"><button className="option-btn">My Health Blogs</button></Link>
         </div>
       </div>

@@ -193,18 +193,13 @@ function DoctorNavBar() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/analytics" activeClassName="active">
+              <NavLink to="/doctor-analytics" activeClassName="active">
                 Analytics
               </NavLink>
             </li>
             <li>
               <NavLink to="/health-blogs" activeClassName="active">
                 My Health Blogs
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/history" activeClassName="active">
-                History
               </NavLink>
             </li>
           </ul>
