@@ -67,12 +67,18 @@ function DoctorAnalytics() {
   ];
 
   // Data for Monthly Bar Graph
+  const currentYear = new Date().getFullYear(); // Get the current year
+  const currentYearBookings = bookings.filter(
+    (booking) => new Date(booking.dateOfAppointment).getFullYear() === currentYear
+  );
+
+  // Generate monthly data for the current year
   const monthlyData = Array.from({ length: 12 }, (_, i) => {
     const month = i + 1;
     return {
-      month: new Date(2023, i).toLocaleString("default", { month: "short" }),
-      count: bookings.filter(
-        (b) => new Date(b.dateOfAppointment).getMonth() === i
+      month: new Date(currentYear, i).toLocaleString("default", { month: "short" }), // Short month name (e.g., Jan, Feb)
+      count: currentYearBookings.filter(
+        (booking) => new Date(booking.dateOfAppointment).getMonth() === i
       ).length,
     };
   });
@@ -126,22 +132,33 @@ function DoctorAnalytics() {
       {activeTab === "Gender" && (
         <div className="chart-container">
           <h2>Gender Distribution of Patients</h2>
-          <PieChart width={400} height={400}>
+          <PieChart width={500} height={400}>
             <Pie
               data={genderData}
               cx={200}
               cy={200}
-              labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
+              labelLine={false} // Disable label lines
+              label={false} // Disable labels inside the chart
             >
               {genderData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={["#0088FE", "#00C49F", "#FFBB28"][index % 3]} />
               ))}
             </Pie>
             <Tooltip />
+            <Legend
+              layout="vertical" // Display legend vertically
+              align="right" // Align legend to the right
+              verticalAlign="middle" // Center the legend vertically
+              wrapperStyle={{ paddingLeft: "20px" }} // Add some padding
+              formatter={(value, entry, index) => {
+                const total = genderData.reduce((sum, item) => sum + item.value, 0);
+                const percentage = ((entry.payload.value / total) * 100).toFixed(0);
+                return `${entry.payload.name} - ${percentage}%`; // Format legend text
+              }}
+            />
           </PieChart>
         </div>
       )}
@@ -164,7 +181,7 @@ function DoctorAnalytics() {
       {/* Monthly Bar Graph */}
       {activeTab === "Monthly" && (
         <div className="chart-container">
-          <h2>Monthly Appointments</h2>
+          <h2>Monthly Appointments for {currentYear}</h2>
           <BarChart width={600} height={300} data={monthlyData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />

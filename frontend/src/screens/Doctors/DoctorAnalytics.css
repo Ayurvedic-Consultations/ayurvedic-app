@@ -10,6 +10,10 @@
   margin-top: 150px;
 }
 
+.doctor-analytics-container h1{
+  padding-bottom: 20px;
+}
+
 .tabs {
   display: flex;
   justify-content: center;
@@ -38,6 +42,19 @@
 }
 
 .chart-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.chart-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
   text-align: center;
 }
