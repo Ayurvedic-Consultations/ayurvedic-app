@@ -214,15 +214,23 @@ function PatientList() {
     setShowDietYogaModal(true);
   };
 
-  // Function to save diet and yoga plan to the backend
   const handleSaveDietYoga = async () => {
     if (!currentAppointment) return;
 
     try {
+      // Get the token from localStorage (assuming it's stored there after login)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You are not authenticated. Please log in again.");
+        return;
+      }
+
       const response = await fetch(`http://localhost:8080/api/diet-yoga`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the headers
         },
         body: JSON.stringify({
           bookingId: currentAppointment._id,
@@ -231,20 +239,22 @@ function PatientList() {
           doctorEmail: currentAppointment.doctorEmail,
           doctorName: currentAppointment.doctorName,
           diet,
-          yoga
+          yoga,
         }),
       });
+
+      const data = await response.json(); // Parse the response JSON
 
       if (response.ok) {
         alert("Diet and yoga plan saved successfully!");
         setShowDietYogaModal(false);
       } else {
-        const data = await response.json();
-        alert(`Error: ${data.error}`);
+        // If the response is not OK, show the error message from the backend
+        alert(`Error: ${data.message || "Failed to save diet and yoga plan."}`);
       }
     } catch (error) {
-      alert("Failed to save diet and yoga plan.");
-      console.error(error);
+      console.error("Error saving diet and yoga plan:", error);
+      alert("Failed to save diet and yoga plan. Please check the console for details.");
     }
   };
 

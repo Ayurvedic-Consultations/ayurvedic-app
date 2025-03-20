@@ -8,10 +8,10 @@ import doctorImage from "../../media/doctor.png";
 import treatmentImage from "../../media/treatment.png";
 import yogaImage from "../../media/yoga.jpeg";
 import medicineImage from "../../media/medicine.png";
-import step1Icon from '../../media/step1.png';  // Import icons for steps
-import step2Icon from '../../media/step2.png';
-import step3Icon from '../../media/step3.png';
-import step4Icon from '../../media/step4.png';
+//import step1Icon from '../../media/step1.png';  // Import icons for steps
+//import step2Icon from '../../media/step2.png';
+//import step3Icon from '../../media/step3.png';
+//import step4Icon from '../../media/step4.png';
 
 function PatientPage() {
   const { auth, setAuth } = useContext(AuthContext);

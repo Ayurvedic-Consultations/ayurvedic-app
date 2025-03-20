@@ -7,7 +7,7 @@ function DietYogaComponent() {
 
   return (
     <div className="container">
-      <h1>Services</h1>
+      <h1>Your Diet and Yoga Plan</h1>
       <div className="tabs">
         <button
           onClick={() => setActiveTab('Diet')}
