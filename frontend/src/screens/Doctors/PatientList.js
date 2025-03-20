@@ -87,28 +87,6 @@ function PatientList() {
     fetchAppointments();
   }, [email]);
 
-  const handleDeleteAppointment = async (bookingId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/bookings/delete/${bookingId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete appointment");
-      }
-
-      // Remove the deleted appointment from the denied list
-      setDeniedAppointments((prev) =>
-        prev.filter((appointment) => appointment._id !== bookingId)
-      );
-    } catch (error) {
-      console.error("Error deleting appointment:", error);
-    }
-  };
-
   // New function to open supplements modal
   const handleSuggestSupplements = async (appointmentId) => {
     try {
