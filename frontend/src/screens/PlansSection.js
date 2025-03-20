@@ -23,7 +23,7 @@ const PlansSection = () => {
       <h2 className="plans-title">Subscription Plans</h2>
 
       {/* Lite Plans */}
-      <h3>Current Plans</h3>
+      <h3>Current Plans (valid for 2 Months)</h3>
       <div className="lite-plans">
         <div className="plans-container">
           {litePlans.map((plan, index) => (
