@@ -32,6 +32,7 @@ import AppointmentSlots from './screens/Doctors/AppointmentSlots';
 import PatientList from './screens/Doctors/PatientList';
 import HealthBlogs from './screens/Doctors/HealthBlogs';
 import TreatmentDetailsScreen from './screens/TreatmentDetailsScreen';
+import CheckoutScreen from './screens/CheckoutScreen';
 
 import AdminPage from './screens/admin/AdminPage';
 import AdminUsers from './screens/admin/AdminUsers';
@@ -112,7 +113,8 @@ function App() {
           <Route path="/doctor-notifications" element={<DoctorNotification />} />
           <Route path="/manage-products" element={<ManageProducts />} />
           <Route path="/order-history" element={<OrderHistory />} />
-          <Route path="/retailer-analytics" element={<RetailerAnalytics />} />}
+          <Route path="/checkout" element={<CheckoutScreen />} />
+          <Route path="/retailer-analytics" element={<RetailerAnalytics />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>

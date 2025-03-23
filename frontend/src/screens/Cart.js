@@ -1,10 +1,12 @@
 // src/components/CartScreen.js
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Cart.css';
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { AuthContext } from '../context/AuthContext';
 
 const CartScreen = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('cart');
     return savedCart ? JSON.parse(savedCart) : [];
@@ -12,38 +14,21 @@ const CartScreen = () => {
   
   const { auth } = useContext(AuthContext); // Access auth context
   const userId = auth?.user?.id; // Get userId
-  //const userName = auth?.user?.firstName + ' ' + auth?.user?.lastName;
-
+  
   useEffect(() => {
     console.log("Cart Items:", cartItems);
   }, [cartItems]);
-
-  const handleCheckout = async () => {
-    try {
-      for (let item of cartItems) {
-        console.log(item);
-        const orderData = {
-          medicine: { name: item.name, price: item.price, image: item.image, retailerId: item.retailerId },
-          quantity: item.quantity,
-          totalPrice: item.price * item.quantity,
-          buyer: { userId: userId, firstName: auth.user.firstName, lastName: auth.user.lastName }
-        };
-        await axios.post('http://localhost:8080/api/orders', orderData, {
-          headers: { Authorization: `Bearer ${auth.token}` } // Include token in headers
-        });
-      }
-      setCartItems([]);
-      localStorage.removeItem('cart');
-      alert("Order placed successfully!");
-    } catch (error) {
-      console.error('Error placing order:', error);
-    }
+  
+  // Handle proceeding to checkout
+  const handleProceedToCheckout = () => {
+    // Navigate to the new CheckoutScreen component
+    navigate('/checkout');
   };
-
+  
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
-
+  
   const handleQuantityChange = (id, delta) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.map((item) =>
@@ -52,16 +37,16 @@ const CartScreen = () => {
       return updatedItems.filter((item) => item.quantity > 0);
     });
   };
-
+  
   const handleRemoveItem = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item._id !== id));
   };
-
+  
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-
+  
   return (
     <div className="cart-page">
       <h1>Your Cart</h1>
@@ -88,7 +73,13 @@ const CartScreen = () => {
       </div>
       <div className="cart-summary">
         <h2>Total: ₹{totalPrice.toFixed(2)}</h2>
-        <button onClick={handleCheckout} className="checkout-btn">Proceed to Checkout</button>
+        <button 
+          onClick={handleProceedToCheckout} 
+          className="checkout-btn"
+          disabled={cartItems.length === 0}
+        >
+          Proceed to Checkout
+        </button>
       </div>
     </div>
   );
