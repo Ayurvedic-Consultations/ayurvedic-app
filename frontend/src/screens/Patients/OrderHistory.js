@@ -142,17 +142,6 @@ const OrderHistory = () => {
                   <p><strong>Total Amount:</strong> ${order.totalPrice.toFixed(2)}</p>
                 </div>
               </div>
-              
-              {order.paymentMethod === 'onlinePayment' && order.paymentStatus === 'pending' && (
-                <div className="payment-actions">
-                  <button 
-                    onClick={() => window.location.href = `/order/${order._id}/payment`}
-                    className="pay-now-btn"
-                  >
-                    Pay Now
-                  </button>
-                </div>
-              )}
             </div>
           ))}
         </div>
