@@ -127,7 +127,7 @@ function RetailerNavBar() {
             className="profile-pic"
           />
         </div>
-        <NavLink to="/notifications" className="notification-icon">
+        <NavLink to="/retailer-notifications" className="notification-icon">
           <img
             src={notificationIcon}
             alt="Notifications"

@@ -50,6 +50,7 @@ import CustomerSupport from './screens/Retailers/CustomerSupport';
 import Footer from './screens/Footer';
 import Notification from './screens/Patients/Notification'; // Patient notifications
 import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor notifications
+import RetailerNotification from './screens/Retailers/RetailerNotification';
 import { AuthContext } from './context/AuthContext';
 
 function App() {
@@ -115,6 +116,7 @@ function App() {
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/checkout" element={<CheckoutScreen />} />
           <Route path="/retailer-analytics" element={<RetailerAnalytics />} />
+          <Route path="/retailer-notifications" element={<RetailerNotification />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>

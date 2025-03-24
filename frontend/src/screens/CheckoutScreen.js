@@ -1,4 +1,3 @@
-// src/components/CheckoutScreen.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -26,6 +25,7 @@ const CheckoutScreen = () => {
   const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notificationsAvailable, setNotificationsAvailable] = useState(false);
 
   // Calculate total price
   const totalPrice = cartItems.reduce(
@@ -33,9 +33,7 @@ const CheckoutScreen = () => {
     0
   );
 
-  // In CheckoutScreen.js, modify the useEffect that fetches user profile:
-
-useEffect(() => {
+  useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
@@ -52,6 +50,9 @@ useEffect(() => {
       // Set default country only
       setAddress(prev => ({...prev, country: 'India'}));
     }
+
+    // Check if notifications API is available
+    checkNotificationsAPI();
   }, [navigate]);
   
   // Add this effect to save address when it changes
@@ -60,6 +61,20 @@ useEffect(() => {
       localStorage.setItem('userAddress', JSON.stringify(address));
     }
   }, [address]);
+
+  // Check if notifications API is available
+  const checkNotificationsAPI = async () => {
+    try {
+      // A simple HEAD request to check if endpoint exists
+      await axios.head('http://localhost:8080/api/notifications', {
+        headers: { Authorization: `Bearer ${auth.token}` }
+      });
+      setNotificationsAvailable(true);
+    } catch (err) {
+      console.log('Notifications API not available:', err.message);
+      setNotificationsAvailable(false);
+    }
+  };
 
   // Handle address form input changes
   const handleAddressChange = (e) => {
@@ -107,10 +122,36 @@ useEffect(() => {
     }
   };
 
-  // Submit order to backend
-  // In CheckoutScreen.js, modify the placeOrder function:
+  // Create notification function - only if API is available
+  const createNotification = async (orderId, message) => {
+    if (!notificationsAvailable) {
+      console.log('Skipping notification - API not available');
+      return;
+    }
+    
+    try {
+      await axios.post(
+        'http://localhost:8080/api/notifications',
+        {
+          userId,
+          orderId,
+          type: 'order',
+          message,
+          isRead: false
+        },
+        {
+          headers: { Authorization: `Bearer ${auth.token}` }
+        }
+      );
+      console.log('Notification created successfully');
+    } catch (err) {
+      console.error('Error creating notification:', err);
+      // Don't stop the order process if notification fails
+    }
+  };
 
-const placeOrder = async () => {
+  // Submit order to backend
+  const placeOrder = async () => {
     try {
       setLoading(true);
       
@@ -134,6 +175,9 @@ const placeOrder = async () => {
         paymentMethod
       };
       
+      let responseData = null;
+      let currentOrderId = null;
+      
       try {
         // Try to create order in backend
         const response = await axios.post(
@@ -144,8 +188,25 @@ const placeOrder = async () => {
           }
         );
         
+        responseData = response.data;
+        currentOrderId = response.data._id;
+        
         // Save order ID for reference
-        setOrderId(response.data._id);
+        setOrderId(currentOrderId);
+        
+        // Create notification for new order if API available
+        if (notificationsAvailable) {
+          const notificationMessage = `Your order #${currentOrderId} has been placed successfully.`;
+          await createNotification(currentOrderId, notificationMessage);
+          
+          // If the order contains items from different retailers, create notifications for each retailer
+          const retailerIds = [...new Set(cartItems.map(item => item.retailerId))];
+          if (retailerIds.length > 1) {
+            // Add a notification that the order contains items from multiple retailers
+            const multiRetailerMsg = `Your order #${currentOrderId} contains items from ${retailerIds.length} different retailers.`;
+            await createNotification(currentOrderId, multiRetailerMsg);
+          }
+        }
         
         // If online payment, get QR code from response
         if (paymentMethod === 'onlinePayment') {
@@ -154,13 +215,24 @@ const placeOrder = async () => {
       } catch (err) {
         console.error('Error with API, using mock data instead:', err);
         // In case of API error, generate a mock order ID for testing
-        setOrderId('mock-order-' + Date.now());
+        const mockOrderId = 'mock-order-' + Date.now();
+        currentOrderId = mockOrderId;
+        setOrderId(mockOrderId);
+        
+        // Create a mock notification if API is available
+        if (notificationsAvailable) {
+          const mockNotificationMessage = `Your order #${mockOrderId} has been placed successfully (mock).`;
+          await createNotification(mockOrderId, mockNotificationMessage);
+        }
         
         if (paymentMethod === 'onlinePayment') {
           // Use a placeholder QR code
           setPaymentQR('/placeholder-qr.png');
         }
       }
+      
+      // Store order ID in local storage for reference
+      localStorage.setItem('lastOrderId', currentOrderId);
       
       // Clear cart if order placed successfully and payment method is COD
       if (paymentMethod === 'cashOnDelivery') {
@@ -178,9 +250,7 @@ const placeOrder = async () => {
   };
 
   // Upload payment proof for online payments
-  // In CheckoutScreen.js, modify the uploadPaymentProof function:
-
-const uploadPaymentProof = async () => {
+  const uploadPaymentProof = async () => {
     if (!paymentProof) {
       setError('Please upload payment screenshot');
       return;
@@ -191,6 +261,12 @@ const uploadPaymentProof = async () => {
       
       // For now, let's skip the actual file upload since it's causing issues
       // We'll simulate a successful payment instead
+      
+      // Create payment confirmation notification if API is available
+      if (notificationsAvailable) {
+        const paymentConfirmationMsg = `Payment received for order #${orderId}. Your order is being processed.`;
+        await createNotification(orderId, paymentConfirmationMsg);
+      }
       
       // Clear cart after payment proof uploaded
       localStorage.removeItem('cart');
@@ -471,6 +547,9 @@ const uploadPaymentProof = async () => {
                 <p>You have selected Cash on Delivery. Please keep cash ready at the time of delivery.</p>
               ) : (
                 <p>Your payment has been received. You will receive order updates via email.</p>
+              )}
+              {notificationsAvailable && (
+                <p>Order updates will be available in your notifications.</p>
               )}
             </div>
             
