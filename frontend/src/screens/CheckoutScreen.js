@@ -237,10 +237,13 @@ const CheckoutScreen = () => {
       // Clear cart if order placed successfully and payment method is COD
       if (paymentMethod === 'cashOnDelivery') {
         localStorage.removeItem('cart');
+        // Skip to confirmation page directly
+        setCurrentStep(5);
+      } else {
+        // For online payment, proceed to payment step
+        nextStep();
       }
       
-      // Move to next step (payment or confirmation)
-      nextStep();
     } catch (err) {
       setError('Failed to place order. Please try again.');
       console.error('Error placing order:', err);
