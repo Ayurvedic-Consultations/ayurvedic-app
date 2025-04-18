@@ -5,22 +5,22 @@ import { useNavigate } from 'react-router-dom';
 function TreatmentsScreen() {
   const navigate = useNavigate();
   const treatments = [
-    { category: 'Digestive Health', image: '/images/digestive.jpg' },
-    { category: 'Respiratory Health', image: '/images/respiratory.jpg' },
-    { category: 'Skin Care', image: '/images/skincare.jpg' },
-    { category: 'Joint and Bone Health', image: '/images/joint.jpg' },
-    { category: 'Cardiovascular Health', image: '/images/heart.jpg' },
-    { category: 'Mental Health and Wellness', image: '/images/mental.jpg' },
-    { category: 'Metabolic and Endocrine Health', image: '/images/metabolism.jpg' },
-    { category: 'Immune Support', image: '/images/immune.jpg' },
-    { category: "Women's Health", image: '/images/women.jpg' },
-    { category: "Men's Health", image: '/images/men.jpg' },
-    { category: 'Liver and Kidney Health', image: '/images/liver.jpg' },
-    { category: 'Eye Health', image: '/images/eye.jpg' },
-    { category: 'Oral Health', image: '/images/oral.jpg' },
-    { category: 'General Wellness', image: '/images/wellness.jpg' },
-    { category: 'Infections', image: '/images/infections.jpg' },
-    { category: 'Pain Management', image: '/images/infections.jpg' },
+    { category: 'Digestive Health', image: '../images/Digestive Health.png' },
+    { category: 'Respiratory Health', image: '../images/Respiratory Health.jpg' },
+    { category: 'Skin Care', image: '../images/Skin Care.jpg' },
+    { category: 'Joint and Bone Health', image: '../images/Joint & Bone Health.jpg' },
+    { category: 'Cardiovascular Health', image: '../images/Cardiovascular Health.jpg' },
+    { category: 'Mental Health and Wellness', image: '../images/Mental Health and Wellness.jpg' },
+    { category: 'Metabolic and Endocrine Health', image: '../images/Metabolism & Hormonal Health.jpg' },
+    { category: 'Immune Support', image: '../images/Fatty Liver Treatment.jpg' },
+    { category: "Women's Health", image: '../images/Women Health.jpg' },
+    { category: "Men's Health", image: '../images/Mens Health.png' },
+    { category: 'Liver and Kidney Health', image: '../images/Liver and Kidney Health.jpg' },
+    { category: 'Eye Health', image: '../images/Eye Health.jpg' },
+    { category: 'Oral Health', image: '../images/oral health.jpg' },
+    { category: 'General Wellness', image: '../images/General Wellness.jpg' },
+    { category: 'Infections', image: '../images/infection.jpg' },
+    { category: 'Pain Management', image: '../images/Pain Management.jpg' },
   ];
 
   return (
