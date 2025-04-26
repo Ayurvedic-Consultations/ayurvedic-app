@@ -16,7 +16,7 @@ const PlansSection = () => {
     { title: 'Pro Plan A3', description: 'Description for A3', price: '9.99', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
     
   ];
-
+ 
   // Render
   return (
     <section className="plans-section">

@@ -2,6 +2,59 @@
 
 const Booking = require("../models/Booking");
 
+// Add or update rating and review
+exports.updateRatingAndReview = async (req, res) => {
+  const { id } = req.params;
+  const { rating, review } = req.body;
+
+  try {
+    // Validate input
+    if (rating && (rating < 1 || rating > 5)) {
+      return res.status(400).json({ error: "Rating must be between 1 and 5" });
+    }
+
+    // Find the booking by ID and update the rating and review
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { rating, review },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    return res.status(200).json({
+      message: "Rating and review updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    console.error("Error updating rating and review:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Get rating and review for a booking
+exports.getRatingAndReview = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const booking = await Booking.findById(id);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    return res.status(200).json({
+      message: "Rating and review retrieved successfully",
+      rating: booking.rating,
+      review: booking.review,
+    });
+  } catch (error) {
+    console.error("Error retrieving rating and review:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 // Controller function to handle booking creation
 exports.createBooking = async (req, res) => {
   const {

@@ -1,66 +1,63 @@
 .retailer-dashboard {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;  /* Center horizontally */
-    text-align: center;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin-top:140px;
-  }
-  
-  .retailer-dashboard h1 {
-    color: #333;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    text-align: center;  /* Ensure the heading is center-aligned */
-  }
-  
-  .retailer-dashboard p {
-    color: #555;
-    margin-bottom: 30px;
-    font-size: 1rem;
-    text-align: center;  /* Ensure the paragraph is center-aligned */
-  }
-  
-  /* Button Layout */
-  .dashboard-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;  /* Adjusted gap for spacing */
-    justify-items: center;
-  }
-  
-  /* Button Styling */
-  .dashboard-btn {
-    background-color: #e6f4e6;  /* Light green */
-    color: #333;
-    border: none;
-    padding: 15px 40px;
-    font-size: 1.1rem;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, background-color 0.3s ease;
-  
-    /* Fixed size for consistency */
-    width: 300px;
-    height: 70px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .dashboard-btn:hover {
-    transform: translateY(-2px);
-    background-color: #d4e9d4;  /* Darker green on hover */
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .dashboard-btn {
-      padding: 10px 20px;
-      font-size: 1rem;
-      width: 150px;
-      height: 60px;
-    }
-  }
+	width: 100%;
+	margin: 0;
+  box-sizing: border-box;
+	text-align: center;
+	font-family: Arial, sans-serif;
+	padding: 20px;
+	margin-top: 140px;
+  overflow: hidden;
+}
+
+.retailer-dashboard h1 {
+	color: #333;
+	font-size: 2.5rem;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.retailer-dashboard p {
+	color: #555;
+	margin-bottom: 30px;
+	font-size: 1rem;
+	text-align: center;
+}
+
+.dashboard-buttons {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 30px;
+	justify-items: center;
+}
+
+.dashboard-btn {
+	background-color: #e6f4e6;
+	color: #333;
+	border: none;
+	padding: 15px 40px;
+	font-size: 1.1rem;
+	border-radius: 10px;
+	cursor: pointer;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s, background-color 0.3s ease;
+
+	width: 300px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.dashboard-btn:hover {
+	transform: translateY(-2px);
+	background-color: #d4e9d4;
+}
+
+@media (max-width: 768px) {
+	.dashboard-btn {
+		padding: 10px 20px;
+		font-size: 1rem;
+		width: 150px;
+		height: 60px;
+	}
+}

@@ -39,9 +39,9 @@ const prakritiDeterminationSchema = new mongoose.Schema({
         },
     },
     physiologicalTraits: {
-        regular: {
+        digestion: {
             type: String,
-            enum: ["Irregular", "Mixed"],
+            enum: ["Regular", "Irregular", "Mixed"],
             required: true,
         },
         bodyTemperature: {

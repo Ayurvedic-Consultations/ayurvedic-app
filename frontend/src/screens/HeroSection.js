@@ -39,7 +39,7 @@ function HeroSection() {
             backgroundColor: '#8F9F6D',
             color: '#fff',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '5px', 
             cursor: 'pointer'
           }}
         >

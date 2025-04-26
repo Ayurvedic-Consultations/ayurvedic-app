@@ -1,5 +1,3 @@
-// routes/bookingRoutes.js
-
 const express = require("express");
 const router = express.Router();
 const {
@@ -11,6 +9,8 @@ const {
   deleteBooking,
   updateRecommendedSupplements,
   getRecommendedSupplements,
+  updateRatingAndReview,
+  getRatingAndReview,
 } = require("../controllers/bookingController");
 
 const Booking = require("../models/Booking");
@@ -21,6 +21,7 @@ router.post("/", createBooking);
 // Route to fetch all bookings
 router.get("/bookings", getAllBookings);
 
+// Route to fetch all notifications
 router.get("/notifications", getNotifications);
 
 // PUT route to update booking requestAccept status
@@ -37,15 +38,20 @@ router.put("/supplements/:id", updateRecommendedSupplements);
 // Route to get recommended supplements
 router.get("/supplements/:id", getRecommendedSupplements);
 
+// Route to update rating and review
+router.put("/rating-review/:id", updateRatingAndReview);
+
+// Route to get rating and review
+router.get("/rating-review/:id", getRatingAndReview);
+
 // GET all bookings
 router.get("/", async (req, res) => {
   try {
-      const bookings = await Booking.find();  // Fetch from DB
-      res.json(bookings);
+    const bookings = await Booking.find(); // Fetch from DB
+    res.json(bookings);
   } catch (error) {
-      res.status(500).json({ message: "Error fetching bookings" });
+    res.status(500).json({ message: "Error fetching bookings" });
   }
 });
-
 
 module.exports = router;

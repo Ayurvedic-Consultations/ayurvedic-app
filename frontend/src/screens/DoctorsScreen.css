@@ -1,82 +1,115 @@
 .doctors-container {
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-  margin-top: 150px;
+	display: flex;
+	padding: 20px;
+	gap: 20px;
+	margin-top: 150px;
 }
 
 .filters {
-  flex: 1;
-  background-color: #c0c3b4;
-  padding: 20px;
-  border-radius: 8px;
-  margin-right: 20px;
+	flex: 1.2;
+	border-radius: 8px;
+	margin-right: 0px;
+	height: max-content;
+	overflow: hidden;
+	position: relative;
+}
+
+.filters-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #c0c3b4;
+	padding: 10px 20px;
+	border-radius: 8px;
+	height: 20px;
+	margin-bottom: 5px;
+	overflow: hidden;
+	position: relative;
+}
+
+.filters-header h2 {
+	margin: 0;
+}
+
+.filters-menu {
+	background-color: #c0c3b4;
+	padding: 20px;
+	border-radius: 8px;
+	overflow: hidden;
+	position: relative;
+	height: max-content;
+}
+
+.filters .downArrow {
+	cursor: pointer;
 }
 
 .clear-all {
-  background: transparent;
-  border: none;
-  color: #a83232;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 20px;
+	background: transparent;
+	border: none;
+	color: #a83232;
+	font-weight: bold;
+	cursor: pointer;
+	margin-bottom: 20px;
 }
 
 .filter-group {
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 .filter-group label {
-  display: block;
-  margin-bottom: 5px;
+	display: block;
+	margin-bottom: 5px;
 }
 
 .filter-group select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
+	width: 100%;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ddd;
 }
 
 .doctors-list {
-  flex: 3;
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping to fit two cards per row */
-  gap: 20px;
-  background-color: #d3d3d3; /* Grey background for the right side */
-  padding: 20px;
-  border-radius: 8px;
+	flex: 3;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr); /* Creates 2 equal-width columns */
+	flex-wrap: wrap; /* Allow wrapping to fit two cards per row */
+	gap: 20px;
+	background-color: #fff; /* Grey background for the right side */
+	padding: 20px;
+	border-radius: 8px;
 }
 
 .doctor-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #e0e1dd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: calc(50% - 50px); /* Two cards per row with gap between */
-  height: fit-content;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 20px;
+	border-radius: 8px;
+	background-color: rgb(236, 236, 236);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	height: fit-content;
 }
 
 .doctor-info {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .doctor-name {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #333;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #333;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .doctor-rating {
-  font-size: 1em;
-  color: #ff8c00;
+	font-size: 1em;
+	color: #ff8c00;
+	min-width: 55px;
+	align-self: flex-start;
 }
 
 .doctor-specialization,
@@ -87,20 +120,45 @@
 .doctor-gender,
 .next-available,
 .doctor-note {
-  margin-top: 5px;
-  color: #555;
+	margin-top: 5px;
+	color: #555;
 }
 
 .book-consultation {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-top: 20px;
 }
 
 .book-consultation:hover {
-  background-color: #45a049;
+	background-color: #45a049;
+}
+
+@media (max-width: 880px) {
+	.doctors-list {
+		grid-template-columns: repeat(1, 1fr); /* Creates 2 equal-width columns */
+	}
+	.filters {
+		flex: 2;
+	}
+}
+
+@media (max-width: 700px) {
+	.filters {
+		flex: 3;
+	}
+}
+
+@media (max-width: 560px) {
+	.doctors-container {
+		flex-direction: column;
+	}
+	.filters {
+		flex: 1;
+		margin-right: 0;
+	}
 }

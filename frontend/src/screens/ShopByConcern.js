@@ -12,7 +12,7 @@ import DiabitiesImage from '../media/diabeties.jpg';
 
 const Treatments = () => {
   return (
-    <div className="SkinHealth_skinConcernWrapper__4RStK">
+    <div className="SkinHealth_skinConcernWrapper__4RStK"> 
       <div className="ComponentHeader_componentHeaderDesktop__sNo2H ShopByConcern_sectionHeader__CLeME">
         <div className="header-content">
           <div className="ComponentHeader_headerTitle__oeo_k">

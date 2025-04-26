@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -10,6 +11,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const orderRoutes = require("./routes/orderRoutes")
 const blogRoutes = require("./routes/blogRoutes")
 const prakritiRoutes = require("./routes/prakritiRoutes");
+const dietYogaRoutes = require("./routes/dietYogaRoutes");
 
 mongoose.set('debug', true);
 const app = express();
@@ -17,7 +19,7 @@ const PORT = process.env.PORT || 8080;
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MDB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MDB)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -35,6 +37,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/orders" , orderRoutes)
 app.use("/api/blogs", blogRoutes)
 app.use("/api/prakriti", prakritiRoutes)
+app.use("/api/diet-yoga", dietYogaRoutes);
 
 // Start the server
 app.listen(PORT, () => {

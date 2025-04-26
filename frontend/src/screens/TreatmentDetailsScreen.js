@@ -816,91 +816,101 @@ const treatmentData = {
 };
 
 const ayurvedicConsultations = [
-  {
-    title: "Why Choose Ayurvedic Consultation?",
-    points: [
-      "Personalized Treatment based on Dosha balance.",
-      "Natural Healing with diet, herbs, and lifestyle changes.",
-      "Long-Term Relief rather than symptomatic suppression.",
-      "Mind-Body Balance for holistic well-being.",
-    ],
-    callToAction: "Not sure where to start? Book an online consultation with our certified Ayurvedic doctors today!",
-  },
-  {
-    title: "Experience Holistic Healing with Ayurveda",
-    points: [
-      "Customized Ayurvedic plans for lasting health.",
-      "Safe, natural, and effective herbal remedies.",
-      "Root cause healing instead of temporary relief.",
-      "Balance mind, body, and spirit with Ayurveda.",
-    ],
-    callToAction: "Get expert guidance from Ayurvedic doctors. Book your consultation today!",
-  },
-  {
-    title: "Heal Naturally with Ayurveda",
-    points: [
-      "Find the right Ayurvedic solution for your health needs.",
-      "100% Natural remedies with no side effects.",
-      "Restore harmony with holistic treatments.",
-      "Prevent diseases with Ayurveda's ancient wisdom.",
-    ],
-    callToAction: "Ready to take charge of your health? Connect with an Ayurvedic expert now!",
-  },
+	{
+		title: "Why Choose Ayurvedic Consultation?",
+		points: [
+			"Personalized Treatment based on Dosha balance.",
+			"Natural Healing with diet, herbs, and lifestyle changes.",
+			"Long-Term Relief rather than symptomatic suppression.",
+			"Mind-Body Balance for holistic well-being.",
+		],
+		callToAction:
+			"Not sure where to start? Book an online consultation with our certified Ayurvedic doctors today!",
+	},
+	{
+		title: "Experience Holistic Healing with Ayurveda",
+		points: [
+			"Customized Ayurvedic plans for lasting health.",
+			"Safe, natural, and effective herbal remedies.",
+			"Root cause healing instead of temporary relief.",
+			"Balance mind, body, and spirit with Ayurveda.",
+		],
+		callToAction:
+			"Get expert guidance from Ayurvedic doctors. Book your consultation today!",
+	},
+	{
+		title: "Heal Naturally with Ayurveda",
+		points: [
+			"Find the right Ayurvedic solution for your health needs.",
+			"100% Natural remedies with no side effects.",
+			"Restore harmony with holistic treatments.",
+			"Prevent diseases with Ayurveda's ancient wisdom.",
+		],
+		callToAction:
+			"Ready to take charge of your health? Connect with an Ayurvedic expert now!",
+	},
 ];
 
 function TreatmentDetailsScreen() {
-  const { category } = useParams();
-  const navigate = useNavigate();
-  const details = treatmentData[decodeURIComponent(category)];
+	const { category } = useParams();
+	const navigate = useNavigate();
+	const details = treatmentData[decodeURIComponent(category)];
 
-  if (!details) {
-    return <h2>Category not found.</h2>;
-  }
+	if (!details) {
+		return <h2>Category not found.</h2>;
+	}
 
-  // Rotate consultation messages based on category index
-  const consultationIndex = Object.keys(treatmentData).indexOf(category) % ayurvedicConsultations.length;
-  const selectedConsultation = ayurvedicConsultations[consultationIndex];
+	// Rotate consultation messages based on category index
+	const consultationIndex =
+		Object.keys(treatmentData).indexOf(category) %
+		ayurvedicConsultations.length;
+	const selectedConsultation = ayurvedicConsultations[consultationIndex];
 
-  return (
-    <div className="treatment-details">
-      <Link to="/treatments" className="back-link">← Back</Link>
-      <h1>{details.title}</h1>
-      <p>{details.description}</p>
-      <h2 className="ttitle">Common Concerns & Ayurvedic Approach</h2>
+	return (
+		<div className="treatment-details">
+			<Link to="/treatments" className="back-link">
+				← Back
+			</Link>
+			<h1>{details.title}</h1>
+			<p>{details.description}</p>
+			<h2 className="ttitle">Common Concerns & Ayurvedic Approach</h2>
 
-      {details.concerns.map((concern, index) => (
-        <div
-          key={index}
-          className={`concern-row ${index % 2 === 0 ? "row-reverse" : ""}`}
-        >
-          <img src={concern.image} alt={concern.title} className="concern-image" />
-          <div className="concern-content">
-            <h3>{concern.title}</h3>
-            <p>{concern.description}</p>
-            <h4>Ayurvedic Approach:</h4>
-            <ul>
-              {concern.approach.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
-            </ul>
-            <p>{concern.callToAction}</p>
-          </div>
-        </div>
-      ))}
+			{details.concerns.map((concern, index) => (
+				<div
+					key={index}
+					className={`concern-row ${index % 2 === 0 ? "row-reverse" : ""}`}
+				>
+					<img
+						src={concern.image}
+						alt={concern.title}
+						className="concern-image"
+					/>
+					<div className="concern-content">
+						<h3>{concern.title}</h3>
+						<p>{concern.description}</p>
+						<h4>Ayurvedic Approach:</h4>
+						<ul>
+							{concern.approach.map((step, i) => (
+								<li key={i}>{step}</li>
+							))}
+						</ul>
+						<p>{concern.callToAction}</p>
+					</div>
+				</div>
+			))}
 
-      {/* Ayurvedic Consultation Section (Rotating Messages) */}
-      <div className="consultation-section">
-        <h2>{selectedConsultation.title}</h2>
-        <ul>
-          {selectedConsultation.points.map((point, index) => (
-            <li key={index}>{point}</li>
-          ))}
-        </ul>
-        <p>{selectedConsultation.callToAction}</p>
-      </div>
-    </div>
-  );
+			{/* Ayurvedic Consultation Section (Rotating Messages) */}
+			<div className="consultation-section">
+				<h2>{selectedConsultation.title}</h2>
+				<ul>
+					{selectedConsultation.points.map((point, index) => (
+						<li key={index}>{point}</li>
+					))}
+				</ul>
+				<p>{selectedConsultation.callToAction}</p>
+			</div>
+		</div>
+	);
 }
 
 export default TreatmentDetailsScreen;
-

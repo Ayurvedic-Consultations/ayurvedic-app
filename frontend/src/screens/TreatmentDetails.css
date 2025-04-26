@@ -1,72 +1,102 @@
 .treatment-details {
-  max-width: 90%;
-  background-color: white;
-  margin: 20px auto;
-  padding: 20px;
-  margin-top: 150px
+	max-width: 90%;
+	background-color: white;
+	margin: 20px auto;
+	padding: 20px;
+	margin-top: 150px;
+  border-radius: 15px;
 }
 
-.ttitle{
-  font-size: x-large;
+.ttitle {
+	font-size: x-large;
 }
+
 .back-button {
-  color: #556B2F;
-  border: none;
-  padding: 8px 12px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 20px;
+	color: #556b2f;
+	border: none;
+	padding: 8px 12px;
+	font-size: 16px;
+	cursor: pointer;
+	margin-bottom: 20px;
 }
 
 .concern-row {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 40px;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	margin-bottom: 40px;
 }
 
 .row-reverse {
-  flex-direction: row-reverse;
+	flex-direction: row-reverse;
 }
 
 .concern-image {
-  width: 40%;
-  max-height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
+	width: 40%;
+	max-height: 200px;
+	object-fit: cover;
+	border-radius: 10px;
 }
 
 .concern-content {
-  width: 55%;
+	width: 55%;
+	padding: 10px;
+	border: solid 1px rgba(0, 0, 0, 0.103);
+  border-radius: 15px;
 }
 
-h1, h2 {
-  color: #333;
+h1,
+h2 {
+	color: #333;
+}
+
+p {
+	text-align: justify;
 }
 
 h3 {
-  margin: 0;
-  color: #556B2F;
+	margin: 0;
+	color: #556b2f;
 }
 
 ul {
-  padding-left: 20px;
+	padding-left: 20px;
 }
 
 ul li {
-  margin-bottom: 5px;
+	margin-bottom: 5px;
+	text-align: justify;
 }
 
 .back-link {
-  display: inline-block;
-  color: #556B2F;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  transition: color 0.3s;
+	display: inline-block;
+	color: #556b2f;
+	text-decoration: none;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	transition: color 0.3s;
 }
 
 .back-link:hover {
-  color: #8B4513; /* Darker brown shade for hover effect */
+	color: #8b4513; /* Darker brown shade for hover effect */
+}
+
+@media (max-width : 700px){
+  .concern-row {
+ 
+    flex-direction: column;
+  }
+
+  .concern-image {
+    width: 65%;
+    max-height: 400px;
+    object-position: top center;
+  }
+  
+  .concern-content {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 25px;
+  }
 }

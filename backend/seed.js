@@ -54,10 +54,7 @@ const sampleMedicines = [
 // Function to seed the database
 const seedDB = async () => {
   try {
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoURI);
     console.log("MongoDB Connected");
 
     // Clear existing data

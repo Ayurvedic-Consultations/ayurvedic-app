@@ -20,6 +20,7 @@ h1 {
   margin-bottom: 20px;
   border-radius: 8px;
   align-items: center;
+  background-color: #f9f9f9;
 }
 
 .appointment-timing {
@@ -79,6 +80,7 @@ strong {
     padding-bottom: 10px;
   }
 }
+
 .appointment-actions {
   display: flex;
   flex-direction: column;
@@ -95,136 +97,3 @@ strong {
   margin-right: 10px; /* Space to separate from other buttons */
 }
 
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.supplements-modal {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.supplements-modal h2 {
-  margin-top: 0;
-  color: #333;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.supplements-list {
-  margin: 20px 0;
-}
-
-.supplement-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 8px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-}
-
-.remove-button {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.add-supplement-form {
-  background-color: #f0f8ff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 12px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.add-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.save-button {
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.cancel-button {
-  background-color: #ccc;
-  color: black;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Hover effects */
-.remove-button:hover {
-  background-color: #ff3333;
-}
-
-.add-button:hover {
-  background-color: #45a049;
-}
-
-.save-button:hover {
-  background-color: #0b7dda;
-}
-
-.cancel-button:hover {
-  background-color: #bbb;
-}

@@ -14,7 +14,7 @@ const DoctorsSection = () => {
       hospital: 'Apollo Hospital',
     },
     {
-      name: 'Dr. Rahul Verma',
+      name: 'Dr. Rahul Verma', 
       specialization: 'Dermatologist',
       experience: '12 years',
       patientsServed: '8K+',

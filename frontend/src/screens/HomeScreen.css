@@ -19,7 +19,7 @@
   box-sizing: border-box;
   overflow: hidden; /* Hides overflow for animations */
 }
-
+ 
 .h {
   font-size: 2.5rem;
   font-family: 'Arbutus Slab', serif;

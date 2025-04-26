@@ -24,7 +24,7 @@ const ShopBySkinType = () => {
           <h2 className="title3-bold-d title3-bold-m">Why Choose Us for Treatment?</h2>
         </div>
       </div>
-
+ 
       {/* Top section (Benefit Cards) */}
       <div className="ShopBySkinType_container__cvZMd top-section">
         {/* Expert Care Card */}

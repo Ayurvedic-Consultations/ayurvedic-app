@@ -25,7 +25,7 @@ const Medicines = () => {
       }
     };
 
-    fetchMedicines();
+    fetchMedicines(); 
   }, []);
 
   const addToCart = (medicine) => {

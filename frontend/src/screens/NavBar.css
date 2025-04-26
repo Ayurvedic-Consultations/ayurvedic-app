@@ -1,234 +1,347 @@
-@import url('https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap");
 
 .navbar-header {
-  display: flex;
-  flex-direction: column;
-  position: fixed; /* Makes the navbar fixed */
-  z-index: 1000; /* Keeps it on top of other elements */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
-  width: 100%;
+	display: flex;
+	flex-direction: column;
+	position: fixed; /* Makes the navbar fixed */
+	z-index: 1000; /* Keeps it on top of other elements */
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+	width: 100%;
 }
 
-
 .top-navbar {
-  display: flex;
-  align-items: center;
-  padding: 10px 30px;
-  background-color: #D2B48C;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	padding: 10px 30px;
+	background-color: #d2b48c;
 }
 
 .logo-container {
-  display: flex;
-  align-items: flex-start;
-  text-decoration: none;
+	display: flex;
+	align-items: flex-start;
+	text-decoration: none;
 }
 
 .nav-logo {
-  width: 50px;
-  height: 50px;
-  margin-right: 15px;
+	width: 50px;
+	height: 50px;
+	margin-right: 15px;
 }
 
 .text-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-family: 'Arbutus Slab', serif;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-family: "Arbutus Slab", serif;
 }
 
 .logo-text {
-  font-size: 28px;
-  color: #556B2F;
-  font-weight: bold;
+	font-size: 28px;
+	color: #556b2f;
+	font-weight: bold;
 }
 
 .consultations-text {
-  font-size: 16px;
-  font-weight: bold;
+	font-size: 16px;
+	font-weight: bold;
 }
 
 .search-signin {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  justify-content: center;
+	display: flex;
+	align-items: center;
+	flex: 1;
+	justify-content: center;
 }
 
 .search-bar {
-  display: flex;
-  border-radius: 20px;
-  overflow: hidden;
-  width: 700px;
+	display: flex;
+	border-radius: 20px;
+	overflow: hidden;
+	width: 90%;
 }
 
 .dropdown {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px 0 0 20px;
-  border: 2px solid #a8b572;
-  background-color: #f9e4ad;
-  height: auto;
+	width: 85px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 20px 0 0 20px;
+	border: 2px solid #a8b572;
+	background-color: #f9e4ad;
+	height: auto;
 }
 
 .dropdown select {
-  border: none;
-  background-color: transparent;
-  color: #6e6e33;
-  padding: 8px;
-  font-size: 16px;
-  width: 100%;
-  cursor: pointer;
-  border-radius: 20px 0 0 20px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: none;
+	border: none;
+	background-color: transparent;
+	color: #6e6e33;
+	padding: 8px;
+	font-size: 16px;
+	width: 100%;
+	cursor: pointer;
+	border-radius: 20px 0 0 20px;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: none;
 }
 
 .search-input {
-  flex: 5;
-  border-radius: 0 20px 20px 0;
-  border: 2px solid #a8b572;
-  background-color: #f9e4ad;
-  color: #6e6e33;
-  padding: 8px;
-  border-left: none;
-  font-size: 16px;
+	flex: 5;
+	border-radius: 0 20px 20px 0;
+	border: 2px solid #a8b572;
+	background-color: #f9e4ad;
+	color: #6e6e33;
+	padding: 8px;
+	border-left: none;
+	font-size: 16px;
 }
 
 .search-input::placeholder {
-  color: #6e6e33;
+	color: #6e6e33;
 }
 
 .auth {
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Add spacing between the text and profile picture */
+	display: flex;
+	align-items: center;
+	gap: 10px; 
+	cursor: pointer;
 }
 
 .auth a {
-  text-decoration: none;
-  font-weight: bold;
-  background-color: transparent;
+	text-decoration: none;
+	font-weight: bold;
+	background-color: transparent;
 }
 
 .auth a:hover {
-  text-decoration: none;
-  background-color: transparent;
+	text-decoration: none;
+	background-color: transparent;
+}
+
+.signin-btn-text {
+	color: white;
 }
 
 /* Style for the profile picture */
 .auth .profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #fce1c6; /* Light Beige border */
-  background-color: transparent;
-  margin-right: 20px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #fce1c6; /* Light Beige border */
+	background-color: transparent;
 }
 
 .navbar {
-  background-color: #8F9F6D;
-  padding: 10px 30px;
-  display: flex;
-  align-items: center;
+	background-color: #8f9f6d;
+	padding: 10px 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .navbar .left-item {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20px;
 }
 
 .location-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
 }
 
 .location-text {
-  font-size: 16px;
-  color: white;
+	font-size: 16px;
+	color: white;
 }
 
 .navbar .center-items {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+	flex: 1;
+	display: flex;
+	justify-content: center;
 }
 
 .navbar ul {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	justify-content: space-around;
 }
 
 .navbar ul li {
-  margin-right: 20px;
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
+	position: relative;
 }
 
 .navbar ul li a {
-  text-decoration: none;
-  color: white;
+	text-decoration: none;
+	color: white;
+	transition: all 0.5s;
+}
+
+.navbar ul li a::after {
+	position: absolute;
+	content: "";
+	height: 3px;
+	width: 100%;
+	background-color: rgb(255, 255, 255);
+	bottom: -5px;
+	right: 0;
+	border-radius: 500px;
+	transform: translateX(100%);
+	opacity: 0;
+	transition: all 0.5s;
 }
 
 .navbar ul li a:hover,
-.navbar ul li a.active {
-  color: white;
-  text-decoration: underline;
-  font-size: 18px;
+.navbar ul li a.active,
+.navbar ul li a.active::after {
+	opacity: 1;
+	transform: translateX(0);
+	text-shadow: 0 0 8px black;
+}
+
+.nav-menu-button {
+	display: none;
+}
+
+.nav-menu-button img {
+	padding: 8px;
+	border-radius: 500px;
+	cursor: pointer;
+	position: absolute;
+	bottom: 1%;
+	right: 1%;
+}
+
+.nav-sidebar {
+	position: fixed;
+	top: 0;
+	right: 0;
+	height: 100vh;
+	z-index: 999;
+	background-color: #8f9f6d9a;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	backdrop-filter: blur(40px);
+	font-size: 25px;
+	font-weight: 600;
+}
+
+.nav-sidebar li {
+	width: 100%;
+	padding: 0 0 0 25px;
+	font-size: 25px;
+}
+
+.nav-sidebar a {
+	width: 100%;
+	font-size: 25px;
+}
+
+.nav-sidebar img {
+	background: rgba(0, 0, 0, 0.286);
+	padding: 10px;
+	border-radius: 500px;
+	cursor: pointer;
+	position: absolute;
+	top: 2%;
+	right: 2%;
 }
 
 /* Add active class styling for the current page */
-.navbar ul li a.active {
-  text-decoration: underline;
-  font-size: 18px;
+
+@media (max-width: 1130px) {
+	.nav-menu-button {
+		display: block;
+	}
+
+	.navbar .nav-center-menu {
+		display: none;
+	}
 }
 
 @media (max-width: 768px) {
-  .search-bar {
-    width: 300px;
-  }
+	.search-bar {
+		width: 300px;
+	}
 
-  .auth {
-    flex-direction: column;
-    align-items: center;
-  }
+	.auth {
+		flex-direction: column;
+		align-items: center;
+	}
+	.signin-btn-text {
+		display: none;
+	}
+}
+
+@media (max-width: 700px) {
+	.search-bar {
+		width: 250px;
+	}
+
+	.logo-container .text-container {
+		display: none;
+	}
 }
 
 @media (max-width: 480px) {
-  .logo-text {
-    font-size: 24px;
-  }
+	.top-navbar {
+		padding: 10px 15px;
+	}
+	.dropdown select {
+		width: 25px;
+	}
 
-  .consultations-text {
-    font-size: 14px;
-  }
+	.top-navbar {
+		height: 80px;
+	}
 
-  .search-input {
-    font-size: 14px;
-  }
+	.search-bar {
+		width: 200px;
+	}
+	.logo-text {
+		font-size: 24px;
+	}
 
-  .auth .profile-pic {
-    width: 35px;
-    height: 35px;
-  }
+	.consultations-text {
+		font-size: 14px;
+	}
 
-  .location-text {
-    font-size: 14px;
-  }
+	.search-input {
+		font-size: 14px;
+	}
 
-  .navbar ul li a {
-    font-size: 16px;
-  }
+	.location-text {
+		font-size: 14px;
+	}
 
-  .navbar ul li a.active {
-    font-size: 16px;
-  }
+	.navbar ul li a {
+		font-size: 16px;
+	}
+
+	.navbar ul li a.active {
+		font-size: 16px;
+	}
+
+	.nav-sidebar {
+		font-size: 35px;
+	}
+
+	.nav-sidebar li {
+		font-size: 35px;
+	}
+
+	.nav-sidebar a {
+		font-size: 35px;
+	}
 }
