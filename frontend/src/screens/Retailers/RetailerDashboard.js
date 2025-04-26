@@ -44,7 +44,7 @@ function RetailerDashboard() {
 				<Link to="/manage-products">
 					<button className="dashboard-btn">Manage Products</button>
 				</Link>
-				<Link to="/analytics">
+				<Link to="/retailer-analytics">
 					<button className="dashboard-btn">Analytics</button>
 				</Link>
 				<Link to="/my-orders">

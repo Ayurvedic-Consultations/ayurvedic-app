@@ -2,25 +2,60 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  medicine: {
+  // Array of medicine items instead of a single medicine
+  items: [{
     name: String,
     price: Number,
     image: String,
-    retailerId: mongoose.Schema.Types.ObjectId,
-  },
-  quantity: Number,
+    retailerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    quantity: Number,
+    subtotal: Number
+  }],
   totalPrice: Number,
   buyer: {
     firstName: String,
     lastName: String,
-    userId: mongoose.Schema.Types.ObjectId,
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   },
-  status: {
+  shippingAddress: {
+    street: String,
+    city: String,
+    state: String,
+    postalCode: String,
+    country: String
+  },
+  paymentMethod: {
     type: String,
-    enum: ['received', 'sent', 'accepted', 'rejected'],
-    default: 'received',
+    enum: ['cashOnDelivery', 'onlinePayment'],
+    required: true
   },
-  date: { type: Date, default: Date.now },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed'],
+    default: 'pending'
+  },
+  paymentProof: {
+    type: String, // Path to the uploaded payment screenshot
+    required: false
+  },
+  paymentQR: {
+    type: String, // Path to the QR code image
+    required: false
+  },
+  orderStatus: {
+    type: String,
+    enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+    default: 'pending'
+  },
+  retailerStatus: {
+    type: String,
+    enum: ['received', 'accepted', 'rejected', 'shipped'],
+    default: 'received'
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -180,5 +180,36 @@ router.delete("/retailers/:id", async (req, res) => {
   }
 });
 
+const findUserAndUpdatePassword = async (email, newPassword) => {
+  const models = { Patient, Retailer, Doctor };
+
+  for (let modelName in models) {
+    const Model = models[modelName];
+    const user = await Model.findOne({ email });
+
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+      await user.save();
+      return `${modelName} password updated successfully!`;
+    }
+  }
+
+  return null;
+};
+
+//  Reset Password Route
+router.post("/reset-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const message = await findUserAndUpdatePassword(email, newPassword);
+    if (!message) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating password", error });
+  }
+});
 
 module.exports = router;

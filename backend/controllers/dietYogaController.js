@@ -80,27 +80,6 @@ exports.getDietYogaByBooking = async (req, res) => {
   }
 };
 
-// Get diet and yoga recommendations for a patient
-exports.getDietYogaByPatient = async (req, res) => {
-  const { patientEmail } = req.params;
-
-  try {
-    const dietYogas = await DietYoga.find({ patientEmail });
-    
-    if (dietYogas.length === 0) {
-      return res.status(404).json({ message: "No diet and yoga recommendations found for this patient" });
-    }
-
-    return res.status(200).json({
-      message: "Diet and yoga recommendations retrieved successfully",
-      dietYogas
-    });
-  } catch (error) {
-    console.error("Error fetching diet yoga for patient:", error);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
-
 // Update diet recommendation
 exports.updateDiet = async (req, res) => {
   const { id } = req.params;
@@ -151,6 +130,23 @@ exports.updateYoga = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating yoga:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Add this new function to fetch diet and yoga by patient email
+exports.getDietYogaByPatientEmail = async (req, res) => {
+  const { patientEmail } = req.params;
+
+  try {
+    const dietYoga = await DietYoga.findOne({ patientEmail });
+    if (!dietYoga) {
+      return res.status(404).json({ message: "No diet and yoga recommendations found for this patient." });
+    }
+
+    return res.status(200).json({ diet: dietYoga.diet, yoga: dietYoga.yoga });
+  } catch (error) {
+    console.error("Error fetching diet and yoga by patient email:", error);
     return res.status(500).json({ error: "Server error" });
   }
 };

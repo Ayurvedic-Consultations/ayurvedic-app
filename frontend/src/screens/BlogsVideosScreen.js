@@ -37,7 +37,7 @@ function BlogsVideosScreen() {
 								className="blog-card"
 								onClick={() => handleBlogClick(blog)}
 							>
-								<img src={blog.image || logo} alt={blog.title} />
+								{/*<img src={blog.image || logo} alt={blog.title} />*/}
 								<div className="blog-content">
 									<h3>{blog.title}</h3>
 									<p>{blog.description.substring(0, 100)}...</p>{" "}
