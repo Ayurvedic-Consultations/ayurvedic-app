@@ -3,12 +3,7 @@
 	max-width: 1200px;
 	margin: 0 auto;
 	margin-top: 140px;
-	background: rgb(91, 253, 255);
-	background: linear-gradient(
-		131deg,
-		rgba(91, 253, 255, 1) 0%,
-		rgba(255, 221, 145, 1) 100%
-	);
+	background: white;
   border-radius: 15px;
   margin-bottom: 50px;
 }
