@@ -1,67 +1,252 @@
-/* HomeScreen.css */
-
 .homeScreen {
+  display: flex;
+  flex-direction: column;
   background-color: #f5f5f5;
   background-size: cover;
   background-position: center;
-  height: 100vh;
+  margin-top: 140px;
+}
+
+.topSection {
+  position: relative; /* Enables layering of child elements */
+  flex: 0.3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.content {
   text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden; /* Hides overflow for animations */
+}
+ 
+.h {
+  font-size: 2.5rem;
+  font-family: 'Arbutus Slab', serif;
   color: #333;
-}
-
-.logo-image img {
-  width: 150px;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-h1 {
-  font-family: 'Arbutus Slab', serif;
-  font-size: 3rem;
-  margin: 0;
-}
-
-h2 {
-  font-family: 'Arbutus Slab', serif;
-  font-size: 2rem;
-  margin: 10px 0 30px 0;
-}
-
-.outbox {
-  margin-top: 30px;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 2; /* Ensures the text stays above the button */
+  animation: fadeInText 1.5s ease-in-out;
 }
 
 .consult-btn {
-  background-color: #8F9F6D; /* Matching button color with navbar */
+  background-color: #8f9f6d;
   color: #fff;
   border: none;
-  padding: 15px 30px;
-  font-size: 1.2rem;
+  padding: 12px 24px;
+  font-size: 1rem;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: auto;
+  max-width: 300px;
+  text-align: center;
+  position: relative;
+  z-index: 1; /* Ensures button is slightly behind the text */
+  transform: translateY(30px);
+  opacity: 0;
+  animation: fadeInButton 1.5s ease-in-out 0.5s forwards; /* Button animation starts after text */
 }
 
 .consult-btn:hover {
-  background-color: #7c8c5b; /* Darker shade for hover effect */
+  background-color: #8a9d66;
 }
 
-.how-we-work {
-  margin-top: 50px;
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.hww-heading {
-  font-size: 1.5rem;
+@keyframes fadeInButton {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bottomSection {
+  flex: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 600px;
+}
+
+.concave-section {
+  position: relative;
+  background-color: #8F9F6D;
+  padding: 60px 0;
+  overflow: hidden;
+  align-items: center;
+}
+
+.concave-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px; /* Adjust height for the depth of the curve */
+  background-color: #8F9F6D;
+  border-radius: 0 0 50% 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  align-items: center;
+}
+
+.concave-section::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px; /* Adjust height for the depth of the curve */
+  background-color: #8F9F6D;
+  border-radius: 50% 50% 0 0;
+  transform: translateY(50%);
+  z-index: 1;
+  align-items: center;
+}
+
+.hcontent {
+  position: relative;
+  text-align: center;
+  height:500px;
+  margin: -60px;
+
+}
+
+
+/* Container for the entire carousel section */
+.NewUserHomePage_skinCarouselSection__NAw7l {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.SkinCarousel_skinHealth__APvJ6 {
+  text-align: center;
+}
+
+.SkinCarousel_heading__LxBzL {
+  font-size: 32px;
+  font-weight: bold;
   margin-bottom: 20px;
-  font-family: 'Arbutus Slab', serif;
+  color: #333;
 }
 
-.hww-content {
-  font-size: 1rem;
+.SkinCarousel_heading__LxBzL span {
+  color: #ff5722; /* Accent color */
+}
+
+.SkinProductsCarousel_skinProductsCarousel__7voFv {
+  position: relative;
+  width: 100%;
+}
+
+.CustomSlick_sliderContainer__fY_xB {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slick-slider {
+  position: relative;
+  width: 100%;
+  flex-direction: column;
+}
+
+.slick-list {
+  overflow: hidden;
+  position: relative;
+}
+
+.slick-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slick-slide {
+  min-width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+}
+
+.SkinProductsCarousel_skinProductsCarouselCard__EWrON {
+  position: relative;
+  width: 70%;
+  height: auto;
+}
+
+.Image_wrapper__bkC8Y {
+  width: 100%;
+  position: relative;
+}
+
+.Image_wrapper__bkC8Y img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.slick-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.slick-dots li {
+  margin: 0 5px;
+}
+
+.slick-dots button {
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.slick-dots button:hover {
+  background-color: #ff5722; /* Accent color on hover */
+}
+
+.slick-dots .slick-active button {
+  background-color: #ff5722; /* Accent color for active dot */
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .SkinCarousel_heading__LxBzL {
+    font-size: 24px;
+  }
+
+  .slick-dots {
+    margin-top: 15px;
+  }
+
+  .slick-dots button {
+    width: 10px;
+    height: 10px;
+  }
 }

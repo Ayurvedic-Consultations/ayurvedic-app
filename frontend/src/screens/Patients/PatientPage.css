@@ -1,0 +1,118 @@
+.patient-container {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	margin-top: 140px;
+	overflow: hidden;
+}
+
+.content {
+	text-align: center;
+	padding: 45px;
+	overflow: hidden;
+}
+
+h1 {
+	font-size: 32px;
+	text-align: center;
+	color: #333;
+	margin-bottom: 10px;
+}
+
+p {
+	font-size: 18px;
+	color: #666;
+}
+
+.services-section {
+	margin-top: 40px;
+}
+
+.services-section h2 {
+	font-size: 28px;
+	margin-bottom: 20px;
+	color: #556b2f;
+}
+
+.services-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+	padding: 15px;
+	margin-top: 20px;
+}
+
+.service-card {
+	background-color: #f4f4f4;
+	border: 1px solid #ccc;
+	padding: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card h3 {
+	font-size: 20px;
+	color: #556b2f;
+	margin-bottom: 10px;
+}
+
+.service-card p {
+	font-size: 14px;
+	color: #777;
+}
+
+.service-card:hover {
+	transform: scale(1.05);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.how-we-work {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.how-we-work .hww-step .hww-icon {
+	height: 100px;
+}
+
+.how-we-work .hww-step-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.how-we-work .hww-step-header h3 {
+	font-size: 35px;
+	font-style: italic;
+	text-decoration: underline;
+}
+
+.match-section {
+	margin-top: 0;
+}
+
+.match-btn {
+	background-color: #556b2f;
+	color: white;
+	font-size: 18px;
+	padding: 15px 30px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.match-btn:hover {
+	background-color: #6b8e23;
+}
+
+@media (max-width: 600px) {
+	.how-we-work .hww-step-header h3 {
+		font-size: 25px;
+	}
+}

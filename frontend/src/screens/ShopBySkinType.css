@@ -1,0 +1,209 @@
+/* Base styles */
+body {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f7f7f7;
+}
+
+.SkinHealth_skinTypeWrapper__InDhG {
+	position: relative;
+	background-image: linear-gradient(
+			rgba(255, 255, 255, 0.7),
+			rgba(255, 255, 255, 0.2)
+		),
+		url("../media/homebg.png"); /* Lightens background */
+	background-size: cover;
+	background-position: center;
+	padding: 40px 120px;
+}
+
+/* Section header style */
+.ComponentHeader_componentHeaderDesktop__sNo2H {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 30px;
+}
+
+.ComponentHeader_headerTitle__oeo_k h2 {
+	font-size: 22px;
+	font-weight: 700;
+	color: #333333;
+	margin: 0;
+}
+
+.icon-info {
+	font-size: 20px;
+	color: #aaa;
+	cursor: pointer;
+}
+
+.ComponentHeader_headerTitle__oeo_k span {
+	font-size: 16px;
+	color: #777;
+}
+
+/* Skin type card container (grid layout) */
+.ShopBySkinType_container__cvZMd {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+}
+
+/* Card container for each skin type */
+.ShopBySkinType_cardContainer__r93Qr {
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease-in-out;
+	text-decoration: none;
+	overflow: hidden;
+}
+
+.ShopBySkinType_cardContainer__r93Qr:hover {
+	transform: translateY(-5px);
+}
+
+/* Image inside the card */
+.ShopBySkinType_imageWrapper__AZriZ img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center top;
+	border-bottom: 2px solid #f0f0f0;
+}
+
+/* Card text content */
+.ShopBySkinType_textContainer__fXBb0 {
+	padding: 20px;
+	color: #333;
+}
+
+.ShopBySkinType_title__lstmx {
+	font-size: 18px;
+	font-weight: 700;
+	color: #333;
+	margin-bottom: 8px;
+}
+
+.ShopBySkinType_description__ltIg9 {
+	font-size: 14px;
+	color: #777;
+	line-height: 1.5;
+	margin-bottom: 15px;
+}
+
+.ShopBySkinType_rightArrow__1dKY3 {
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+	color: #007bff;
+	font-size: 18px;
+}
+
+.ShopBySkinType_rightArrow__1dKY3 i {
+	transition: transform 0.3s ease;
+}
+
+/* Hover effect on right arrow */
+.ShopBySkinType_cardContainer__r93Qr:hover .ShopBySkinType_rightArrow__1dKY3 i {
+	transform: translateX(5px);
+}
+
+/* Bottom section styles (for symptom cards) */
+.ShopBySkinType_container__cvZMd.bottom-section {
+	margin-top: 40px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+}
+
+/* Card container for each symptom card */
+.ShopBySkinType_cardContainer__r93Qr.ShopBySkinType_longCard__JuzwU,
+.ShopBySkinType_cardContainer__r93Qr.ShopBySkinType_shortCard__d3YWU {
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	position: relative;
+	overflow: hidden;
+	text-decoration: none;
+	transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect on symptom cards */
+.ShopBySkinType_cardContainer__r93Qr.ShopBySkinType_longCard__JuzwU:hover,
+.ShopBySkinType_cardContainer__r93Qr.ShopBySkinType_shortCard__d3YWU:hover {
+	transform: translateY(-5px);
+}
+
+/* Background image styling for the symptom cards */
+.ShopBySkinType_imageWrapper__AZriZ {
+	height: 200px;
+	background-size: cover;
+	background-position: center;
+}
+
+/* Card text content for symptom cards */
+.ShopBySkinType_textContainer__fXBb0 {
+	padding: 15px;
+	color: #333;
+}
+
+.ShopBySkinType_title__lstmx {
+	font-size: 18px;
+	font-weight: 700;
+	text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Text shadow for better visibility */
+}
+
+@media (max-width: 1000px) {
+	.ShopBySkinType_container__cvZMd {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 850px) {
+	.SkinHealth_skinTypeWrapper__InDhG {
+		padding: 40px 80px;
+	}
+}
+
+/* Bottom section - responsive */
+@media (max-width: 768px) {
+	.ShopBySkinType_container__cvZMd.bottom-section {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.ShopBySkinType_textContainer__fXBb0 {
+		padding: 15px;
+	}
+}
+
+@media (max-width: 700px) {
+	.ShopBySkinType_container__cvZMd {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 520px) {
+	.ShopBySkinType_container__cvZMd {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+@media (max-width: 480px) {
+	.SkinHealth_skinTypeWrapper__InDhG {
+		padding: 40px 50px;
+	}
+	.ShopBySkinType_container__cvZMd.bottom-section {
+		grid-template-columns: 1fr;
+	}
+
+	.ShopBySkinType_textContainer__fXBb0 {
+		padding: 12px;
+	}
+
+	.ShopBySkinType_title__lstmx {
+		font-size: 16px;
+	}
+}

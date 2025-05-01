@@ -1,0 +1,84 @@
+/* Container styling */
+.signup-container {
+  /* max-width: 800px; */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  margin-top: 150px;
+}
+
+/* Form styling */
+.signup-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-section {
+  flex: 1 1 45%; /* Each section takes up half the width, with space between */
+  margin-bottom: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual form-group styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fdfdfd;
+}
+
+/* Button containers for consistent styling */
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.skip-btn,
+.next-btn {
+  padding: 12px 40px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.skip-btn {
+  background-color: #B1B1B1;
+  color: black;
+}
+
+.skip-btn:hover {
+  background-color: #9B9B9B;
+}
+
+.next-btn {
+  background-color: #8F9F6D;
+  color: white;
+}
+
+.next-btn:hover {
+  background-color: #758558;
+}

@@ -1,0 +1,49 @@
+.success-rate-wrapper {
+    padding: 40px 20px;
+    background-color: #8f9f6d;
+  }
+  
+  .success-rate-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .success-rate-content {
+    flex: 1;
+    padding: 20px;
+    max-width: 500px;
+  }
+  
+  .success-rate-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #2a2a2a;
+    letter-spacing: 0.5px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  
+  .success-rate-description {
+    font-size: 1.2rem;
+    color: white;
+    margin-top: 8px;
+  }
+  
+  .image-wrapper {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .success-rate-image {
+    width: 100%;
+    height: auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  

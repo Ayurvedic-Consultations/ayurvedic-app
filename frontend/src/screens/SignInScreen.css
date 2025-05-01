@@ -1,124 +1,160 @@
 .signin-container {
-  display: flex;
-  height: 100vh;
+	display: flex;
+	height: 100vh;
+	margin-top: 75px;
 }
 
 .signin-left {
-  flex: 1;
-  background-image: url('../media/homebg.png');
-  /* Replace with your background image path */
-  background-size: cover;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+	flex: 1;
+	background-image: url("../media/homebg.png");
+	background-size: cover;
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
 }
 
 .ayurvedic-logo {
-  width: 200px;
-  margin-bottom: 20px;
+	width: 120px;
+	margin-bottom: 20px;
 }
 
-h1 {
-  margin: 0;
-  color: #556b2f;
-  font-weight: normal;
-  font-family: 'Arbutus Slab', serif;
+.signin-left h1 {
+	margin: 0;
+	color: #556b2f;
+	font-weight: 3rem;
+	font-family: "Arbutus Slab", serif;
 }
 
-h2 {
-  margin: 10px 0 30px;
-  color: #556b2f;
-  font-weight: normal;
-  font-family: 'Arbutus Slab', serif;
+.signin-left h2 {
+	margin: 10px 0 30px;
+	color: #556b2f;
+	font-family: "Arbutus Slab", serif;
 }
 
 .outbox {
-  display: inline-block;
-  padding: 10px;
-  background-color:#8F9F6D;
-  box-shadow: 0 0 0 5px transparent;
-  border-radius: 5px;
+	display: inline-block;
+	padding: 10px;
+	background-color: #8f9f6d;
+	box-shadow: 0 0 0 5px transparent;
+	border-radius: 5px;
 }
 
-.consult-btn {
-  background-color: #8F9F6D;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: inset 0px 0px 0px 2px #8F9F6D;
-  height: 120px;
-  font-size: large;
+.sconsult-btn {
+	background-color: #8f9f6d;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	box-shadow: inset 0px 0px 0px 2px #8f9f6d;
+	height: 120px;
+	font-size: large;
 }
 
 .consult-btn:hover {
-  background-color: #6b8e23;
-  box-shadow: inset 0px 0px 0px 0px #fdf3e7, 0px 4px 8px rgba(0, 0, 0, 0.2);
+	background-color: #6b8e23;
+	box-shadow: inset 0px 0px 0px 0px #fdf3e7, 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .signin-right {
-  flex: 1;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+	flex: 1;
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-weight: bold;
+	padding: 15px 25px;
 }
 
 .signin-heading {
-  color:black;
-  font-size: 35px;
-  font-weight: bold;
+	color: black;
+	font-size: 35px;
+	font-weight: bold;
 }
 
 .welcome {
-  color: #777;
-  margin-top: 5px;
+	color: #777;
+	margin-top: 5px;
 }
 
 .signin-form {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+	width: 100%;
+	max-width: 400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 input[type="email"],
 input[type="password"] {
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+	padding: 15px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	font-size: 16px;
 }
-
+select {
+	padding: 15px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	font-size: 16px;
+}
 .forgot-password {
-  text-align: right;
-  color: #777;
-  text-decoration: none;
-  margin-bottom: 20px;
+	text-align: right;
+	color: #777;
+	text-decoration: none;
+	margin-bottom: 20px;
 }
 
 .signin-btn {
-  background-color: #556B2F;
-  color: #fff;
-  padding: 15px 0;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
+	background-color: #556b2f;
+	color: #fff;
+	padding: 15px 0;
+	border: none;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
 }
 
 .signin-right p {
-  font-size: 14px;
+	font-size: 14px;
 }
 
 .signin-right a {
-  color: #556B2F;
-  text-decoration: none;
-  font-weight: bold;
+	color: #556b2f;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+@media (max-width: 760px) {
+	.signin-left h1 {
+		font-size: 35px;
+	}
+	.signin-left {
+		flex: 1;
+	}
+	.signin-right {
+		flex: 2;
+	}
+	.outbox .consult-btn {
+		padding: 0px 10px;
+	}
+}
+
+@media (max-width: 590px) {
+	.signin-container {
+		flex-direction: column;
+		height: max-content;
+		margin-top: 140px;
+		width: 100%;
+		overflow: hidden;
+	}
+	.signin-left {
+		width: 100%;
+		padding: 75px 0px;
+	}
 }

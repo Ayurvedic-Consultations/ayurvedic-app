@@ -1,0 +1,107 @@
+.signup-container {
+  width: 80%;
+  max-width: 900px;
+  margin: 50px auto; /* Center the container */
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: auto; /* Let it grow with content */
+  box-sizing: border-box;
+  margin-top:150px;
+}
+
+.signup-container h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: left;
+}
+
+.signup-container p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #777;
+  text-align: left;
+}
+
+.signup-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  gap: 20px; /* Adjust gap to ensure it looks good */
+  margin: 30px; /* Extra spacing between form and button */
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
+  background-color: #D9D9D9; /* Input box color */
+}
+
+.form-button {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  align-items: center; /* Center the button vertically */
+  grid-column: 1 / -1; /* Span across both columns */
+}
+
+.next-btn {
+  background-color: #556B2F;
+  color: #fff;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 200px; /* Fixed width for the button */
+}
+
+.next-btn:hover {
+  background-color: #6B8E23;
+}
+
+@media (max-width: 768px) {
+  .signup-container {
+    width: 90%; /* Take more space on smaller screens */
+    padding: 20px;
+  }
+
+  .signup-form {
+    grid-template-columns: 1fr; /* Stack the form fields on smaller screens */
+    gap: 10px; /* Reduce gap between inputs */
+  }
+
+  .form-column {
+    width: 100%;
+  }
+
+  .form-group input {
+    font-size: 16px; /* Larger font size for mobile */
+  }
+
+  .next-btn {
+    width: 100%; /* Make the button take full width on mobile */
+  }
+}

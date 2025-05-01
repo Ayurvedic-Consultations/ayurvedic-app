@@ -1,0 +1,183 @@
+/* Add this to your TopTransformationStories.css file */
+
+/* General styling for the swiper carousel section */
+.swiper-carousel-section {
+	margin: 3rem 0;
+	position: relative;
+}
+
+.swiper-carousel-section h2 {
+	text-align: center;
+	margin-bottom: 2rem;
+	font-size: 2rem;
+	color: #333;
+}
+
+/* CRITICAL: Make sure to include Swiper's base styles if they're not in your project */
+/* You would normally import these from node_modules, but adding basics here */
+.swiper {
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	overflow: hidden;
+	list-style: none;
+	padding: 0;
+	z-index: 1;
+	width: 100%;
+	height: auto;
+	padding-top: 50px;
+	padding-bottom: 70px; /* Space for pagination */
+}
+
+.swiper-wrapper {
+	position: relative;
+	width: 100%;
+	height: auto !important;
+	z-index: 1;
+	display: flex;
+	transition-property: transform;
+	box-sizing: content-box;
+	align-items: center;
+	margin: auto;
+}
+
+.swiper-slide {
+	background-position: center;
+	background-size: cover;
+	width: 300px; /* Fixed width for auto slidesPerView */
+	height: 400px;
+	flex-shrink: 0;
+	position: relative;
+	transition-property: transform;
+	margin: 10px 15px;
+	border-radius: 15px;
+	box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+/* Content inside slide */
+.swiper-slide-content {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.swiper-slide-image,
+.swiper-slide-video {
+	width: 100%;
+	height: 200px;
+	object-fit: cover;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+}
+
+.swiper-slide-text {
+	padding: 20px;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: #fff;
+}
+
+.swiper-slide-text h2 {
+	margin: 0 0 10px 0;
+	font-size: 1.2rem;
+	color: #333;
+	text-align: left;
+}
+
+.swiper-slide-text p {
+	margin: 0 0 15px 0;
+	font-size: 0.9rem;
+	color: #666;
+	line-height: 1.5;
+	flex-grow: 1;
+}
+
+.swiper-slide-text a {
+	display: inline-block;
+	padding: 8px 15px;
+	background-color: #4a90e2;
+	color: white;
+	text-decoration: none;
+	border-radius: 20px;
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	align-self: flex-start;
+	transition: background-color 0.3s ease;
+}
+
+.swiper-slide-text a:hover {
+	background-color: #3b7dd8;
+}
+
+/* Active slide enhancements */
+.swiper-slide-active {
+	transform: scale(1.1);
+	z-index: 2;
+}
+
+/* Adjust pagination position to prevent overlap */
+.swiper-pagination {
+	position: absolute;
+	bottom: 10px !important; /* Increased space */
+	left: 50%;
+	transform: translateX(-50%);
+	width: auto;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 20; /* Ensure it's above content */
+}
+
+/* Increase pagination bullet size */
+.swiper-pagination-bullet {
+	width: 20px !important; /* Slightly bigger */
+	height: 20px !important;
+	display: inline-block;
+	border-radius: 50%;
+	opacity: 0.7;
+	margin: 0 6px;
+	cursor: pointer;
+}
+
+/* Active bullet styling */
+.swiper-pagination-bullet-active {
+	opacity: 1;
+	background-color: #8f9f6d !important;
+	width: 18px !important; /* Bigger for active bullet */
+	height: 18px !important;
+}
+
+/* Prevent content overlap */
+.swiper {
+	padding-bottom: 90px; /* Increased bottom padding */
+}
+
+/* Add visual debugging to help see pagination */
+.swiper-pagination::before {
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 30px;
+	z-index: -1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.swiper-slide {
+		width: 250px;
+		height: 350px;
+	}
+
+	.swiper-slide-text h2 {
+		font-size: 1rem;
+	}
+
+	.swiper-slide-text p {
+		font-size: 0.8rem;
+	}
+}

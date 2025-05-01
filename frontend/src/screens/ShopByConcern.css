@@ -1,0 +1,301 @@
+/* ShopByConcern.css */
+
+/* Base Styles */
+body {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+/* Wrapper for the skin concern section */
+.SkinHealth_skinConcernWrapper__4RStK {
+	padding: 40px 120px;
+	background-color: #fce1c6;
+}
+
+/* Section header style */
+.ComponentHeader_componentHeaderDesktop__sNo2H {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 30px;
+}
+
+.ComponentHeader_headerTitle__oeo_k {
+	/* border: solid 2px black; */
+    margin-right: 25px;
+    text-align: justify;
+}
+
+.ComponentHeader_headerTitle__oeo_k h2 {
+	font-size: 22px;
+	font-weight: 700;
+	color: #333333;
+	margin: 0;
+}
+
+.icon-info {
+	font-size: 20px;
+	color: #aaa;
+	cursor: pointer;
+}
+
+/* Skin concern card container (grid layout) */
+.ShopByConcern_container__ZcaN3 {
+	display: grid;
+	gap: 20px;
+	margin: 20px;
+}
+
+/* Top section with 4 cards */
+.ShopByConcern_container__ZcaN3.top-section {
+	grid-template-columns: repeat(4, 1fr);
+	/* 4 cards in the top row */
+}
+
+/* Bottom section with 3 cards */
+.ShopByConcern_container__ZcaN3.bottom-section {
+	grid-template-columns: repeat(3, 1fr);
+	/* 3 cards in the bottom row */
+}
+
+/* Card container for each concern */
+.ShopByConcern_cardContainer__Y1toh {
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease-in-out;
+	text-decoration: none;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+    height: 100%;
+	/* Align content vertically */
+}
+
+/* Card hover effect */
+.ShopByConcern_cardContainer__Y1toh:hover {
+	transform: translateY(-5px);
+}
+
+/* Text content in the concern card (Title and Description) */
+.ShopByConcern_textContainer__i6UMp {
+	padding: 20px;
+	color: #333;
+	display: flex;
+	flex-direction: column;
+	z-index: 10;
+    flex-grow: 1; 
+	/* Ensure text is above the background image */
+}
+
+/* Title styling */
+.ShopByConcern_title__aV3sc {
+	font-size: 18px;
+	font-weight: 700;
+	color: #333;
+	margin: -8px;
+}
+
+/* Description styling */
+.ShopByConcern_description {
+	font-size: 14px;
+	color: #777;
+	line-height: 1.5;
+	margin-bottom: 20px;
+	/* Space between description and image */
+}
+
+/* Image inside the card (background image) */
+.ShopByConcern_imageWrapper__pz_iH {
+	width: 100%;
+	height: 200px;
+	/* Adjust height as needed */
+	background-size: cover;
+	background-position: center top;
+}
+
+/* Small cards with compact text (for smaller concern cards) */
+.ShopByConcern_shortCard__AphEq {
+	background-color: #ffffff;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease-in-out;
+	text-decoration: none;
+}
+
+/* Small card hover effect */
+.ShopByConcern_shortCard__AphEq:hover {
+	transform: translateY(-5px);
+}
+
+/* Compact small card image size */
+.ShopByConcern_shortCard__AphEq .ShopByConcern_imageWrapper__pz_iH img {
+	width: 100%;
+	height: 200px;
+	object-fit: cover;
+	margin-bottom: 10px;
+}
+
+/* Compact title for small cards */
+.ShopByConcern_shortCard__AphEq .ShopByConcern_title__aV3sc {
+	font-size: 16px;
+	font-weight: 700;
+	color: #333;
+	text-align: center;
+}
+
+.scard {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 0;
+	background: linear-gradient(to bottom, #97a082, #8f9f6d);
+}
+
+.scard:before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: -16px;
+	right: -16px;
+	background: linear-gradient(150deg, #5e6e40, #556b2f);
+	height: 40px;
+	width: 40px;
+	border-radius: 25px;
+	transform: scale(1);
+	transform-origin: 50% 50%;
+	transition: transform 0.35s ease-out;
+}
+
+.scard:hover:before {
+	transform: scale(28);
+}
+
+.scard:hover {
+	transition: all 0.5s ease-out;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.scard:hover .symptoms {
+	transition: all 0.5s ease-out;
+	color: #ffffff;
+}
+
+.symptoms {
+	position: relative;
+	font-weight: 1000;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.header-content {
+	display: flex;
+	align-items: center;
+	/* Align text and button vertically */
+	justify-content: space-between;
+	/* Left and right alignment */
+	width: 100%;
+	align-items: flex-start;
+}
+
+.cta-wrapper {
+	display: flex;
+	align-items: flex-start;
+}
+
+.cta-button {
+	font-size: 16px;
+	font-weight: bold;
+	color: #556b2f;
+	/* Olive Green */
+	text-decoration: none;
+	transition: color 0.3s ease-in-out;
+	margin-top: 0;
+}
+
+.cta-button:hover {
+	color: #6b8e23;
+	/* Slightly lighter shade on hover */
+	text-decoration: underline;
+}
+
+.arrow {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+@media (max-width: 1000px) {
+    .ShopByConcern_container__ZcaN3.top-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .SkinHealth_skinConcernWrapper__4RStK {
+        padding: 40px 80px;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.ShopByConcern_container__ZcaN3.top-section {
+		grid-template-columns: 1fr 1fr;
+		/* 2 cards per row on medium screens */
+	}
+
+	.ShopByConcern_container__ZcaN3.bottom-section {
+		grid-template-columns: 1fr 1fr;
+		/* 2 cards per row on medium screens */
+	}
+
+	.ShopByConcern_textContainer__i6UMp {
+		padding: 15px;
+	}
+}
+
+@media (max-width: 540px) {
+    .ShopByConcern_container__ZcaN3.top-section {
+		grid-template-columns: 1fr;
+		/* 1 card per row for small screens */
+	}
+
+	.ShopByConcern_container__ZcaN3.bottom-section {
+		grid-template-columns: 1fr;
+		/* 1 card per row for small screens */
+	}
+    .header-content {
+      flex-direction: column;
+    }
+
+    .ComponentHeader_headerTitle__oeo_k {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+	.SkinHealth_skinConcernWrapper__4RStK {
+        padding: 40px 40px;
+    }
+
+
+	.ShopByConcern_shortCard__AphEq {
+		padding: 15px;
+	}
+
+	.ShopByConcern_shortCard__AphEq .ShopByConcern_title__aV3sc {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 420px) {
+
+    .SkinHealth_skinConcernWrapper__4RStK {
+        padding: 40px 35px;
+    }
+}

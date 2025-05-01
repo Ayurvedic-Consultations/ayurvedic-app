@@ -1,0 +1,196 @@
+/* FitBot Section */
+.fitbot-section {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.fitbot-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.fitbot-icon img {
+  width: 60px;
+  height: 60px;
+}
+
+.fitbot-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.fitbot-subheading {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b4b4b;
+  margin-top: 10px;
+}
+
+.fitbot-upgrade {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-top: 5px;
+}
+
+.highlight {
+  color: #ff5c00;
+}
+
+/* Stats Section */
+.fitbot-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.circular-progress-bar {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.circular-progress-bar__circle-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.circular-progress-bar__circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #eee;
+  position: relative;
+}
+
+.circular-progress-bar__mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 50%, 100% 0, 0 0);
+}
+
+.circular-progress-bar__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ff5c00;
+  clip-path: polygon(50% 50%, 100% 0, 0 0);
+}
+
+.circular-progress-bar__inner-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-bar-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-bar-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.progress-bar-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #888;
+}
+
+/* Video Slider */
+.fitbot-exercises {
+  margin-top: 40px;
+}
+
+.fitbot-exercises-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.video-slider {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.video-card {
+  width: 250px;
+  margin: 10px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.video-card__player-wrapper {
+  position: relative;
+  width: 100%;
+  height: 150px;
+}
+
+.video-card__image {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-card__play-icon {
+  font-size: 30px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.video-card__details {
+  padding: 10px;
+  text-align: center;
+}
+
+.video-card__title {
+  font-weight: bold;
+}
+
+.video-card__description {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Locked Content */
+.fitbot-locked-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.fitbot-locked-content h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.slider {
+  width: 80%;
+  max-width: 400px;
+}

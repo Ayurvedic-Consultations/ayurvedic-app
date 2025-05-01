@@ -1,0 +1,281 @@
+.talk-of-the-town {
+	padding: 40px 20px;
+	background-color: #f9f9f9;
+	margin: 0 auto;
+	max-width: 1200px;
+	border-radius: 25px;
+	background-image: url("../media/homebg.png");
+	box-shadow:  5px 5px 10px rgba(0, 0, 0, 0.35);
+
+	margin-bottom: 35px ;
+}
+
+.header1 {
+	text-align: center;
+	margin-bottom: 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.title {
+	font-size: 2.4rem;
+	font-weight: 700;
+	color: #2a2a2a;
+	letter-spacing: 0.5px;
+	margin: 0;
+	text-transform: uppercase;
+}
+
+.gradient-border {
+	height: 3px;
+	background: linear-gradient(to right, #ff6a00, #ffcc00, #ff6a00);
+	width: 100%;
+	margin-top: 10px;
+}
+
+.slider-container {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	padding-top: 10px;
+	overflow: hidden;
+}
+
+.slick-slider1 {
+	display: flex;
+	transition: transform 0.3s ease;
+	width: calc(31% * 3); /* 3 cards + 2 gaps of 30px */
+}
+
+.slick-slide1 {
+	width: 30%; /* Ensure each card occupies 28% width */
+	flex-shrink: 0;
+	margin-right: 30px; /* Space between cards */
+}
+
+.video-card1 {
+	background-color: #fff;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+	position: relative;
+	transition: transform 0.3s ease-in-out;
+	background: linear-gradient(45deg, #8F9F6D, #adc084, #daf4a4); 
+	position: relative;
+}
+
+
+.video-card1::after {
+	content: " ";
+	position: absolute;
+	background: rgba(255, 255, 255, 0.5);
+	height: 200px;
+	width: 200px;
+	border-radius: 500px;
+	bottom: -10%;
+	right: -35%;
+	z-index: 10;
+}
+
+.video-card1::before {
+	content: " ";
+	position: absolute;
+	background: rgba(255, 255, 255, 0.5);
+	height: 150px;
+	width: 150px;
+	border-radius: 500px;
+	top: -10%;
+	left: -35%;
+	z-index: 10;
+}
+
+.video-card1:hover {
+	transform: translateY(-10px);
+}
+
+.video-thumbnail {
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	position: relative;
+	z-index: 11;
+}
+
+.thumbnail-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: opacity 0.3s ease;
+	position: relative;
+	z-index: 11;
+}
+
+.content {
+	padding: 20px;
+	position: relative;
+	z-index: 11;
+}
+
+.influencer-name {
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: #333;
+	margin: 0;
+}
+
+.video-title {
+	font-size: 1rem;
+	color: #777;
+	margin-top: 8px;
+}
+
+.separator {
+	height: 1px;
+	background-color: #eee;
+	margin: 15px 0;
+}
+
+.social-stats {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1rem;
+	color: #333;
+	margin-top: 10px;
+}
+
+.stat {
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+}
+
+.social-icon {
+	width: 22px;
+	height: 22px;
+	margin-right: 8px;
+	opacity: 0.8;
+	transition: opacity 0.3s;
+}
+
+.social-icon:hover {
+	opacity: 1;
+}
+
+.followers {
+	font-size: 0.9rem;
+	color: #555;
+}
+
+.arrow-button {
+	position: absolute;
+	top: 50%;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	border: none;
+	padding: 15px;
+	font-size: 1.6rem;
+	cursor: pointer;
+	z-index: 10;
+	transform: translateY(-50%);
+	transition: background-color 0.3s ease;
+	border-radius: 50%;
+}
+
+.arrow-button:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.left {
+	left: 10px;
+}
+
+.right {
+	right: 10px;
+}
+
+/* Responsive styling */
+@media (max-width: 1200px) {
+	.talk-of-the-town {
+		max-width: 1000px;
+	}
+	.slick-slider1 {
+		width: calc(28% * 3); 
+	}
+}
+@media (max-width: 1000px) {
+	.talk-of-the-town {
+		max-width: 800px;
+	}
+	.slick-slider1 {
+		width: calc(28% * 3); 
+	}
+
+	.slick-slide1{
+		width: 35%;
+	}
+}
+@media (max-width: 850px) {
+	.talk-of-the-town {
+		max-width: 650px;
+	}
+	.slick-slider1 {
+		width: calc(30% * 3); 
+	}
+
+	.slick-slide1{
+		width: 45%;
+	}
+}
+@media (max-width: 768px) {
+	.talk-of-the-town {
+		max-width: 600px;
+	}
+	.slick-slider1 {
+		width: calc(32% * 3); 
+	}
+
+	.slick-slide1{
+		width: 50%;
+	}
+}
+@media (max-width: 700px) {
+	.talk-of-the-town {
+		max-width: 550px;
+	}
+	.slick-slider1 {
+		width: calc(31% * 3); 
+	}
+
+	.slick-slide1{
+		width: 50%;
+	}
+}
+
+@media (max-width: 625px) {
+	.talk-of-the-town {
+		max-width: 450px;
+	}
+	.slick-slider1 {
+		width: calc(31% * 3); 
+	}
+
+	.slick-slide1{
+		width: 90%;
+	}
+	
+}
+
+@media (max-width: 480px) {
+	.talk-of-the-town {
+		max-width: 350px;
+	}
+	.slick-slider1 {
+		width: calc(31% * 3); 
+	}
+
+	.slick-slide1{
+		width: 90%;
+	}
+}
+

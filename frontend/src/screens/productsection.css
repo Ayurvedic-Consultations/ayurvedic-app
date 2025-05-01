@@ -1,0 +1,143 @@
+.productSection {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .productCard {
+    display: flex;
+    width: 70%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .productCard:hover {
+    transform: scale(1.05);
+  }
+  
+  .productCardContent {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .productLabel {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #8f9f6d;
+  }
+  
+  .productTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 10px 0;
+  }
+  
+  .productSubTitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #555;
+  }
+  
+  .productRating {
+    display: flex;
+    align-items: center;
+  }
+  
+  .rating {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .ratingText {
+    font-size: 1rem;
+    color: #777;
+    margin-left: 10px;
+  }
+  
+  .productPrice {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .discountedPrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8f9f6d;
+  }
+  
+  .basePrice {
+    text-decoration: line-through;
+    font-size: 1.2rem;
+    color: #777;
+    margin-left: 10px;
+  }
+  
+  .discount {
+    font-size: 1rem;
+    color: #f00;
+    margin-left: 10px;
+  }
+  
+  .emiAvailable {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  .productFeatures {
+    margin-top: 20px;
+  }
+  
+  .featureItem {
+    margin-bottom: 10px;
+  }
+  
+  .featureTitle {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .exploreButton {
+    background-color: #8f9f6d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .exploreButton:hover {
+    background-color: #7d8c55;
+  }
+  
+  .productImage {
+    position: relative;
+    width: 40%;
+  }
+  
+  .productImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  
+@media (max-width: 768px) {
+    .productCard {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .productImage {
+      height: 100%;
+    }
+  }

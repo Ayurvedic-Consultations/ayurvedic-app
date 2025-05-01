@@ -1,11 +1,15 @@
 .medicines-page {
     display: flex;
+    margin-top:140px;
+    justify-content: center;
 }
 
 .medicine-list {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
 }
 
+ 
