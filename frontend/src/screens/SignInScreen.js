@@ -11,6 +11,9 @@ function SignInScreen() {
 		password: "",
 		role: "patient", // Default role, can be changed based on user input
 	});
+
+  const [showReset, setShowReset] = useState(false);
+  const [resetData, setResetData] = useState({ email: '', newPassword: '' });
 	const navigate = useNavigate();
 
 	const handleInputChange = (e) => {
@@ -19,6 +22,13 @@ function SignInScreen() {
 			[e.target.name]: e.target.value,
 		});
 	};
+
+  const handleResetChange = (e) => {
+    setResetData({
+      ...resetData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
 	const handleSignUp = () => {
 		navigate("/signup"); // Navigate to the SignUpScreen
@@ -79,72 +89,77 @@ function SignInScreen() {
 		}
 	};
 
-	return (
-		<div className="signin-container">
-			<div className="signin-left">
-				<img src={logo} alt="Ayurvedic Logo" className="ayurvedic-logo" />
-				<h1>AYURVEDIC</h1>
-				<h2>Consultations</h2>
-				<div className="outbox">
-					<button className="sconsult-btn consult-btn" onClick={handleButton}>
-						Consult an Ayurvedic Doctor <br /> Book a Session
-					</button>
-				</div>
-			</div>
-			<div className="signin-right">
-				<div className="signin-heading">Sign in to your account</div>
-				<p className="welcome">Welcome Back! We're happy to see you again</p>
+  const handleForgotPassword = async () => {
+    if (!resetData.email || !resetData.newPassword) {
+      alert('Please enter email and new password');
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resetData),
+      });
+      const result = await response.json();
+      alert(result.message);
+      if (response.ok) setShowReset(false);
+    } catch (error) {
+      console.error('Error resetting password:', error);
+    }
+  };
 
-				{/* Form for sign-in, with onSubmit triggering handleSignIn */}
-				<form className="signin-form" onSubmit={handleSignIn}>
-					<input
-						type="email"
-						name="email"
-						value={formData.email}
-						onChange={handleInputChange}
-						placeholder="Mail ID"
-						required
-					/>
-					<input
-						type="password"
-						name="password"
-						value={formData.password}
-						onChange={handleInputChange}
-						placeholder="Password"
-						required
-					/>
-					{/* Role Selection Dropdown */}
-					<label htmlFor="role">Select Role:</label>
-					<select
-						name="role"
-						value={formData.role}
-						onChange={handleInputChange}
-						required
-					>
-						<option value="doctor">Doctor</option>
-						<option value="retailer">Retailer</option>
-						<option value="patient">Patient</option>
-						<option value="admin">Admin</option> {/* Added Admin Role */}
-					</select>
-					<a href="#" className="forgot-password">
-						Forgot Password?
-					</a>
-					<button type="submit" className="signin-btn">
-						SIGN IN
-					</button>{" "}
-					{/* onSubmit handles this */}
-				</form>
-				<p>
-					Don’t have an account?
-					<a href="#" onClick={handleSignUp}>
-						{" "}
-						Sign Up
-					</a>{" "}
-					{/* Add onClick to handleSignUp */}
-				</p>
-			</div>
-		</div>
-	);
+  return (
+    <div className="signin-container">
+      <div className="signin-left">
+        <img src={logo} alt="Ayurvedic Logo" className="ayurvedic-logo" />
+        <h1>AYURVEDIC</h1>
+        <h2>Consultations</h2>
+        <div className='outbox'>
+          <button className="sconsult-btn consult-btn" onClick={handleButton}>
+            Consult an Ayurvedic Doctor <br /> Book a Session
+          </button>
+        </div>
+      </div>
+      <div className="signin-right">
+        {!showReset ? (
+          <>
+            <div className='signin-heading'>Sign in to your account</div>
+            <p className='welcome'>Welcome Back! We're happy to see you again</p>
+
+            {/* Form for sign-in, with onSubmit triggering handleSignIn */}
+            <form className='signin-form' onSubmit={handleSignIn}>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Mail ID" required />
+              <input type="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Password" required />
+
+              {/* Role Selection Dropdown */}
+              <label htmlFor="role">Select Role:</label>
+              <select name="role" value={formData.role} onChange={handleInputChange} required>
+                <option value="doctor">Doctor</option>
+                <option value="retailer">Retailer</option>
+                <option value="patient">Patient</option>
+                <option value="admin">Admin</option> {/* Added Admin Role */}
+              </select>
+
+              <a href="#" className="forgot-password" onClick={() => setShowReset(true)}>Forgot Password?</a>
+              <button type="submit" className="signin-btn">SIGN IN</button> {/* onSubmit handles this */}
+            </form>
+            <p>
+              Don’t have an account?
+              <a href="#" onClick={handleSignUp}> Sign Up</a> {/* Add onClick to handleSignUp */}
+            </p>
+          </>
+        ) : (
+          <div className='reset-password-form'>
+            <h2>Reset Password</h2>
+            <input type="email" name="email" value={resetData.email} onChange={handleResetChange} placeholder="Enter Email" required />
+            <input type="password" name="newPassword" value={resetData.newPassword} onChange={handleResetChange} placeholder="Enter New Password" required />
+            <button onClick={handleForgotPassword} className="reset-btn">Reset Password</button>
+            <button onClick={() => setShowReset(false)} className="back-btn">Back to Sign In</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default SignInScreen;

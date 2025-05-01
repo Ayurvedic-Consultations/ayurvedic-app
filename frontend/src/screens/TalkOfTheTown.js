@@ -1,67 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TalkOfTheTown.css';
 
 const DoctorsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [doctors, setDoctors] = useState([]);
 
-  const doctors = [
-    {
-      name: 'Dr. Aditi Sharma',
-      specialization: 'Cardiologist',
-      experience: '15 years',
-      patientsServed: '10K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor1.avif',
-      hospital: 'Apollo Hospital',
-    },
-    {
-      name: 'Dr. Rahul Verma', 
-      specialization: 'Dermatologist',
-      experience: '12 years',
-      patientsServed: '8K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor2.avif',
-      hospital: 'Fortis Hospital',
-    },
-    {
-      name: 'Dr. Sneha Kapoor',
-      specialization: 'Neurologist',
-      experience: '10 years',
-      patientsServed: '6K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor3.avif',
-      hospital: 'Max Healthcare',
-    },
-    {
-      name: 'Dr. Arjun Mehta',
-      specialization: 'Orthopedic Surgeon',
-      experience: '20 years',
-      patientsServed: '12K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor4.avif',
-      hospital: 'Medanta Hospital',
-    },
-    {
-      name: 'Dr. Aditi Sharma',
-      specialization: 'Cardiologist',
-      experience: '15 years',
-      patientsServed: '10K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor1.avif',
-      hospital: 'Apollo Hospital',
-    },
-    {
-      name: 'Dr. Aditi Sharma',
-      specialization: 'Cardiologist',
-      experience: '15 years',
-      patientsServed: '10K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor1.avif',
-      hospital: 'Apollo Hospital',
-    },
-    {
-      name: 'Dr. Aditi Sharma',
-      specialization: 'Cardiologist',
-      experience: '15 years',
-      patientsServed: '10K+',
-      thumbnail: 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor1.avif',
-      hospital: 'Apollo Hospital',
-    },
-  ];
+  // Fetch doctors from backend on component mount
+  useEffect(() => {
+    fetch("http://localhost:8080/api/doctors")
+      .then((response) => response.json())
+      .then((data) => {
+        const mappedDoctors = data.map((doctor) => ({
+          name: `${doctor.firstName} ${doctor.lastName}`,
+          specialization: doctor.designation || "N/A",
+          experience: `${doctor.experience} years`,
+          age: `${doctor.age || 'N/A'}`,
+          thumbnail: doctor.thumbnail || 'https://res.cloudinary.com/dmezmffej/image/upload/v1722071358/doctor1.avif',
+          price: doctor.price || 'N/A',
+        }));
+        setDoctors(mappedDoctors);
+      })
+      .catch((error) => {
+        console.error("Error fetching doctors:", error);
+      });
+  }, []);
 
   const handleLeftClick = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? doctors.length - 3 : prevIndex - 1));
@@ -94,8 +56,8 @@ const DoctorsSection = () => {
                   <p className="video-title">{doctor.specialization}</p>
                   <div className="separator"></div>
                   <p className="followers">Experience: {doctor.experience}</p>
-                  <p className="followers">Patients Served: {doctor.patientsServed}</p>
-                  <p className="followers">Hospital: {doctor.hospital}</p>
+                  <p className="followers">Doctors Age: {doctor.age}</p>
+                  <p className="followers">Price: {doctor.price}</p>
                 </div>
               </div>
             </div>

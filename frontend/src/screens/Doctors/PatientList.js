@@ -15,6 +15,31 @@ function PatientList() {
 	const [newMedicineName, setNewMedicineName] = useState("");
 	const [newIllness, setNewIllness] = useState("");
 
+  // New state variables for diet and yoga modal
+  const [showDietYogaModal, setShowDietYogaModal] = useState(false);
+  const [diet, setDiet] = useState({
+    daily: {
+      breakfast: "",
+      lunch: "",
+      dinner: "",
+      juices: ""
+    },
+    weekly: {
+      monday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      tuesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      wednesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      thursday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      friday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      saturday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+      sunday: { breakfast: "", lunch: "", dinner: "", juices: "" }
+    },
+    herbs: []
+  });
+  const [yoga, setYoga] = useState({
+    morningPlan: "",
+    eveningPlan: ""
+  });
+
 	const email = localStorage.getItem("email"); // Assuming the doctor's email is stored in localStorage
 
 	useEffect(() => {
@@ -61,30 +86,8 @@ function PatientList() {
 			}
 		};
 
-		fetchAppointments();
-	}, [email]);
-
-	const handleDeleteAppointment = async (bookingId) => {
-		try {
-			const response = await fetch(
-				`http://localhost:8080/api/bookings/delete/${bookingId}`,
-				{
-					method: "DELETE",
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to delete appointment");
-			}
-
-			// Remove the deleted appointment from the denied list
-			setDeniedAppointments((prev) =>
-				prev.filter((appointment) => appointment._id !== bookingId)
-			);
-		} catch (error) {
-			console.error("Error deleting appointment:", error);
-		}
-	};
+    fetchAppointments();
+  }, [email]);
 
 	// New function to open supplements modal
 	const handleSuggestSupplements = async (appointmentId) => {
@@ -169,6 +172,96 @@ function PatientList() {
 		}
 	};
 
+  // New function to open diet and yoga modal
+  const handleSuggestDietYoga = async (appointmentId) => {
+    const appointment = [...previousAppointments, ...deniedAppointments].find(app => app._id === appointmentId);
+    setCurrentAppointment(appointment);
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/diet-yoga/booking/${appointmentId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setDiet(data.diet || {
+          daily: { breakfast: "", lunch: "", dinner: "", juices: "" },
+          weekly: {
+            monday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            tuesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            wednesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            thursday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            friday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            saturday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            sunday: { breakfast: "", lunch: "", dinner: "", juices: "" }
+          },
+          herbs: []
+        });
+        setYoga(data.yoga || { morningPlan: "", eveningPlan: "" });
+      } else {
+        setDiet({
+          daily: { breakfast: "", lunch: "", dinner: "", juices: "" },
+          weekly: {
+            monday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            tuesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            wednesday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            thursday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            friday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            saturday: { breakfast: "", lunch: "", dinner: "", juices: "" },
+            sunday: { breakfast: "", lunch: "", dinner: "", juices: "" }
+          },
+          herbs: []
+        });
+        setYoga({ morningPlan: "", eveningPlan: "" });
+      }
+    } catch (error) {
+      console.error("Error fetching diet and yoga plan:", error);
+    }
+
+    setShowDietYogaModal(true);
+  };
+
+  const handleSaveDietYoga = async () => {
+    if (!currentAppointment) return;
+
+    try {
+      // Get the token from localStorage (assuming it's stored there after login)
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You are not authenticated. Please log in again.");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8080/api/diet-yoga`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the headers
+        },
+        body: JSON.stringify({
+          bookingId: currentAppointment._id,
+          patientEmail: currentAppointment.patientEmail,
+          patientName: currentAppointment.patientName,
+          doctorEmail: currentAppointment.doctorEmail,
+          doctorName: currentAppointment.doctorName,
+          diet,
+          yoga,
+        }),
+      });
+
+      const data = await response.json(); // Parse the response JSON
+
+      if (response.ok) {
+        alert("Diet and yoga plan saved successfully!");
+        setShowDietYogaModal(false);
+      } else {
+        // If the response is not OK, show the error message from the backend
+        alert(`Error: ${data.message || "Failed to save diet and yoga plan."}`);
+      }
+    } catch (error) {
+      console.error("Error saving diet and yoga plan:", error);
+      alert("Failed to save diet and yoga plan. Please check the console for details.");
+    }
+  };
+
 	if (loading) {
 		return <p>Loading...</p>;
 	}
@@ -232,56 +325,38 @@ function PatientList() {
 								>
 									Suggest Supplements
 								</button>
+                <button
+                  className="action-button suggest-button"
+                  onClick={() => handleSuggestDietYoga(appointment._id)}
+                >
+                  Suggest Diet and Yoga Plan
+                </button>
 							</div>
 						))
 					)}
 				</div>
 			)}
 
-			{/* Denied Requests Section */}
-			{activeTab === "Denied" && (
-				<div className="appointment-list">
-					{deniedAppointments.length === 0 ? (
-						<p>No denied requests found.</p>
-					) : (
-						deniedAppointments.map((appointment) => (
-							<div
-								key={appointment._id}
-								className="appointment-card-patient-list"
-							>
-								<h3>{appointment.patientName}</h3>
-								<p>
-									<strong>Date:</strong>{" "}
-									{new Date(appointment.dateOfAppointment).toLocaleDateString()}
-								</p>
-								<p>
-									<strong>Time Slot:</strong> {appointment.timeSlot}
-								</p>
-								<p>
-									<strong>Gender:</strong> {appointment.patientGender}
-								</p>
-								<p>
-									<strong>Age:</strong> {appointment.patientAge}
-								</p>
-								<p>
-									<strong>Illness described:</strong>{" "}
-									{appointment.patientIllness}
-								</p>
-								<p>
-									<strong>Message:</strong>{" "}
-									{appointment.doctorsMessage || "No message provided"}
-								</p>
-								<button
-									className="delete-button"
-									onClick={() => handleDeleteAppointment(appointment._id)}
-								>
-									Delete
-								</button>
-							</div>
-						))
-					)}
-				</div>
-			)}
+      {/* Denied Requests Section */}
+      {activeTab === "Denied" && (
+        <div className="appointment-list">
+          {deniedAppointments.length === 0 ? (
+            <p>No denied requests found.</p>
+          ) : (
+            deniedAppointments.map((appointment) => (
+              <div key={appointment._id} className="appointment-card-patient-list">
+                <h3>{appointment.patientName}</h3>
+                <p><strong>Date:</strong> {new Date(appointment.dateOfAppointment).toLocaleDateString()}</p>
+                <p><strong>Time Slot:</strong> {appointment.timeSlot}</p>
+                <p><strong>Gender:</strong> {appointment.patientGender}</p>
+                <p><strong>Age:</strong> {appointment.patientAge}</p>
+                <p><strong>Illness described:</strong> {appointment.patientIllness}</p>
+                <p><strong>Message:</strong> {appointment.doctorsMessage || "No message provided"}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
 			{/* Supplements Modal */}
 			{showSupplementsModal && currentAppointment && (
@@ -353,6 +428,169 @@ function PatientList() {
 					</div>
 				</div>
 			)}
+
+      {/* Diet and Yoga Modal */}
+      {showDietYogaModal && currentAppointment && (
+        <div className="modal-overlay">
+          <div className="supplements-modal">
+            <h2>Diet and Yoga Plan for {currentAppointment.patientName}</h2>
+            <p>Patient Illness: {currentAppointment.patientIllness}</p>
+
+            <div className="diet-yoga-form">
+              <h3>Daily Diet Plan</h3>
+              <div className="form-group-patient-list">
+                <label>Breakfast:</label>
+                <input
+                  type="text"
+                  value={diet.daily.breakfast}
+                  onChange={(e) => setDiet({ ...diet, daily: { ...diet.daily, breakfast: e.target.value } })}
+                  placeholder="Enter breakfast plan"
+                />
+              </div>
+              <div className="form-group-patient-list">
+                <label>Lunch:</label>
+                <input
+                  type="text"
+                  value={diet.daily.lunch}
+                  onChange={(e) => setDiet({ ...diet, daily: { ...diet.daily, lunch: e.target.value } })}
+                  placeholder="Enter lunch plan"
+                />
+              </div>
+              <div className="form-group-patient-list">
+                <label>Dinner:</label>
+                <input
+                  type="text"
+                  value={diet.daily.dinner}
+                  onChange={(e) => setDiet({ ...diet, daily: { ...diet.daily, dinner: e.target.value } })}
+                  placeholder="Enter dinner plan"
+                />
+              </div>
+              <div className="form-group-patient-list">
+                <label>Juices:</label>
+                <input
+                  type="text"
+                  value={diet.daily.juices}
+                  onChange={(e) => setDiet({ ...diet, daily: { ...diet.daily, juices: e.target.value } })}
+                  placeholder="Enter juice recommendations"
+                />
+              </div>
+
+              <h3>Weekly Diet Plan</h3>
+              {Object.entries(diet.weekly).map(([day, plan]) => (
+                <div key={day} className="weekly-plan">
+                  <h4>{day.charAt(0).toUpperCase() + day.slice(1)}</h4>
+                  <div className="form-group-patient-list">
+                    <label>Breakfast:</label>
+                    <input
+                      type="text"
+                      value={plan.breakfast}
+                      onChange={(e) => setDiet({
+                        ...diet,
+                        weekly: {
+                          ...diet.weekly,
+                          [day]: { ...plan, breakfast: e.target.value }
+                        }
+                      })}
+                      placeholder="Enter breakfast plan"
+                    />
+                  </div>
+                  <div className="form-group-patient-list">
+                    <label>Lunch:</label>
+                    <input
+                      type="text"
+                      value={plan.lunch}
+                      onChange={(e) => setDiet({
+                        ...diet,
+                        weekly: {
+                          ...diet.weekly,
+                          [day]: { ...plan, lunch: e.target.value }
+                        }
+                      })}
+                      placeholder="Enter lunch plan"
+                    />
+                  </div>
+                  <div className="form-group-patient-list">
+                    <label>Dinner:</label>
+                    <input
+                      type="text"
+                      value={plan.dinner}
+                      onChange={(e) => setDiet({
+                        ...diet,
+                        weekly: {
+                          ...diet.weekly,
+                          [day]: { ...plan, dinner: e.target.value }
+                        }
+                      })}
+                      placeholder="Enter dinner plan"
+                    />
+                  </div>
+                  <div className="form-group-patient-list">
+                    <label>Juices:</label>
+                    <input
+                      type="text"
+                      value={plan.juices}
+                      onChange={(e) => setDiet({
+                        ...diet,
+                        weekly: {
+                          ...diet.weekly,
+                          [day]: { ...plan, juices: e.target.value }
+                        }
+                      })}
+                      placeholder="Enter juice recommendations"
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <h3>Herbs</h3>
+              <div className="form-group-patient-list">
+                <label>Herbs (comma-separated):</label>
+                <input
+                  type="text"
+                  value={diet.herbs.join(", ")}
+                  onChange={(e) => setDiet({ ...diet, herbs: e.target.value.split(", ") })}
+                  placeholder="Enter herbs"
+                />
+              </div>
+
+              <h3>Yoga Plan</h3>
+              <div className="form-group-patient-list">
+                <label>Morning Plan:</label>
+                <input
+                  type="text"
+                  value={yoga.morningPlan}
+                  onChange={(e) => setYoga({ ...yoga, morningPlan: e.target.value })}
+                  placeholder="Enter morning yoga plan"
+                />
+              </div>
+              <div className="form-group-patient-list">
+                <label>Evening Plan:</label>
+                <input
+                  type="text"
+                  value={yoga.eveningPlan}
+                  onChange={(e) => setYoga({ ...yoga, eveningPlan: e.target.value })}
+                  placeholder="Enter evening yoga plan"
+                />
+              </div>
+            </div>
+
+            <div className="modal-buttons">
+              <button 
+                className="save-button"
+                onClick={handleSaveDietYoga}
+              >
+                Save Plan
+              </button>
+              <button 
+                className="cancel-button"
+                onClick={() => setShowDietYogaModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 		</div>
 	);
 }

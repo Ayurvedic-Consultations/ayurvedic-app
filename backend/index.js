@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const orderRoutes = require("./routes/orderRoutes")
 const blogRoutes = require("./routes/blogRoutes")
 const prakritiRoutes = require("./routes/prakritiRoutes");
@@ -38,6 +39,7 @@ app.use("/api/orders" , orderRoutes)
 app.use("/api/blogs", blogRoutes)
 app.use("/api/prakriti", prakritiRoutes)
 app.use("/api/diet-yoga", dietYogaRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Start the server
 app.listen(PORT, () => {
