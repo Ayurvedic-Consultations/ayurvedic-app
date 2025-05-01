@@ -135,3 +135,20 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getOrders = async (req, res) => {
+  try {
+    const { retailerId } = req.query;
+    let orders;
+
+    if (retailerId) {
+      orders = await Order.find({ 'items.retailerId': retailerId }).sort({ createdAt: -1 });
+    } else {
+      orders = await Order.find().sort({ createdAt: -1 });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

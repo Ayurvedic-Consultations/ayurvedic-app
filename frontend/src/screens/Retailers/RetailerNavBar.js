@@ -201,7 +201,7 @@ function RetailerNavBar() {
 									</NavLink>
 								</li>
 								<li>
-									<NavLink to="/analytics" activeClassName="active">
+									<NavLink to="/retailer-analytics" activeClassName="active">
 										Analytics
 									</NavLink>
 								</li>
