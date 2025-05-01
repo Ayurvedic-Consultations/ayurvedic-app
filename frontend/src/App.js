@@ -8,6 +8,7 @@ import NavBar from './screens/Navbar';
 import PatientNavBar from './screens/Patients/PatientNavBar';  // Patient specific navbar
 import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific navbar
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
+import ChatbotWidget from './components/ChatbotWidget';
 
 import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import CartScreen from './screens/Cart';
@@ -122,6 +123,7 @@ function App() {
         </Route>
       </Routes>
       <Footer />
+      <ChatbotWidget />
     </Router>
   );
 }
