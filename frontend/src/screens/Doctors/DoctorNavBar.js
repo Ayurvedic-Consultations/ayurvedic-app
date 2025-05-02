@@ -201,6 +201,11 @@ function DoctorNavBar() {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/doctor-reviews" activeClassName="active">
+                Patient's Reviews
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/doctor-analytics" activeClassName="active">
                 Analytics
               </NavLink>

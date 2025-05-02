@@ -16,6 +16,7 @@ import PaymentScreen from './screens/Payment';
 import BlogScreen from './screens/Blogs';
 import DoctorsScreen from './screens/DoctorsScreen';
 import DoctorDetailPage from './screens/Patients/DoctorDetailPage';
+import DoctorReviewsPage from './screens/Doctors/DoctorReviewsPage';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignUpPatientScreen from './screens/Patients/SignUpPatientScreen';
@@ -115,6 +116,7 @@ function App() {
           <Route path="/doctor-notifications" element={<DoctorNotification />} />
           <Route path="/manage-products" element={<ManageProducts />} />
           <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/doctor-reviews" element={<DoctorReviewsPage />} />
           <Route path="/checkout" element={<CheckoutScreen />} />
           <Route path="/retailer-analytics" element={<RetailerAnalytics />} />
           <Route path="/retailer-notifications" element={<RetailerNotification />} />

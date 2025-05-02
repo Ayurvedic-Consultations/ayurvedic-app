@@ -25,19 +25,21 @@ p {
 }
 
 .doctor-options {
-	display: flex;
-	justify-content: space-around;
-	flex-wrap: wrap;
-	gap: 25px;
-	height: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
 }
 
-.left-side,
-.right-side {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	border: solid green 2px;
+.doctor-options-row {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.center-row {
+  justify-content: center;
 }
 
 .current-requests-container {
