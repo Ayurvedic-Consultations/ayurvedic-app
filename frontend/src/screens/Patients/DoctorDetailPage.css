@@ -211,6 +211,28 @@
 	}
 }
 
+.reviews-section {
+  margin-top: 30px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.review-card {
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.review-text {
+  font-style: italic;
+  margin: 5px 0;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #666;
+}
+
 @media (max-width: 670px) {
 	.doctor-info h1 {
 		font-size: 25px;

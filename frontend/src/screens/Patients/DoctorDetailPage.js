@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import "./DoctorDetailPage.css"; // Ensure this path matches the location of your CSS file
 import { AuthContext } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 function DoctorDetail() {
 	const location = useLocation();
@@ -20,6 +21,7 @@ function DoctorDetail() {
 	const [selectedTime, setSelectedTime] = useState(null); // Track selected time slot
 	const [patientIllness, setPatientIllness] = useState(""); // Track patient illness
 	const [dateOfAppointment, setDateOfAppointment] = useState(""); // Track the date of appointment
+  const [reviews, setReviews] = useState([]);
 
 	const handleTimeSlotClick = (time) => {
 		setSelectedTime(time); // Set the selected time slot
@@ -87,6 +89,19 @@ function DoctorDetail() {
 		}
 	};
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/bookings/reviews/${doctor.email}`);
+        const data = await res.json();
+        setReviews(data);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    };
+    fetchReviews();
+  }, [doctor.email]);
+
 	return (
 		<div className="doctor-detail-container">
 			<div className="left-section">
@@ -117,6 +132,21 @@ function DoctorDetail() {
 					<p>Price: Rs. {doctor.pricepoint}</p>
 					{/* Additional details can be listed here */}
 				</div>
+
+        <div className="reviews-section">
+          <h2>Patient Reviews</h2>
+          {reviews.length > 0 ? (
+            reviews.map((r, i) => (
+              <div key={i} className="review-card">
+                <p><strong>{r.patientName}</strong> rated: {r.rating}★</p>
+                <p className="review-text">{r.review}</p>
+                <p className="review-date">{new Date(r.dateOfAppointment).toLocaleDateString()}</p>
+              </div>
+            ))
+          ) : (
+            <p>No reviews yet for this doctor.</p>
+          )}
+        </div>
 			</div>
 
 			<div className="right-section">
