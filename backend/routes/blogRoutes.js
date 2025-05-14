@@ -8,6 +8,7 @@ const {
     deleteBlog
 } = require("../controllers/blogController");
 
+
 // Create a new blog
 router.post('/', createBlog);
 

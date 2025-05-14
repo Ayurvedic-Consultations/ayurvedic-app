@@ -83,6 +83,19 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  amountPaid: {
+    type: Number,
+    required: true,
+  },
+  paymentScreenshot: {
+    type: String, // Path to the uploaded screenshot
+    required: false, // This is optional initially, as the user will upload it after making the payment
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['Pending', 'Completed'], // Can either be Pending or Completed
+    default: 'Pending',
+  },
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);

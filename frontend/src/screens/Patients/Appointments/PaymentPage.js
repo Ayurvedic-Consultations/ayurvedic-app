@@ -1,76 +1,149 @@
 import React, { useEffect, useState } from "react";
-import "./PaymentPage.css"; // Create this CSS file for styling
+import "./PaymentPage.css"; // Create your styles here
+import { useNavigate } from "react-router-dom";
 
 function PaymentPage() {
-  const [qrCode, setQrCode] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    // Get the QR code from the URL query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const qrCodeParam = urlParams.get("qrCode");
+    const [qrCode, setQrCode] = useState("");
+    const [price, setPrice] = useState(null);
+    const [bookingId, setBookingId] = useState("");
+    const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [successMessage, setSuccessMessage] = useState(null);
 
-    if (qrCodeParam) {
-      setQrCode(qrCodeParam);
-      setLoading(false);
-    } else {
-      setError("QR Code is missing.");
-      setLoading(false);
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qrCodeParam = urlParams.get("qrCode");
+        const priceParam = urlParams.get("price");
+        const bookingIdParam = urlParams.get("bookingId");
+        console.log('Booking ID:', bookingId);
+
+        if (qrCodeParam && priceParam && bookingIdParam) {
+            setQrCode(qrCodeParam);
+            setPrice(priceParam);
+            setBookingId(bookingIdParam);
+            setLoading(false);
+        } else {
+            setError("QR Code, Price, or Booking ID is missing.");
+            setLoading(false);
+        }
+    }, []);
+
+    const handleFileChange = (e) => {
+        setPaymentScreenshot(e.target.files[0]);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!paymentScreenshot) {
+            setError("Please upload a payment screenshot.");
+            return;
+        }
+
+        console.log(paymentScreenshot);  // Add this to debug
+
+        const formData = new FormData();
+        formData.append("paymentScreenshot", paymentScreenshot);
+        formData.append("amountPaid", price);
+        formData.append("paymentStatus", "Completed");
+        console.log(formData);
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/bookings/${bookingId}/payment`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to upload payment screenshot.");
+            }
+
+            alert("Payment uploaded successfully. Your doctor will send the meeting link at the time of appointment.");
+            setTimeout(() => {
+            navigate("/patient-home");
+            }, 3000);
+            setPaymentScreenshot(null);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+
+
+    if (loading) {
+        return (
+            <div className="payment-container loading">
+                <p>Loading QR Code...</p>
+            </div>
+        );
     }
-  }, []);
 
-  if (loading) {
+    if (error) {
+        return (
+            <div className="payment-container error">
+                <p>{error}</p>
+            </div>
+        );
+    }
+
+    const qrCodePath = qrCode.replace(/^uploads\/doctors\//, "");
+    const qrCodeUrl = `http://localhost:8080/uploads/doctors/${qrCodePath}`;
+
     return (
-      <div className="payment-container loading">
-        <p>Loading QR Code...</p>
-      </div>
-    );
-  }
+        <div className="payment-container">
+            <div className="payment-card">
+                <h2>Doctor Consultation Payment</h2>
+                <p>Scan the QR code below to pay</p>
 
-  if (error) {
-    return (
-      <div className="payment-container error">
-        <p>{error}</p>
-      </div>
-    );
-  }
+                <div className="qr-container">
+                    <img
+                        src={qrCodeUrl}
+                        alt="Doctor's QR Code"
+                        onError={(e) => {
+                            setError("Failed to load QR code image.");
+                            e.target.style.display = "none";
+                        }}
+                    />
+                </div>
 
-  // Strip the "uploads/doctors/" prefix if it exists
-  const qrCodePath = qrCode.replace(/^uploads\/doctors\//, "");
+                <p><strong>Amount to Pay:</strong> ₹{price}</p>
 
-  const qrCodeUrl = `http://localhost:8080/uploads/doctors/${qrCodePath}`;
-  console.log("QR Code URL:", qrCodeUrl);  // Log the QR code URL
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="paymentScreenshot">Upload Payment Screenshot:</label>
+                        <input
+                            type="file"
+                            id="paymentScreenshot"
+                            name="paymentScreenshot"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Submit Screenshot</button>
+                </form>
 
-  return (
-    <div className="payment-container">
-      <div className="payment-card">
-        <h2>Payment for Doctor</h2>
-        <p>Scan the QR code below to complete your payment</p>
-        <div className="qr-container">
-          <img
-            src={qrCodeUrl}
-            alt="Doctor's QR Code"
-            onError={(e) => {
-              console.error("Failed to load QR code:", qrCode);
-              setError("Failed to load QR code. Please try again later.");
-              e.target.style.display = "none";  // Hide image on error
-            }}
-          />
+                <div className="payment-instructions">
+                    <h3>Instructions:</h3>
+                    <ol>
+                        <li>Open any UPI app (PhonePe, Google Pay, Paytm)</li>
+                        <li>Scan the QR code shown above</li>
+                        <li>Pay the amount ₹{price}</li>
+                        <li>Take a screenshot of the successful payment</li>
+                        <li>Upload the screenshot using the form above</li>
+                    </ol>
+                </div>
+            </div>
         </div>
-        <div className="payment-instructions">
-          <h3>Payment Instructions:</h3>
-          <ol>
-            <li>Open your UPI payment app</li>
-            <li>Scan the QR code displayed above</li>
-            <li>Enter the amount as per your consultation fees</li>
-            <li>Complete the payment</li>
-            <li>Keep a screenshot of the payment confirmation</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default PaymentPage;

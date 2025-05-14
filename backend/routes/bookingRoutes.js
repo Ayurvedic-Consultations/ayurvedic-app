@@ -13,6 +13,10 @@ const {
   getRatingAndReview,
 } = require("../controllers/bookingController");
 
+const bookingController = require("../controllers/bookingController");
+
+const { uploadPaymentScreenshot } = require("../controllers/bookingController");
+
 const Booking = require("../models/Booking");
 
 // POST route to book an appointment
@@ -58,6 +62,8 @@ router.get("/reviews/:doctorEmail", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.post("/:id/payment", bookingController.uploadPaymentScreenshot);
 
 // GET all bookings
 router.get("/", async (req, res) => {

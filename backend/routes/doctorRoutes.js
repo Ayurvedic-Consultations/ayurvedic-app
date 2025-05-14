@@ -67,7 +67,10 @@ router.get("/:id/qr-code", async (req, res) => {
             return res.status(404).json({ message: "QR Code file not found" });
         }
 
-        res.json({ qrCode: qrCodePath });
+        res.json({
+            qrCode: qrCodePath,
+            price: doctor.price,  // <== Add this line
+        });
 
     } catch (err) {
         console.error("Error fetching QR code:", err);

@@ -3,8 +3,10 @@ import "./AppointedDoctor.css";
 import RatingModal from "./RatingModal";
 import AppointmentTab from "./AppointmentTab";
 import { fetchDoctorData, fetchSupplements } from "./AppointmentUtils";
+import { useNavigate } from 'react-router-dom';
 
 function AppointedDoctor() {
+	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState("Upcoming");
 	const [pendingDoctors, setPendingDoctors] = useState([]);
 	const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -155,37 +157,29 @@ function AppointedDoctor() {
 		}));
 	};
 
-
-	const handlePayFees = async (doctorId) => {
-		console.log("Fetching QR Code for Doctor ID:", doctorId);
-
+	const handlePayFees = async (doctorId, bookingId) => {
 		try {
-			const url = `http://localhost:8080/api/doctors/${doctorId}/qr-code`;
-			console.log("Making request to:", url);
-
-			const response = await fetch(url);
-			console.log("API Response Status:", response.status);
-
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				console.error("Error details:", errorData);
-				throw new Error("Failed to fetch QR code");
-			}
-
+			const response = await fetch(`http://localhost:8080/api/doctors/${doctorId}/qr-code`);
 			const data = await response.json();
-			console.log("QR Code data received:", data);
 
-			if (!data.qrCode) {
-				throw new Error("No QR code found in response");
+			if (!data.qrCode || !data.price) {
+				throw new Error("Incomplete doctor payment data");
 			}
 
-			// Open the payment page with the QR code in the URL
-			window.open(`/payment2?qrCode=${encodeURIComponent(data.qrCode)}`, "_blank");
+			// ✅ Open payment page with both qrCode and price in query
+			const query = new URLSearchParams({
+				qrCode: data.qrCode,
+				price: data.price,
+				bookingId: bookingId,
+			}).toString();
+
+			navigate(`/payment2?${query}`, "_blank");
 		} catch (error) {
 			console.error("Error fetching QR code:", error);
 			alert("Failed to fetch QR code. Please try again later.");
 		}
 	};
+
 
 
 
