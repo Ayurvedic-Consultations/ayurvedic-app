@@ -16,16 +16,36 @@ const path = require("path");
 // Multer setup for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/doctors");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storage });
+
+const fileFilter = (req, file, cb) => {
+  // Allow only image files or specific types based on your requirements
+  const filetypes = /jpeg|jpg|png|pdf/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only jpeg, jpg, png, and pdf files are allowed"));
+  }
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+const cpUpload = upload.fields([
+  { name: "certificate", maxCount: 1 },
+  { name: "qrCode", maxCount: 1 },
+]);
+
 
 // Doctor, Retailer, Patient registration
-router.post("/register/doctor", upload.single("certificate"), registerDoctor);
+router.post("/register/doctor", cpUpload, registerDoctor);
 router.post("/register/retailer", registerRetailer);
 router.post("/register/patient", registerPatient);
 router.post("/login", loginUser);

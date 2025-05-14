@@ -1,6 +1,7 @@
 // controllers/bookingController.js
 
 const Booking = require("../models/Booking");
+const Doctor = require("../models/Doctor");
 
 // Add or update rating and review
 exports.updateRatingAndReview = async (req, res) => {
@@ -81,6 +82,10 @@ exports.createBooking = async (req, res) => {
   }
 
   try {
+    const doctor = await Doctor.findOne({ email: doctorEmail });
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
     // Check if a booking already exists for the doctor and time slot
     const existingBooking = await Booking.findOne({
       doctorName,
@@ -96,6 +101,7 @@ exports.createBooking = async (req, res) => {
 
     // Create a new booking
     const newBooking = new Booking({
+      doctorId: doctor._id,
       doctorName,
       doctorEmail,
       timeSlot,

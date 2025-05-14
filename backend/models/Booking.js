@@ -3,6 +3,11 @@
 const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema({
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Doctor",
+    required: true,
+  },
   doctorName: {
     type: String,
     required: true,

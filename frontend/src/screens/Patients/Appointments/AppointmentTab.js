@@ -52,7 +52,7 @@ const AppointmentTab = ({
                 ) : (
                   <button
                     className="action-button pay-fees"
-                    onClick={() => handlePayFees(upcomingAppointment._id)}
+                    onClick={() => handlePayFees(upcomingAppointment.doctorId)}
                   >
                     Pay Fees
                   </button>

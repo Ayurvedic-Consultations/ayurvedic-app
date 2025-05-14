@@ -58,15 +58,15 @@ function AppointedDoctor() {
 			);
 			setPreviousAppointments(updatedPreviousAppointments);
 
-      // Close the modal and reset the state
-      setIsModalOpen(false);
-      setRating(0);
-      setReview("");
-    } catch (error) {
-      console.error("Error submitting rating and review:", error);
-      alert("Failed to submit rating and review. Please try again.");
-    }
-  };
+			// Close the modal and reset the state
+			setIsModalOpen(false);
+			setRating(0);
+			setReview("");
+		} catch (error) {
+			console.error("Error submitting rating and review:", error);
+			alert("Failed to submit rating and review. Please try again.");
+		}
+	};
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -155,10 +155,39 @@ function AppointedDoctor() {
 		}));
 	};
 
-	const handlePayFees = (doctorId) => {
-		// Redirect to the payment page or handle payment logic
-		window.open(`/payment/${doctorId}`, "_blank"); // Replace with actual payment page URL
+
+	const handlePayFees = async (doctorId) => {
+		console.log("Fetching QR Code for Doctor ID:", doctorId);
+
+		try {
+			const url = `http://localhost:8080/api/doctors/${doctorId}/qr-code`;
+			console.log("Making request to:", url);
+
+			const response = await fetch(url);
+			console.log("API Response Status:", response.status);
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				console.error("Error details:", errorData);
+				throw new Error("Failed to fetch QR code");
+			}
+
+			const data = await response.json();
+			console.log("QR Code data received:", data);
+
+			if (!data.qrCode) {
+				throw new Error("No QR code found in response");
+			}
+
+			// Open the payment page with the QR code in the URL
+			window.open(`/payment2?qrCode=${encodeURIComponent(data.qrCode)}`, "_blank");
+		} catch (error) {
+			console.error("Error fetching QR code:", error);
+			alert("Failed to fetch QR code. Please try again later.");
+		}
 	};
+
+
 
 	if (loading) {
 		return <p>Loading...</p>;
@@ -199,19 +228,19 @@ function AppointedDoctor() {
 					</button>
 				</div>
 
-        <AppointmentTab 
-          activeTab={activeTab}
-          upcomingAppointments={upcomingAppointments}
-          pendingDoctors={pendingDoctors}
-          deniedDoctors={deniedDoctors}
-          previousAppointments={previousAppointments}
-          supplements={supplements}
-          handlePayFees={handlePayFees}
-          onRatingClick={(appointmentId) => {
-            setCurrentAppointmentId(appointmentId);
-            setIsModalOpen(true);
-          }}
-        />
+				<AppointmentTab
+					activeTab={activeTab}
+					upcomingAppointments={upcomingAppointments}
+					pendingDoctors={pendingDoctors}
+					deniedDoctors={deniedDoctors}
+					previousAppointments={previousAppointments}
+					supplements={supplements}
+					handlePayFees={handlePayFees}
+					onRatingClick={(appointmentId) => {
+						setCurrentAppointmentId(appointmentId);
+						setIsModalOpen(true);
+					}}
+				/>
 
 				{/* Rating Modal */}
 				<RatingModal

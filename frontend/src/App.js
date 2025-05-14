@@ -25,6 +25,7 @@ import SignUpRetailerScreen from './screens/Retailers/SignUpRetailerScreen';
 import PrakritiDetermination from './screens/Patients/PrakritiDetermination';
 import TreatmentsScreen from './screens/Treatments';
 import AppointedDoctor from './screens/Patients/Appointments/AppointedDoctor';
+import Payment from './screens/Patients/Appointments/PaymentPage';
 import PatientPage from './screens/Patients/PatientPage'
 import OrderHistory from './screens/Patients/OrderHistory';
 import DoctorHomeScreen from './screens/Doctors/DoctorHomeScreen';
@@ -54,6 +55,7 @@ import Notification from './screens/Patients/Notification'; // Patient notificat
 import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor notifications
 import RetailerNotification from './screens/Retailers/RetailerNotification';
 import { AuthContext } from './context/AuthContext';
+import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -94,6 +96,7 @@ function App() {
         <Route path="/signup-retailer" element={<SignUpRetailerScreen />} />
         <Route path="/prakritidetermination" element={<PrakritiDetermination />} />
         <Route path="/appointed-doctor" element={<AppointedDoctor />} />
+        <Route path="/payment2" element={<PaymentPage/>} />
         <Route path="/patient-home" element={<PatientPage />} />
 
         <Route path="/admin-home" element={<AdminPage />} />
