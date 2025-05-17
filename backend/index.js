@@ -13,6 +13,7 @@ const orderRoutes = require("./routes/orderRoutes")
 const blogRoutes = require("./routes/blogRoutes")
 const prakritiRoutes = require("./routes/prakritiRoutes");
 const dietYogaRoutes = require("./routes/dietYogaRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 
 mongoose.set('debug', true);
 const app = express();
@@ -40,6 +41,7 @@ app.use("/api/blogs", blogRoutes)
 app.use("/api/prakriti", prakritiRoutes)
 app.use("/api/diet-yoga", dietYogaRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use("/api/search", searchRoutes);
 
 // Start the server
 app.listen(PORT, () => {

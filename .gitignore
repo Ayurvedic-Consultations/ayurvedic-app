@@ -1,3 +1,10 @@
 ./DS_Store
 .vscode
 /node_modules
+a.py
+.DS_Store
+frontend/combined_output.txt
+frontend/frontend.txt
+backend/combined_output.txt
+backend/backend.txt
+backend/.env
