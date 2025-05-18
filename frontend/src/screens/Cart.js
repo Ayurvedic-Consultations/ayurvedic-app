@@ -56,7 +56,7 @@ const CartScreen = () => {
         ) : (
           cartItems.map((item) => (
             <div key={item._id} className="cart-item">
-              <img src={item.image ? `http://localhost:8080/${item.image}` : 'https://via.placeholder.com/100'} alt={item.name} />
+              <img src={item.image ? `${process.env.AYURVEDA_BACKEND_URL}/${item.image}` : 'https://via.placeholder.com/100'} alt={item.name} />
               <div className="cart-details">
                 <h3>{item.name}</h3>
                 <p>Price: ₹{item.price.toFixed(2)}</p>

@@ -4,7 +4,7 @@ import './OrderHistory.css';
 import { AuthContext } from '../../context/AuthContext';
 
 // You might need to adjust this based on your backend configuration
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = `${process.env.AYURVEDA_BACKEND_URL}`;
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);

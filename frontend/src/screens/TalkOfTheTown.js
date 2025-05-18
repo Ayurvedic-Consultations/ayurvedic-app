@@ -7,7 +7,7 @@ const DoctorsSection = () => {
 
   // Fetch doctors from backend on component mount
   useEffect(() => {
-    fetch("http://localhost:8080/api/doctors")
+    fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors`)
       .then((response) => response.json())
       .then((data) => {
         const mappedDoctors = data.map((doctor) => ({

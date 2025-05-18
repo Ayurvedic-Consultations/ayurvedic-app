@@ -20,7 +20,7 @@ const AdminRetailers = () => {
         formData.append("file", file);
     
         try {
-            const response = await fetch("http://localhost:8080/api/auth/upload-retailers", {
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/upload-retailers`, {
                 method: "POST",
                 body: formData, 
             });
@@ -47,7 +47,7 @@ const AdminRetailers = () => {
             }
 
             console.log("Fetching retailers...");
-            const response = await fetch("http://localhost:8080/api/auth/retailers", {
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/retailers`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ const AdminRetailers = () => {
     
             console.log("Deleting retailer with ID:", id);
             
-            const response = await fetch(`http://localhost:8080/api/auth/retailers/${id}`, {
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/retailers/${id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,

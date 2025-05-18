@@ -12,7 +12,7 @@ const SearchBar = () => {
     const fetchSuggestions = async () => {
       if (!query.trim()) return setSuggestions([]);
       try {
-        const res = await fetch(`http://localhost:8080/api/search?s=${query}&type=${type}`);
+        const res = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/search?s=${query}&type=${type}`);
         const data = await res.json();
         setSuggestions(data);
       } catch (err) {

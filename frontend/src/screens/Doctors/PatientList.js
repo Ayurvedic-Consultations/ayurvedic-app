@@ -46,7 +46,7 @@ function PatientList() {
 		const fetchAppointments = async () => {
 			try {
 				const response = await fetch(
-					"http://localhost:8080/api/bookings/bookings"
+					`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/bookings`
 				);
 				if (!response.ok) {
 					throw new Error("Failed to fetch appointments");
@@ -94,7 +94,7 @@ function PatientList() {
 		try {
 			// Fetch existing supplements for this appointment
 			const response = await fetch(
-				`http://localhost:8080/api/bookings/supplements/${appointmentId}`
+				`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/supplements/${appointmentId}`
 			);
 
 			const appointment = [...previousAppointments, ...deniedAppointments].find(
@@ -149,7 +149,7 @@ function PatientList() {
 
 		try {
 			const response = await fetch(
-				`http://localhost:8080/api/bookings/supplements/${currentAppointment._id}`,
+				`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/supplements/${currentAppointment._id}`,
 				{
 					method: "PUT",
 					headers: {
@@ -178,7 +178,7 @@ function PatientList() {
     setCurrentAppointment(appointment);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/diet-yoga/booking/${appointmentId}`);
+      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/diet-yoga/booking/${appointmentId}`);
       if (response.ok) {
         const data = await response.json();
         setDiet(data.diet || {
@@ -230,7 +230,7 @@ function PatientList() {
         return;
       }
 
-      const response = await fetch(`http://localhost:8080/api/diet-yoga`, {
+      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/diet-yoga`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

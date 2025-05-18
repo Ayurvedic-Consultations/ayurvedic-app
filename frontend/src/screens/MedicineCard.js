@@ -2,7 +2,7 @@ import React from "react";
 import "./MedicineCard.css";
 
 const MedicineCard = ({ medicine, cart, addToCart, handleQuantityChange }) => {
-	const imageUrl = `http://localhost:8080/${medicine.image}`;
+	const imageUrl = `${process.env.AYURVEDA_BACKEND_URL}/${medicine.image}`;
 	const cartItem = cart.find((item) => item._id === medicine._id);
 
 	return (

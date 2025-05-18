@@ -66,7 +66,7 @@ const CheckoutScreen = () => {
   const checkNotificationsAPI = async () => {
     try {
       // A simple HEAD request to check if endpoint exists
-      await axios.head('http://localhost:8080/api/notifications', {
+      await axios.head(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       setNotificationsAvailable(true);
@@ -131,7 +131,7 @@ const CheckoutScreen = () => {
     
     try {
       await axios.post(
-        'http://localhost:8080/api/notifications',
+        `${process.env.AYURVEDA_BACKEND_URL}/api/notifications`,
         {
           userId,
           orderId,
@@ -181,7 +181,7 @@ const CheckoutScreen = () => {
       try {
         // Try to create order in backend
         const response = await axios.post(
-          'http://localhost:8080/api/orders', 
+          `${process.env.AYURVEDA_BACKEND_URL}/api/orders`, 
           orderData, 
           {
             headers: { Authorization: `Bearer ${auth.token}` }
@@ -283,7 +283,7 @@ const CheckoutScreen = () => {
       formData.append('paymentProof', paymentProof);
       
       await axios.post(
-        `http://localhost:8080/api/orders/${orderId}/payment-proof`,
+        `${process.env.AYURVEDA_BACKEND_URL}/api/orders/${orderId}/payment-proof`,
         formData,
         {
           headers: { 
@@ -313,7 +313,7 @@ const CheckoutScreen = () => {
               {cartItems.map((item) => (
                 <div key={item._id} className="order-item">
                   <img 
-                    src={item.image ? `http://localhost:8080/${item.image}` : 'https://via.placeholder.com/80'} 
+                    src={item.image ? `${process.env.AYURVEDA_BACKEND_URL}/${item.image}` : 'https://via.placeholder.com/80'} 
                     alt={item.name} 
                   />
                   <div className="item-details">
@@ -492,7 +492,7 @@ const CheckoutScreen = () => {
                 
                 <div className="qr-code-container">
                   <img 
-                    src={paymentQR ? `http://localhost:8080/${paymentQR}` : 'http://localhost:8080/uploads/qr-codes/payment-qr.png'} 
+                    src={paymentQR ? `${process.env.AYURVEDA_BACKEND_URL}/${paymentQR}` : `${process.env.AYURVEDA_BACKEND_URL}/uploads/qr-codes/payment-qr.png`} 
                     alt="Payment QR Code" 
                   />
                 </div>

@@ -96,7 +96,7 @@ function PrakritiDetermination() {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/api/prakriti', {
+      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/prakriti`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

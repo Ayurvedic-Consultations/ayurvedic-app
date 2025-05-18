@@ -23,7 +23,7 @@ const AddItem = () => {
 
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:8080/api/medicines/add", {
+			const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/medicines/add`, {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,

@@ -21,7 +21,7 @@ const AdminDoctors = () => {
                 return;
             }
 
-            const response = await fetch("http://localhost:8080/api/auth/doctors", {
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/doctors`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ const AdminDoctors = () => {
 
     const fetchBookings = async () => {
         try {
-            const response = await fetch("http://localhost:8080/api/bookings");
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings`);
             if (!response.ok) {
                 throw new Error(`Error fetching bookings: ${response.status}`);
             }
@@ -67,7 +67,7 @@ const AdminDoctors = () => {
         if (window.confirm("Are you sure you want to delete this doctor?")) {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`http://localhost:8080/api/doctors/${doctorId}`, {
+                const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ const AdminDoctors = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8080/api/doctors/upload", {
+            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/upload`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` }, // Don't set 'Content-Type' for FormData
                 body: formData,

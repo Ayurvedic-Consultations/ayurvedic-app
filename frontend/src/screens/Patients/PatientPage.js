@@ -24,7 +24,7 @@ function PatientPage() {
 		const fetchPrakritiData = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8080/api/prakriti/${auth.user?.email}`,
+					`${process.env.AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
 					{
 						method: "GET",
 						headers: {

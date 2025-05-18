@@ -14,7 +14,7 @@ const NotificationBell = () => {
   // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/notifications', {
+      const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       
@@ -51,7 +51,7 @@ const NotificationBell = () => {
   // Mark notification as read
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://localhost:8080/api/notifications/${notificationId}/read`, {}, {
+      await axios.put(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications/${notificationId}/read`, {}, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       
@@ -70,7 +70,7 @@ const NotificationBell = () => {
   // Mark all as read
   const markAllAsRead = async () => {
     try {
-      await axios.put('http://localhost:8080/api/notifications/read-all', {}, {
+      await axios.put(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications/read-all`, {}, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       

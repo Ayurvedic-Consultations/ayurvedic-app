@@ -28,7 +28,7 @@ function DoctorAnalytics() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/bookings/bookings");
+        const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/bookings`);
         if (!response.ok) {
           throw new Error("Failed to fetch bookings");
         }

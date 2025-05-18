@@ -49,7 +49,7 @@ function SignUpPatientScreen() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/register/patient', {
+      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/register/patient`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

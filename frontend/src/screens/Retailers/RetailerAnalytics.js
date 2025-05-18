@@ -11,7 +11,7 @@ function RetailerAnalytics() {
   useEffect(() => {
     const fetchRetailerOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/orders", {
+        const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/orders`, {
           params: { retailerId: auth?.user?.id },
           headers: {
             Authorization: `Bearer ${auth.token}`,

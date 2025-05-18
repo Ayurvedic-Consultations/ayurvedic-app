@@ -64,7 +64,7 @@ function DoctorDetail() {
 			}
 
 			try {
-				const response = await fetch("http://localhost:8080/api/bookings", {
+				const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings`, {
 					// Replace with your API URL
 					method: "POST",
 					headers: {
@@ -92,7 +92,7 @@ function DoctorDetail() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/bookings/reviews/${doctor.email}`);
+        const res = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctor.email}`);
         const data = await res.json();
         setReviews(data);
       } catch (err) {
