@@ -3,7 +3,10 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin-top: 150px;
+  margin-top: 160px; 
+  margin-bottom: 25px;
+  background:white;
+  border-radius: 15px;
 }
 
 .admin-blogs h1 {

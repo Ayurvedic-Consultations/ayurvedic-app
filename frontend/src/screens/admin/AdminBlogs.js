@@ -6,7 +6,7 @@ import moment from "moment";
 
 const formatDate = (isoString) => moment(isoString).format("DD MMM YYYY");
 
-const AdminBlogs = () => {
+const AdminBlogs = () => { 
   const { auth } = useContext(AuthContext);
   const adminId = auth.user ? auth.user.id : null;
   // console.log("Auth User:", auth.user);
