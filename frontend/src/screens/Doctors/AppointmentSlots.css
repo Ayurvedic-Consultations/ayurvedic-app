@@ -2,7 +2,11 @@
   width: 90%;
   margin: 20px auto;
   font-family: Arial, sans-serif;
-  margin-top: 140px;
+  margin-top: 150px;
+  border-radius: 15px;
+  background: white;
+  padding: 25px;
+  box-sizing: border-box;
 }
 
 h1 {

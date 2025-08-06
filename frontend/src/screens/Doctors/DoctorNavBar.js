@@ -145,8 +145,19 @@ function DoctorNavBar() {
 				</NavLink>
 			</div>
 
+			{
+				showModal && (
+					<div className="profile-shadow" style={{
+						height: "100vh", width: "100vw", backdropFilter: "blur(15px)",
+						position: "absolute", top: "0", zIndex: "-100"
+					}}></div>
+				)
+			}
+
 			{showModal && (
 				<div className="profile-modal" ref={modalRef}>
+					<div className="user-profile" >
+						<img src="https://images.unsplash.com/photo-1458696352784-ffe1f47c2edc?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="imgae" /></div>
 					<h2>User Profile</h2>
 					<div className="profile-details">
 						<p>

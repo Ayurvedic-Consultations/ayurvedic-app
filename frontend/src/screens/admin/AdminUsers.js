@@ -33,14 +33,14 @@ const AdminUsers = () => {
           setUsers(data.users || data); 
         setLoading(false);
         } catch (error) {
-          console.error("Error fetching users:", error);
-          setLoading(false);
+            console.error("Error fetching users:", error);
+            setLoading(false);
         }
-      };
-      
+    };
 
 
-      const handleDelete = async (userId) => {
+
+    const handleDelete = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
                 const token = localStorage.getItem("token");
@@ -51,53 +51,55 @@ const AdminUsers = () => {
                         "Content-Type": "application/json",
                     },
                 });
-    
+
                 if (!response.ok) {
                     throw new Error(`Error deleting user: ${response.status}`);
                 }
-    
+
                 console.log(`User ${userId} deleted successfully`);
-                fetchUsers(); 
+                fetchUsers();
             } catch (error) {
                 console.error("Error deleting user:", error);
             }
         }
     };
-    
+
 
     if (loading) return <p>Loading users...</p>;
 
     return (
-        <div style={{ padding: '20px', marginTop: '150px' }}>
+        <div style={{ padding: '20px', margin: "160px 50px 25px 50px", background: "white", borderRadius: "15px", overflow:"hidden" }}>
             <h2>Manage Users</h2>
-            <table border="1" style={{ width: '100%', textAlign: 'left', marginTop: '20px' }}>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone No.</th>
-                        <th>Gender</th>
-                        <th>Age</th>
-                        <th>ZipCode</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user._id}>
-                            <td>{user.firstName} {user.lastName}</td>
-                            <td>{user.email}</td>
-                            <td>{user.phone}</td>
-                            <td>{user.gender}</td>
-                            <td>{user.age}</td>
-                            <td>{user.zipCode}</td>
-                            <td>
-                                <button onClick={() => handleDelete(user._id)} style={{ marginLeft: '10px', color: 'red' }}>Delete</button>
-                            </td>
+            <div style={{ width: '100%', overflowX: 'auto', padding: "0px 25px" }}>
+                <table border="1" style={{ width: '90%', textAlign: 'left', marginTop: '20px' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ padding: '10px', background: "#8f9f6d" }}>Name</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Email</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Phone No.</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Gender</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Age</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>ZipCode</th>
+                            <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {users.map(user => (
+                            <tr key={user._id}>
+                                <td style={{ padding: '0px 10px' }}>{user.firstName} {user.lastName}</td>
+                                <td style={{ padding: '0px 10px' }}>{user.email}</td>
+                                <td style={{ padding: '0px 10px' }}>{user.phone}</td>
+                                <td style={{ padding: '0px 10px' }}>{user.gender}</td>
+                                <td style={{ padding: '0px 10px' }}>{user.age}</td>
+                                <td style={{ padding: '0px 10px' }}>{user.zipCode}</td>
+                                <td style={{ padding: '0px 10px' }}>
+                                    <button onClick={() => handleDelete(user._id)} style={{ marginLeft: '10px', color: 'red' }}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

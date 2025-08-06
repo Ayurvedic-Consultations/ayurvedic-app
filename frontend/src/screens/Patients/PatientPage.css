@@ -4,12 +4,16 @@
 	padding: 0;
 	margin-top: 140px;
 	overflow: hidden;
+	padding: 25px;
+	box-sizing: border-box;
 }
 
 .content {
 	text-align: center;
 	padding: 45px;
 	overflow: hidden;
+	background-color: white;
+	border-radius: 15px;
 }
 
 h1 {

@@ -31,12 +31,12 @@
 }
 
 .tab.active {
-	background-color: #007bff;
+	background-color: #0f7337;
 	color: white;
 }
 
 .tab:hover {
-	background-color: #0056b3;
+	background-color: #0e6d34;
 	color: white;
 }
 
