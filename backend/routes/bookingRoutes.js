@@ -13,6 +13,10 @@ const {
   getRatingAndReview,
 } = require("../controllers/bookingController");
 
+const bookingController = require("../controllers/bookingController");
+
+const { uploadPaymentScreenshot } = require("../controllers/bookingController");
+
 const Booking = require("../models/Booking");
 
 // POST route to book an appointment
@@ -43,6 +47,23 @@ router.put("/rating-review/:id", updateRatingAndReview);
 
 // Route to get rating and review
 router.get("/rating-review/:id", getRatingAndReview);
+
+router.get("/reviews/:doctorEmail", async (req, res) => {
+  const { doctorEmail } = req.params;
+  try {
+    const reviews = await Booking.find({
+      doctorEmail,
+      rating: { $ne: null },
+      review: { $ne: "" },
+    }).select("patientName rating review dateOfAppointment");
+    res.json(reviews);
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/:id/payment", bookingController.uploadPaymentScreenshot);
 
 // GET all bookings
 router.get("/", async (req, res) => {

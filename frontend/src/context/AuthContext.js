@@ -14,7 +14,7 @@ function AuthProvider({ children }) {
     const fetchUser = async () => {
       if (auth.token) {
         try {
-          const response = await fetch('http://localhost:8080/api/auth/user', {
+          const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/user`, {
             headers: {
               Authorization: `Bearer ${auth.token}`,
             },

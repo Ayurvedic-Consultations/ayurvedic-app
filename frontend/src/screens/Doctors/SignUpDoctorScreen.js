@@ -7,6 +7,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 function SignUpDoctorScreen() {
 	const { setAuth } = useContext(AuthContext);
+	const [qrCode, setQrCode] = useState(null);
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
@@ -23,6 +24,11 @@ function SignUpDoctorScreen() {
 		password: "",
 		confirmPassword: "", // Added confirmPassword for validation
 	});
+
+	const handleQrCodeChange = (e) => {
+		setQrCode(e.target.files[0]);
+	};
+
 
 	const isFormValid = () => {
 		return (
@@ -77,16 +83,28 @@ function SignUpDoctorScreen() {
 			return;
 		}
 
+		if (!qrCode) {
+			alert("Please upload your QR code for payments.");
+			return;
+		}
+
+		if (qrCode.size > 5 * 1024 * 1024) {
+			alert("QR code file size exceeds 5MB limit");
+			return;
+		}
+
+
 		// Create FormData object for file upload
 		const data = new FormData();
 		Object.keys(formData).forEach((key) => {
 			data.append(key, formData[key]);
 		});
 		data.append("certificate", certificate);
+		data.append("qrCode", qrCode);
 
 		try {
 			const response = await fetch(
-				"http://localhost:8080/api/auth/register/doctor",
+				`${process.env.AYURVEDA_BACKEND_URL}/api/auth/register/doctor`,
 				{
 					method: "POST",
 					body: data,
@@ -105,6 +123,8 @@ function SignUpDoctorScreen() {
 		} catch (error) {
 			console.error("Error during registration:", error);
 		}
+
+
 	};
 
 	return (
@@ -287,6 +307,17 @@ function SignUpDoctorScreen() {
 						Supported file formats: png, jpg. File size limit: 5MB
 					</p>
 				</div>
+				<div className="form-group fileupload">
+					<label>Upload QR Code for Payments</label>
+					<input
+						type="file"
+						accept=".png, .jpg, .jpeg"
+						onChange={handleQrCodeChange}
+						required
+					/>
+					<p className="file-info">Supported formats: png, jpg. File size limit: 5MB</p>
+				</div>
+
 
 				<div className="form-button">
 					<button type="submit" className="next-btn" disabled={!isFormValid()}>

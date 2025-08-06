@@ -32,6 +32,7 @@ const AdminUsers = () => {
             console.log("Fetched users:", data);
             setUsers(data.users || data);
             setLoading(false);
+
         } catch (error) {
             console.error("Error fetching users:", error);
             setLoading(false);
@@ -44,7 +45,7 @@ const AdminUsers = () => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`http://localhost:8080/api/auth/users/${userId}`, {
+                const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/users/${userId}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,

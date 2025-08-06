@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./AppointedDoctor.css";
 import RatingModal from "./RatingModal";
 import AppointmentTab from "./AppointmentTab";
-import {
-	fetchDoctorData,
-	handleDeleteRequest,
-	fetchSupplements,
-} from "./AppointmentUtils";
+import { fetchDoctorData, fetchSupplements } from "./AppointmentUtils";
+import { useNavigate } from 'react-router-dom';
 
 function AppointedDoctor() {
+	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState("Upcoming");
 	const [pendingDoctors, setPendingDoctors] = useState([]);
 	const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -32,7 +30,7 @@ function AppointedDoctor() {
 
 		try {
 			const response = await fetch(
-				`http://localhost:8080/api/bookings/rating-review/${currentAppointmentId}`,
+				`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/rating-review/${currentAppointmentId}`,
 				{
 					method: "PUT",
 					headers: {
@@ -69,19 +67,6 @@ function AppointedDoctor() {
 		} catch (error) {
 			console.error("Error submitting rating and review:", error);
 			alert("Failed to submit rating and review. Please try again.");
-		}
-	};
-
-	const handleDeleteAppointment = async (bookingId) => {
-		const success = await handleDeleteRequest(bookingId);
-		if (success) {
-			setDeniedDoctors((prevDeniedDoctors) =>
-				prevDeniedDoctors.filter((doctor) => doctor._id !== bookingId)
-			);
-
-			setPreviousAppointments((prevDoctors) =>
-				prevDoctors.filter((doctor) => doctor._id !== bookingId)
-			);
 		}
 	};
 
@@ -172,10 +157,31 @@ function AppointedDoctor() {
 		}));
 	};
 
-	const handlePayFees = (doctorId) => {
-		// Redirect to the payment page or handle payment logic
-		window.open(`/payment/${doctorId}`, "_blank"); // Replace with actual payment page URL
+	const handlePayFees = async (doctorId, bookingId) => {
+		try {
+			const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}/qr-code`);
+			const data = await response.json();
+
+			if (!data.qrCode || !data.price) {
+				throw new Error("Incomplete doctor payment data");
+			}
+
+			// ✅ Open payment page with both qrCode and price in query
+			const query = new URLSearchParams({
+				qrCode: data.qrCode,
+				price: data.price,
+				bookingId: bookingId,
+			}).toString();
+
+			navigate(`/payment2?${query}`, "_blank");
+		} catch (error) {
+			console.error("Error fetching QR code:", error);
+			alert("Failed to fetch QR code. Please try again later.");
+		}
 	};
+
+
+
 
 	if (loading) {
 		return <p>Loading...</p>;
@@ -224,7 +230,6 @@ function AppointedDoctor() {
 					previousAppointments={previousAppointments}
 					supplements={supplements}
 					handlePayFees={handlePayFees}
-					handleDeleteRequest={handleDeleteAppointment}
 					onRatingClick={(appointmentId) => {
 						setCurrentAppointmentId(appointmentId);
 						setIsModalOpen(true);

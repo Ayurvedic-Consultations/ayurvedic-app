@@ -8,7 +8,6 @@ const AppointmentTab = ({
   previousAppointments,
   supplements,
   handlePayFees,
-  handleDeleteRequest,
   onRatingClick
 }) => {
   // Render Upcoming Appointments
@@ -53,7 +52,7 @@ const AppointmentTab = ({
                 ) : (
                   <button
                     className="action-button pay-fees"
-                    onClick={() => handlePayFees(upcomingAppointment._id)}
+                    onClick={() => handlePayFees(upcomingAppointment.doctorId, upcomingAppointment._id)}
                   >
                     Pay Fees
                   </button>
@@ -180,13 +179,6 @@ const AppointmentTab = ({
                     {deniedDoctor.doctorsMessage}
                   </li>
                 </ul>
-
-                <button
-                  className="action-button delete"
-                  onClick={() => handleDeleteRequest(deniedDoctor._id)}
-                >
-                  Delete Request
-                </button>
               </div>
             ))}
         </>
@@ -279,14 +271,6 @@ const AppointmentTab = ({
                     )}
                   </div>
                 )}
-
-                {/* Optional: Add a button to view past records or delete */}
-                <button
-                  className="action-button action-delete"
-                  onClick={() => handleDeleteRequest(previousAppointment._id)}
-                >
-                  Remove from History
-                </button>
               </div>
             ))}
         </>

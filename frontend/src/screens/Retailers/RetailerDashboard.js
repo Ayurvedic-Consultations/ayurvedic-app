@@ -13,7 +13,7 @@ function RetailerDashboard() {
 		const fetchRetailerData = async () => {
 			try {
 				const token = localStorage.getItem("token");
-				const response = await fetch("http://localhost:8080/api/auth/profile", {
+				const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/profile`, {
 					method: "GET",
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ function RetailerDashboard() {
 				<Link to="/manage-products">
 					<button className="dashboard-btn">Manage Products</button>
 				</Link>
-				<Link to="/analytics">
+				<Link to="/retailer-analytics">
 					<button className="dashboard-btn">Analytics</button>
 				</Link>
 				<Link to="/my-orders">

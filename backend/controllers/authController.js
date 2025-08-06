@@ -77,11 +77,17 @@ exports.loginUser = async (req, res) => {
 // Register a new doctor
 exports.registerDoctor = async (req, res) => {
   const { firstName, lastName, email, phone, dob, age, experience, gender, zipCode, education, designation, price, password } = req.body;
-  const certificate = req.file.path;
+  const certificate = req.files?.certificate ? req.files.certificate[0].path : null;
+  const qrCode = req.files?.qrCode ? req.files.qrCode[0].path : null;
+
+  // Check if files are uploaded
+  if (!certificate || !qrCode) {
+    return res.status(400).json({ error: 'Both certificate and qrCode files are required.' });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const doctor = new Doctor({ firstName, lastName, email, phone, dob, age, experience, gender, zipCode, education, designation, price, password: hashedPassword, certificate });
+    const doctor = new Doctor({ firstName, lastName, email, phone, dob, age, experience, gender, zipCode, education, designation, price, password: hashedPassword, certificate, qrCode });
     await doctor.save();
     const token = generateToken(doctor);
     res.status(201).json({ message: 'Doctor registered successfully', token ,user: {

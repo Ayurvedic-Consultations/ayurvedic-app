@@ -1,0 +1,65 @@
+.doctor-analytics-container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  margin-top: 150px;
+}
+
+.doctor-analytics-container h1{
+  padding-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.tab.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.tab:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.chart-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.chart-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.chart-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}

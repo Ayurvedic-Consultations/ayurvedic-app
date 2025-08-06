@@ -1,0 +1,38 @@
+.doctor-reviews-container {
+  margin: 150px auto;
+  max-width: 800px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.review-box {
+  background: #fff;
+  border-left: 4px solid #8f9f6d;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+}
+
+.review-box h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.stars {
+  color: #ff9800;
+  margin: 5px 0;
+}
+
+.review {
+  font-style: italic;
+  color: #555;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+}
+

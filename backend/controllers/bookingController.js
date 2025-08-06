@@ -1,6 +1,10 @@
 // controllers/bookingController.js
 
 const Booking = require("../models/Booking");
+const Doctor = require("../models/Doctor");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
 
 // Add or update rating and review
 exports.updateRatingAndReview = async (req, res) => {
@@ -81,6 +85,10 @@ exports.createBooking = async (req, res) => {
   }
 
   try {
+    const doctor = await Doctor.findOne({ email: doctorEmail });
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
     // Check if a booking already exists for the doctor and time slot
     const existingBooking = await Booking.findOne({
       doctorName,
@@ -96,6 +104,7 @@ exports.createBooking = async (req, res) => {
 
     // Create a new booking
     const newBooking = new Booking({
+      doctorId: doctor._id,
       doctorName,
       doctorEmail,
       timeSlot,
@@ -108,6 +117,7 @@ exports.createBooking = async (req, res) => {
       requestAccept,
       doctorsMessage,
       meetLink,
+      amountPaid: doctor.price,
     });
 
     // Save the booking to the database
@@ -144,6 +154,70 @@ exports.getAllBookings = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "uploads/payments/");
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname)); // Ensures unique filenames
+    },
+  }),
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = fileTypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Invalid file type. Only image files are allowed."));
+    }
+  },
+}).single("paymentScreenshot");
+
+exports.uploadPaymentScreenshot = (req, res) => {
+  upload(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    console.log("🟡 Uploading payment screenshot...");
+    console.log(req.file);
+
+    const { id } = req.params;
+    const { paymentStatus, amountPaid } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Payment screenshot is required" });
+    }
+
+    try {
+      const booking = await Booking.findById(id);
+      if (!booking) {
+        return res.status(404).json({ error: "Booking not found" });
+      }
+
+      booking.paymentScreenshot = req.file.path;
+      booking.paymentStatus = paymentStatus || "Completed";
+      booking.amountPaid = amountPaid || booking.amountPaid;
+
+      await booking.save();
+
+      return res.status(200).json({
+        message: "Payment screenshot uploaded and booking updated",
+        booking,
+      });
+    } catch (error) {
+      console.error("❌ Error uploading payment screenshot:", error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+};
+
 
 exports.getNotifications = async (req, res) => {
   const { email } = req.query;

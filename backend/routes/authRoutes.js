@@ -16,16 +16,36 @@ const path = require("path");
 // Multer setup for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/doctors");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-const upload = multer({ storage: storage });
+
+const fileFilter = (req, file, cb) => {
+  // Allow only image files or specific types based on your requirements
+  const filetypes = /jpeg|jpg|png|pdf/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only jpeg, jpg, png, and pdf files are allowed"));
+  }
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+const cpUpload = upload.fields([
+  { name: "certificate", maxCount: 1 },
+  { name: "qrCode", maxCount: 1 },
+]);
+
 
 // Doctor, Retailer, Patient registration
-router.post("/register/doctor", upload.single("certificate"), registerDoctor);
+router.post("/register/doctor", cpUpload, registerDoctor);
 router.post("/register/retailer", registerRetailer);
 router.post("/register/patient", registerPatient);
 router.post("/login", loginUser);
@@ -180,5 +200,36 @@ router.delete("/retailers/:id", async (req, res) => {
   }
 });
 
+const findUserAndUpdatePassword = async (email, newPassword) => {
+  const models = { Patient, Retailer, Doctor };
+
+  for (let modelName in models) {
+    const Model = models[modelName];
+    const user = await Model.findOne({ email });
+
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+      await user.save();
+      return `${modelName} password updated successfully!`;
+    }
+  }
+
+  return null;
+};
+
+//  Reset Password Route
+router.post("/reset-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const message = await findUserAndUpdatePassword(email, newPassword);
+    if (!message) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating password", error });
+  }
+});
 
 module.exports = router;

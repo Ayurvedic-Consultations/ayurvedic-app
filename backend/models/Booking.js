@@ -3,6 +3,11 @@
 const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema({
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Doctor",
+    required: true,
+  },
   doctorName: {
     type: String,
     required: true,
@@ -77,6 +82,19 @@ const bookingSchema = new mongoose.Schema({
   review: {
     type: String,
     default: "",
+  },
+  amountPaid: {
+    type: Number,
+    required: true,
+  },
+  paymentScreenshot: {
+    type: String, // Path to the uploaded screenshot
+    required: false, // This is optional initially, as the user will upload it after making the payment
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['Pending', 'Completed'], // Can either be Pending or Completed
+    default: 'Pending',
   },
 });
 

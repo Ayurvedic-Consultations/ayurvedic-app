@@ -11,7 +11,7 @@ function BlogsVideosScreen() {
 	useEffect(() => {
 		const fetchBlogs = async () => {
 			try {
-				const response = await axios.get("http://localhost:8080/api/blogs");
+				const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/blogs`);
 				setBlogs(response.data);
 			} catch (error) {
 				console.error("Error fetching blogs:", error);
@@ -37,7 +37,7 @@ function BlogsVideosScreen() {
 								className="blog-card"
 								onClick={() => handleBlogClick(blog)}
 							>
-								<img src={blog.image || logo} alt={blog.title} />
+								{/*<img src={blog.image || logo} alt={blog.title} />*/}
 								<div className="blog-content">
 									<h3>{blog.title}</h3>
 									<p>{blog.description.substring(0, 100)}...</p>{" "}

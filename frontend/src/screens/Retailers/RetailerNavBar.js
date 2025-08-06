@@ -133,7 +133,7 @@ function RetailerNavBar() {
 						className="profile-pic"
 					/>
 				</div>
-				<NavLink to="/notifications" className="notification-icon">
+				<NavLink to="/retailer-notifications" className="notification-icon">
 					<img
 						src={notificationIcon}
 						alt="Notifications"
@@ -212,7 +212,7 @@ function RetailerNavBar() {
 									</NavLink>
 								</li>
 								<li>
-									<NavLink to="/analytics" activeClassName="active">
+									<NavLink to="/retailer-analytics" activeClassName="active">
 										Analytics
 									</NavLink>
 								</li>
@@ -229,20 +229,25 @@ function RetailerNavBar() {
 							</NavLink>
 						</li>
 						<li>
-							<NavLink to="/products" activeClassName="active">
+							<NavLink to="/manage-products" activeClassName="active">
 								Products
 							</NavLink>
 						</li>
 						<li>
-							<NavLink to="/orders" activeClassName="active">
+							<NavLink to="/my-orders" activeClassName="active">
 								Orders
 							</NavLink>
 						</li>
 						<li>
-							<NavLink to="/analytics" activeClassName="active">
+							<NavLink to="/retailer-analytics" activeClassName="active">
 								Analytics
 							</NavLink>
 						</li>
+            <li>
+              <NavLink to="/customer-support" activeClassName="active">
+                Customer Support
+              </NavLink>
+            </li>
 					</ul>
 				</div>
 			</nav>
