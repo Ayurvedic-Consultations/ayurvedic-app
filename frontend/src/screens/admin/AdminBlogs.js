@@ -32,7 +32,7 @@ const AdminBlogs = () => {
   const fetchBlogs = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/blogs`);
+      const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs`);
       console.log("Fetched blogs:", response.data);
 
       // Sort blogs by date (newest first)
@@ -80,7 +80,7 @@ const AdminBlogs = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(`${process.env.AYURVEDA_BACKEND_URL}/api/blogs`, dataToSubmit);
+      const response = await axios.post(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs`, dataToSubmit);
 
       // Refresh the blog list to include the new blog
       await fetchBlogs();
@@ -110,7 +110,7 @@ const AdminBlogs = () => {
     if (window.confirm("Are you sure you want to delete this blog post?")) {
       setIsLoading(true);
       try {
-        await axios.delete(`${process.env.AYURVEDA_BACKEND_URL}/api/blogs/${id}`);
+        await axios.delete(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs/${id}`);
         setBlogs(blogs.filter((blog) => blog._id !== id));
         setSuccessAlert("Blog deleted successfully!");
 

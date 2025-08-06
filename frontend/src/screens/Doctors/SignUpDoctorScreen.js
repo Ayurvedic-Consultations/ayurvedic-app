@@ -104,7 +104,7 @@ function SignUpDoctorScreen() {
 
 		try {
 			const response = await fetch(
-				`${process.env.AYURVEDA_BACKEND_URL}/api/auth/register/doctor`,
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/register/doctor`,
 				{
 					method: "POST",
 					body: data,

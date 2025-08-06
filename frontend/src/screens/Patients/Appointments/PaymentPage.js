@@ -53,7 +53,7 @@ function PaymentPage() {
 
         try {
             const response = await fetch(
-                `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/${bookingId}/payment`,
+                `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/${bookingId}/payment`,
                 {
                     method: "POST",
                     body: formData,
@@ -95,7 +95,7 @@ function PaymentPage() {
     }
 
     const qrCodePath = qrCode.replace(/^uploads\/doctors\//, "");
-    const qrCodeUrl = `${process.env.AYURVEDA_BACKEND_URL}/uploads/doctors/${qrCodePath}`;
+    const qrCodeUrl = `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/uploads/doctors/${qrCodePath}`;
 
     return (
         <div className="payment-container">

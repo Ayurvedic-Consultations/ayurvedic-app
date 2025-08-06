@@ -11,7 +11,7 @@ function BlogsVideosScreen() {
 	useEffect(() => {
 		const fetchBlogs = async () => {
 			try {
-				const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/blogs`);
+				const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs`);
 				setBlogs(response.data);
 			} catch (error) {
 				console.error("Error fetching blogs:", error);

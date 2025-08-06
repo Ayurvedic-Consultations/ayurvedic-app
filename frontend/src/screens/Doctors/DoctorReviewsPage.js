@@ -7,7 +7,7 @@ const DoctorReviewsPage = () => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const res = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctorEmail}`);
+      const res = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctorEmail}`);
       const data = await res.json();
       setReviews(data);
     };

@@ -31,7 +31,7 @@ function DoctorsScreen() {
 
 	// Fetch doctors from backend on component mount
 	useEffect(() => {
-		fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors`)
+		fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors`)
 			.then((response) => response.json())
 			.then((data) => {
 				const mappedDoctors = data.map((doctor) => ({

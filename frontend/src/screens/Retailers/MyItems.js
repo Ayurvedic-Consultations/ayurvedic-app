@@ -7,7 +7,7 @@ function MyItems() {
   useEffect(() => {
     const fetchMyItems = async () => {
       try {
-        const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/medicines/my`, {
+        const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/medicines/my`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, // Send JWT token
           },

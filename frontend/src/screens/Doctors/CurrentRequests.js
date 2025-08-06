@@ -24,7 +24,7 @@ function CurrentRequests() {
     const fetchRequests = async () => {
       try {
         const response = await fetch(
-          `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/bookings`
+          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/bookings`
         ); // Adjust API URL as needed
         if (!response.ok) {
           throw new Error("Failed to fetch requests");
@@ -59,7 +59,7 @@ function CurrentRequests() {
   const acceptRequest = async (id) => {
     try {
       const response = await fetch(
-        `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/update/${id}`,
+        `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/update/${id}`,
         {
           method: "PUT",
           headers: {
@@ -93,7 +93,7 @@ function CurrentRequests() {
 
     try {
       const response = await fetch(
-        `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/update/${id}`,
+        `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/update/${id}`,
         {
           method: "PUT",
           headers: {

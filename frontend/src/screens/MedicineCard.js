@@ -2,7 +2,7 @@ import React from "react";
 import "./MedicineCard.css";
 
 const MedicineCard = ({ medicine, cart, addToCart, handleQuantityChange }) => {
-	const imageUrl = `${process.env.AYURVEDA_BACKEND_URL}/${medicine.image}`;
+	const imageUrl = `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/${medicine.image}`;
 	const cartItem = cart.find((item) => item._id === medicine._id);
 
 	return (

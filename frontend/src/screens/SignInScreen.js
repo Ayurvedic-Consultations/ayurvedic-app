@@ -42,7 +42,7 @@ function SignInScreen() {
 		e.preventDefault();
 
 		try {
-			const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/login`, {
+			const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -95,7 +95,7 @@ function SignInScreen() {
       return;
     }
     try {
-      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/reset-password`, {
+      const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(resetData),
