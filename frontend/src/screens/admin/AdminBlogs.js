@@ -147,6 +147,12 @@ const AdminBlogs = () => {
         >
           Add New Blog
         </button>
+        <button
+          className={`tab-button ${activeTab === "generate" ? "active" : ""}`}
+          onClick={() => setActiveTab("generate")}
+        >
+          Generate Content
+        </button>
       </div>
 
       {/* Error and Success Alerts */}
@@ -256,6 +262,30 @@ const AdminBlogs = () => {
             className="submit-btn"
           >
             {isLoading ? "Adding..." : "Add Blog"}
+          </button>
+        </div>
+      )}
+
+      {/* Add Generate Blog Tab */}
+      {activeTab === "generate" && (
+        <div className="generate-blog">
+          <h2>Generate Blog Content</h2>
+            <p>
+              This feature currently works via an external tool. Clicking the button below will open
+               {" "}<a href="https://agiagentworld.com/" target="_blank" rel="noopener noreferrer">
+                AGI Agent World
+              </a>{" "}
+              in a new tab, where you can manually create your blog content using their interface.
+            </p>
+            <p>
+              Once your content is ready, you can copy it back here and add it using the "Add New Blog" tab.
+            </p>
+            <p>Happy creating! 🚀</p>
+
+           <button
+            onClick={() => window.open('https://agiagentworld.com/', '_blank', 'noopener,noreferrer')}
+          >
+            Go to AGI Agent World
           </button>
         </div>
       )}
