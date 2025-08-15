@@ -4,6 +4,8 @@ import axios from "axios";
 import "./BlogsVideosScreen.css";
 import logo from "../media/logo.png"; // Placeholder image if needed
 
+import BlogsTesting from "./BlogsTesting";
+
 function BlogsVideosScreen() {
 	const navigate = useNavigate();
 	const [blogs, setBlogs] = useState([]);
@@ -28,6 +30,7 @@ function BlogsVideosScreen() {
 		<div className="blogs-videos">
 			<div className="container">
 				<h1>Blogs and Videos</h1>
+				<BlogsTesting />
 				<div className="section">
 					<h2>Blogs</h2>
 					<div className="blogs">
