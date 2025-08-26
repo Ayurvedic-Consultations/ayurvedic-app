@@ -10,7 +10,7 @@ import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
 import ChatbotWidget from './components/ChatbotWidget';
 
-import BlogsVideosScreen from './screens/BlogsVideosScreen';
+import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
 import CartScreen from './screens/Cart';
 import PaymentScreen from './screens/Payment';
 import BlogScreen from './screens/Blogs';
