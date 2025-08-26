@@ -127,10 +127,12 @@ exports.registerPatient = async (req, res) => {
   const { firstName, lastName, email, phone, dob, age, gender, zipCode, password } = req.body;
 
   try {
+    console.log("Registering patient:", firstName, lastName, email); 
     const hashedPassword = await bcrypt.hash(password, 10);
     const patient = new Patient({ firstName, lastName, email, phone, dob, age, gender, zipCode, password: hashedPassword });
     await patient.save();
     const token = generateToken(patient);
+    console.log("Patient registered successfully:", patient);
     res.status(201).json({ message: 'Patient registered successfully', token ,user: {
       id: patient._id,
       firstName: patient.firstName,
@@ -138,6 +140,7 @@ exports.registerPatient = async (req, res) => {
       role: 'patient',
     },});
   } catch (error) {
+    console.error("Error registering patient:", error);
     res.status(500).json({ error: 'Registration failed' });
   }
 };

@@ -3,12 +3,10 @@
  margin: 0;
  box-sizing: border-box;
  background: rgba(164, 164, 89, 0.019);
-
 }
 
 /* Hero Section */
 .hero-section {
-  
   position: relative;
   width: 100%;
   min-height: 70vh;
@@ -47,7 +45,6 @@
 
 /* Content */
 .hero-content {
-  
   position: relative;
   max-width: 90%;
   width: 100%;
@@ -231,6 +228,9 @@
 
 /* CARD GRID LAYOUT */
 
+
+/* --- Global Styles & Variables --- */
+/* --- Global Styles & Variables --- */
 :root {
   --primary-color: #007bff;
   --primary-hover: #0056b3;
@@ -259,6 +259,7 @@ body {
   width: 90%;
   max-width: 1400px;
   margin: 0 auto;
+  margin-bottom: 25px;
 }
 
 /* --- Individual Card Styling --- */
@@ -270,8 +271,7 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 400px;
-  justify-self: center;
-  
+  align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -285,15 +285,14 @@ body {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  
 }
 
 .card-header img {
   width: 100%;
   height: 100%;
-  
   object-fit: cover;
   display: block;
+  border-radius: 10px;
 }
 
 .card-type {
@@ -315,6 +314,9 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
+  width: 100%;
+  align-items: center;
 }
 
 .card-meta {
@@ -353,7 +355,9 @@ body {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--font-color);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  width: 100%;
 }
 
 /* --- Tags --- */
@@ -361,7 +365,9 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .card-tags span {
@@ -375,20 +381,17 @@ body {
 
 /* --- Action Button / Link --- */
 .card-action {
-  display: block;
-  width: 100%;
-  padding: 0.8rem 1rem;
-  margin-top: auto;
+  padding: 0.6rem 7rem;
   border: none;
   border-radius: 8px;
   background-color: var(--primary-color);
   color: #fff;
-  font-size: 1rem;
   font-weight: 600;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  max-width: 100%;
 }
 
 .card-action:hover,
@@ -435,42 +438,4 @@ body {
     width: 100%; 
     padding-bottom: 1rem;
   }
-}
-
-
-
-/* --- Video Card Icon --- */
-.card--video .card-header::after {
-  /* Create the pseudo-element */
-  content: ''; 
-  
-  /* Position it in the center */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* This perfectly centers the icon */
-  
-  /* Size of the icon */
-  width: 60px;
-  height: 60px;
-
-  /* Use an embedded SVG for a high-quality play icon */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(255,255,255,0.85)'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-
-  /* Add a subtle dark circle behind the icon for better visibility */
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  
-  /* Ensure the icon appears on top of the image */
-  z-index: 10; 
-  
-  /* Add a smooth transition for the hover effect */
-  transition: transform 0.3s ease;
-}
-
-/* Optional: Make the icon slightly larger on hover for a nice interactive feel */
-.card--video:hover .card-header::after {
-    transform: translate(-50%, -50%) scale(1.1);
 }

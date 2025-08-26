@@ -15,7 +15,7 @@ function AppointmentSlots() {
 		const fetchAppointments = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/bookings`
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/bookings`
 				);
 				if (!response.ok) {
 					throw new Error("Failed to fetch appointments");
@@ -100,7 +100,7 @@ function AppointmentSlots() {
 
 		try {
 			const response = await fetch(
-				`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/update/meet-link/${id}`,
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/update/meet-link/${id}`,
 				{
 					method: "PUT",
 					headers: {

@@ -2,7 +2,7 @@
 
 // Fetch all booking data
 export const fetchDoctorData = async () => {
-  const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/bookings`);
+  const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/bookings`);
   
   if (!response.ok) {
     throw new Error("Failed to fetch doctor data");
@@ -15,7 +15,7 @@ export const fetchDoctorData = async () => {
 export const fetchSupplements = async (appointmentId) => {
   try {
     const response = await fetch(
-      `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/supplements/${appointmentId}`
+      `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/supplements/${appointmentId}`
     );
     
     if (!response.ok) {
@@ -43,7 +43,7 @@ export const fetchSupplements = async (appointmentId) => {
 //
 //  try {
 //    const response = await fetch(
-//      `${process.env.AYURVEDA_BACKEND_URL}/api/bookings/delete/${bookingId}`,
+//      `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/delete/${bookingId}`,
 //      { method: "DELETE" }
 //    );
 //

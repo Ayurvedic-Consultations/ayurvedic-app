@@ -30,7 +30,7 @@ function AppointedDoctor() {
 
 		try {
 			const response = await fetch(
-				`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/rating-review/${currentAppointmentId}`,
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/rating-review/${currentAppointmentId}`,
 				{
 					method: "PUT",
 					headers: {
@@ -159,7 +159,7 @@ function AppointedDoctor() {
 
 	const handlePayFees = async (doctorId, bookingId) => {
 		try {
-			const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}/qr-code`);
+			const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}/qr-code`);
 			const data = await response.json();
 
 			if (!data.qrCode || !data.price) {

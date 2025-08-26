@@ -21,7 +21,7 @@ const AdminDoctors = () => {
                 return;
             }
 
-            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/doctors`, {
+            const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/doctors`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ const AdminDoctors = () => {
 
     const fetchBookings = async () => {
         try {
-            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/bookings`);
+            const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings`);
             if (!response.ok) {
                 throw new Error(`Error fetching bookings: ${response.status}`);
             }
@@ -53,7 +53,7 @@ const AdminDoctors = () => {
             console.error("Error fetching bookings:", error);
         }
     };
-    
+
 
     const handleDelete = async (doctorId) => {
         if (!doctorId) {
@@ -61,27 +61,27 @@ const AdminDoctors = () => {
             alert("Error: Invalid doctor ID.");
             return;
         }
-    
+
         console.log("Deleting doctor with ID:", doctorId);
-    
+
         if (window.confirm("Are you sure you want to delete this doctor?")) {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}`, {
+                const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 });
-    
+
                 if (!response.ok) {
                     throw new Error(`Error deleting doctor: ${response.status}`);
                 }
-    
+
                 console.log("Doctor deleted successfully");
                 alert("Doctor deleted successfully!");
-    
+
                 // Update the UI by removing the deleted doctor
                 setDoctors(doctors.filter((doctor) => doctor._id !== doctorId));
             } catch (error) {
@@ -90,7 +90,7 @@ const AdminDoctors = () => {
             }
         }
     };
-    
+
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -107,7 +107,7 @@ const AdminDoctors = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/doctors/upload`, {
+            const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/upload`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` }, // Don't set 'Content-Type' for FormData
                 body: formData,
@@ -132,10 +132,11 @@ const AdminDoctors = () => {
     if (loading) return <p>Loading doctors...</p>;
 
     return (
-        <div style={{ padding: "20px", marginTop: "150px" }}>
+        <div style={{ padding: '20px', margin: "160px 50px 25px 50px", background: "white", borderRadius: "15px", overflow: "hidden" }}>
+
             <h2>Manage Doctors</h2>
 
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap", alignItems: "flex-start" }}>
                 <button onClick={() => setSelectedTab("doctors")}>Doctors</button>
                 <button onClick={() => setSelectedTab("bookings")}>Bookings</button>
                 <button onClick={() => setSelectedTab("upload")}>Onboard via Excel</button>
@@ -144,52 +145,56 @@ const AdminDoctors = () => {
             {selectedTab === "doctors" && (
                 <div>
                     <h3>Doctors List</h3>
-                    <table border="1" style={{ width: "100%", textAlign: "left" }}>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {doctors.map((doctor) => (
-                                <tr key={doctor._id}>
-                                    <td>{doctor.firstName} {doctor.lastName}</td>
-                                    <td>{doctor.email}</td>
-                                    <td>{doctor.phone}</td>
-                                    <td><button onClick={() => handleDelete(doctor._id)}>Delete</button></td>
+                    <div style={{ width: '100%', overflowX: 'auto', padding: "0px 25px" }}>
+                        <table border="1" style={{ width: '90%', textAlign: 'left', marginTop: '20px' }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ padding: '10px', background: "#8f9f6d" }}>Name</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Email</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Phone</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {doctors.map((doctor) => (
+                                    <tr key={doctor._id}>
+                                        <td style={{ padding: '0px 10px' }}>{doctor.firstName} {doctor.lastName}</td>
+                                        <td style={{ padding: '0px 10px' }}>{doctor.email}</td>
+                                        <td style={{ padding: '0px 10px' }}>{doctor.phone}</td>
+                                        <td style={{ padding: '0px 10px' }}><button onClick={() => handleDelete(doctor._id)}>Delete</button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 
             {selectedTab === "bookings" && (
                 <div>
                     <h3>Booking Details</h3>
-                    <table border="1" style={{ width: "100%", textAlign: "left" }}>
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>Doctor</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {bookings.map((booking) => (
-                                <tr key={booking._id}>
-                                    <td>{booking.patientName}</td>
-                                    <td>{booking.doctorName}</td>
-                                    <td>{new Date(booking.dateOfAppointment).toLocaleDateString()}</td>
-                            <td>{booking.requestAccept === "o" ? "Pending" : booking.requestAccept}</td>
+                    <div style={{ width: '100%', overflowX: 'auto', padding: "0px 25px" }}>
+                        <table border="1" style={{ width: '90%', textAlign: 'left', marginTop: '20px' }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ padding: '10px', background: "#8f9f6d" }}>Patient Name</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Doctor</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Date</th>
+                                    <th style={{ padding: '0px 10px', background: "#8f9f6d" }}>Status</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {bookings.map((booking) => (
+                                    <tr key={booking._id}>
+                                        <td style={{ padding: '0px 10px' }}>{booking.patientName}</td>
+                                        <td style={{ padding: '0px 10px' }}>{booking.doctorName}</td>
+                                        <td style={{ padding: '0px 10px' }}>{new Date(booking.dateOfAppointment).toLocaleDateString()}</td>
+                                        <td style={{ padding: '0px 10px' }}>{booking.requestAccept === "o" ? "Pending" : booking.requestAccept}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 

@@ -13,7 +13,7 @@ const NotificationsPage = () => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications`, {
+        const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/notifications`, {
           headers: { Authorization: `Bearer ${auth.token}` }
         });
         
@@ -33,7 +33,7 @@ const NotificationsPage = () => {
   // Mark notification as read
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications/${notificationId}/read`, {}, {
+      await axios.put(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/notifications/${notificationId}/read`, {}, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       
@@ -51,7 +51,7 @@ const NotificationsPage = () => {
   // Mark all as read
   const markAllAsRead = async () => {
     try {
-      await axios.put(`${process.env.AYURVEDA_BACKEND_URL}/api/notifications/read-all`, {}, {
+      await axios.put(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/notifications/read-all`, {}, {
         headers: { Authorization: `Bearer ${auth.token}` }
       });
       

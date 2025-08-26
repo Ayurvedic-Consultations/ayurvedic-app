@@ -48,8 +48,9 @@ function SignUpPatientScreen() {
       return;
     }
 
+  
     try {
-      const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/auth/register/patient`, {
+      const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/register/patient`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

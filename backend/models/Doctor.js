@@ -11,11 +11,11 @@ const doctorSchema = new mongoose.Schema({
     designation: { type: String, required: true },
     experience: { type: Number, required: true },
     certificate: { type: String, required: true },
-    password: { type: String, required: true },   // Required field
-    price: { type: Number, required: true },      // Required field
-    education: { type: String, required: true },  // Required field
+    password: { type: String, required: true },
+    price: { type: Number, required: true },
+    education: { type: String, required: true },
     dob: { type: Date, required: true },
-    qrCode: { type: String }, 
+    qrCode: { type: String },
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

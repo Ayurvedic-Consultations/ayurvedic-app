@@ -4,7 +4,7 @@
 	margin: 20px auto;
 	padding: 20px;
 	margin-top: 150px;
-  border-radius: 15px;
+	border-radius: 15px;
 }
 
 .ttitle {
@@ -42,7 +42,7 @@
 	width: 55%;
 	padding: 10px;
 	border: solid 1px rgba(0, 0, 0, 0.103);
-  border-radius: 15px;
+	border-radius: 15px;
 }
 
 h1,
@@ -82,21 +82,20 @@ ul li {
 	color: #8b4513; /* Darker brown shade for hover effect */
 }
 
-@media (max-width : 700px){
-  .concern-row {
- 
-    flex-direction: column;
-  }
+@media (max-width: 700px) {
+	.concern-row {
+		flex-direction: column;
+	}
 
-  .concern-image {
-    width: 65%;
-    max-height: 400px;
-    object-position: top center;
-  }
-  
-  .concern-content {
-    width: 90%;
-    padding: 10px;
-    margin-bottom: 25px;
-  }
+	.concern-image {
+		width: 65%;
+		max-height: 400px;
+		object-position: top center;
+	}
+
+	.concern-content {
+		width: 90%;
+		padding: 10px;
+		margin-bottom: 25px;
+	}
 }

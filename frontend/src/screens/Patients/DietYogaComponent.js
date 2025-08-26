@@ -33,7 +33,7 @@ function DietYogaComponent() {
           throw new Error('Authentication token is missing.');
         }
 
-        const response = await fetch(`${process.env.AYURVEDA_BACKEND_URL}/api/diet-yoga/patient/${patientEmail}`, {
+        const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/diet-yoga/patient/${patientEmail}`, {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the headers
           },

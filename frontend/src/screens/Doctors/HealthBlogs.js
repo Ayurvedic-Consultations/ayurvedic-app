@@ -31,7 +31,7 @@ function HealthBlogs() {
 				try {
 					// Use the new endpoint format
 					const response = await axios.get(
-						`${process.env.AYURVEDA_BACKEND_URL}/api/blogs/author/doctor/${doctorId}`
+						`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs/author/doctor/${doctorId}`
 					);
 					setBlogs(response.data);
 					setError(null);
@@ -69,7 +69,7 @@ function HealthBlogs() {
 		setIsLoading(true);
 		try {
 			const response = await axios.post(
-				`${process.env.AYURVEDA_BACKEND_URL}/api/blogs`,
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/blogs`,
 				dataToSubmit
 			);
 			setBlogs([response.data, ...blogs]); // Add the new blog to the current list

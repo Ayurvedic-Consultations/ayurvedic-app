@@ -13,7 +13,7 @@ function MyOrders() {
 		const fetchOrders = async () => {
 			try {
 				const response = await axios.get(
-					`${process.env.AYURVEDA_BACKEND_URL}/api/orders/user`,
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/user`,
 					{
 						params: { retailerId },
 						headers: { Authorization: `Bearer ${auth.token}` },
@@ -30,7 +30,7 @@ function MyOrders() {
 
 	const updateOrderStatus = async (orderId, newStatus) => {
 		try {
-			await axios.patch(`${process.env.AYURVEDA_BACKEND_URL}/api/orders/status`, {
+			await axios.patch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/status`, {
 				orderId,
 				status: newStatus,
 			});

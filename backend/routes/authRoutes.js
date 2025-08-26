@@ -7,8 +7,8 @@ const { registerDoctor, registerRetailer, registerPatient, loginUser } = require
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Patient = require("../models/Patient"); // Import the Patient model
-const Retailer = require("../models/Retailer"); 
-const Doctor = require("../models/Doctor"); 
+const Retailer = require("../models/Retailer");
+const Doctor = require("../models/Doctor");
 const xlsx = require("xlsx");
 const fs = require("fs");
 const path = require("path");
@@ -51,6 +51,48 @@ router.post("/register/patient", registerPatient);
 router.post("/login", loginUser);
 
 //  Admin Login Route
+
+
+// Create Admin
+router.post("/admin/register", async (req, res) => {
+  const { firstName, lastName, email, phone, password } = req.body;
+
+  try {
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Admin already exists" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newAdmin = new Admin({
+      firstName,
+      lastName,
+      email,
+      phone,
+      password: hashedPassword,
+    });
+
+    await newAdmin.save();
+
+    const token = jwt.sign(
+      { id: newAdmin._id, role: "admin" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(201).json({
+      message: "Admin created successfully",
+      token,
+      admin: newAdmin,
+    });
+
+  } catch (error) {
+    console.error("Admin Register Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.post("/admin/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -110,13 +152,13 @@ router.get("/users", auth, async (req, res) => {
 
 router.delete("/users/:id", async (req, res) => {
   try {
-      const user = await Patient.findByIdAndDelete(req.params.id);
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
-      res.json({ message: "User deleted successfully" });
+    const user = await Patient.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: "User deleted successfully" });
   } catch (error) {
-      res.status(500).json({ message: "Error deleting user", error });
+    res.status(500).json({ message: "Error deleting user", error });
   }
 });
 
@@ -145,58 +187,58 @@ router.get("/doctors", async (req, res) => {
 // API route to upload Excel file and save retailers
 router.post("/upload-retailers", upload.single("file"), async (req, res) => {
   try {
-      console.log("File received:", req.file);
+    console.log("File received:", req.file);
 
-      if (!req.file) {
-          return res.status(400).json({ message: "No file uploaded" });
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    //  Read from file instead of buffer
+    const filePath = path.join(__dirname, "..", req.file.path);
+    const workbook = xlsx.readFile(filePath); // ✅ Read the file from disk
+
+    console.log("Workbook loaded:", workbook.SheetNames);
+
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    console.log("Extracted Data:", sheetData);
+
+    if (sheetData.length === 0) {
+      return res.status(400).json({ message: "Empty Excel file" });
+    }
+
+    // Process data
+    for (const row of sheetData) {
+      const { firstName, lastName, email, phone, dob, licenseNumber, age, gender, zipCode, password } = row;
+      console.log("Processing:", row);
+
+      const existingRetailer = await Retailer.findOne({ email });
+      if (!existingRetailer) {
+        const newRetailer = new Retailer({ firstName, lastName, email, phone, dob, licenseNumber, age, gender, zipCode, password });
+        await newRetailer.save();
       }
+    }
 
-      //  Read from file instead of buffer
-      const filePath = path.join(__dirname, "..", req.file.path);
-      const workbook = xlsx.readFile(filePath); // ✅ Read the file from disk
+    //  Delete the uploaded file after processing
+    fs.unlinkSync(filePath);
 
-      console.log("Workbook loaded:", workbook.SheetNames);
-
-      const sheetName = workbook.SheetNames[0];
-      const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-      console.log("Extracted Data:", sheetData);
-
-      if (sheetData.length === 0) {
-          return res.status(400).json({ message: "Empty Excel file" });
-      }
-
-      // Process data
-      for (const row of sheetData) {
-          const { firstName, lastName, email, phone, dob, licenseNumber, age, gender, zipCode, password } = row;
-          console.log("Processing:", row);
-
-          const existingRetailer = await Retailer.findOne({ email });
-          if (!existingRetailer) {
-              const newRetailer = new Retailer({ firstName, lastName, email, phone, dob, licenseNumber, age, gender, zipCode, password });
-              await newRetailer.save();
-          }
-      }
-
-      //  Delete the uploaded file after processing
-      fs.unlinkSync(filePath);
-
-      res.status(201).json({ message: "Retailers uploaded successfully!" });
+    res.status(201).json({ message: "Retailers uploaded successfully!" });
   } catch (error) {
-      console.error("Error processing Excel file:", error);
-      res.status(500).json({ message: "Internal server error" });
+    console.error("Error processing Excel file:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
 router.delete("/retailers/:id", async (req, res) => {
   try {
-      const deletedRetailer = await Retailer.findByIdAndDelete(req.params.id);
-      if (!deletedRetailer) {
-          return res.status(404).json({ message: "Retailer not found" });
-      }
-      res.json({ message: "Retailer deleted successfully" });
+    const deletedRetailer = await Retailer.findByIdAndDelete(req.params.id);
+    if (!deletedRetailer) {
+      return res.status(404).json({ message: "Retailer not found" });
+    }
+    res.json({ message: "Retailer deleted successfully" });
   } catch (error) {
-      res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

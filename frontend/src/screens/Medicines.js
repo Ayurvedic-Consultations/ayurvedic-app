@@ -16,7 +16,7 @@ const Medicines = () => {
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
-        const response = await axios.get(`${process.env.AYURVEDA_BACKEND_URL}/api/medicines`);
+        const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/medicines`);
         setMedicines(response.data);
         setLoading(false);
       } catch (err) {

@@ -3,7 +3,10 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin-top: 150px;
+  margin-top: 160px; 
+  margin-bottom: 25px;
+  background:white;
+  border-radius: 15px;
 }
 
 .admin-blogs h1 {
@@ -257,6 +260,14 @@
 .submit-btn:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
+}
+
+.generate-blog {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  margin: 0 50px 0 50px;
 }
 
 @media (max-width: 768px) {

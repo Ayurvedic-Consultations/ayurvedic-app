@@ -11,7 +11,7 @@ const Notification = () => {
 		const fetchNotifications = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.AYURVEDA_BACKEND_URL}/api/bookings/notifications?email=${userEmail}`
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/notifications?email=${userEmail}`
 				);
 				const data = await response.json();
 				if (response.ok) {
