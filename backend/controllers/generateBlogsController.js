@@ -34,7 +34,7 @@ exports.generateBlogs = async (req, res) => {
 exports.getAllBlogs = async (req, res) => {
     try {
         const blogs = await AIBlog.find({})
-            .sort({ timestamp: -1 }); 
+            .sort({ timestamp: -1 });
 
         res.status(200).json({
             success: true,
@@ -44,5 +44,20 @@ exports.getAllBlogs = async (req, res) => {
     } catch (err) {
         console.error("Error fetching AI Blogs:", err);
         res.status(500).json({ error: "Server error while fetching blogs" });
+    }
+};
+
+
+// DELETE a blog by ID
+exports.deleteBlog = async (req, res) => {
+    try {
+        const result = await AIBlog.findByIdAndDelete(req.params.id);
+        if (!result) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+        res.status(200).json({ message: "Blog deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting AI Blog:", error);
+        res.status(500).json({ error: "Server error while deleting blog" });
     }
 };
