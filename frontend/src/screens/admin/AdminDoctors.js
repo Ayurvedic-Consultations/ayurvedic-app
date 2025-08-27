@@ -21,7 +21,7 @@ const AdminDoctors = () => {
                 return;
             }
 
-            const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/doctors`, {
+            const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/upload/getdoctors`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -35,6 +35,7 @@ const AdminDoctors = () => {
 
             const data = await response.json();
             setDoctors(data);
+            console.log(doctors);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching doctors:", error);
@@ -54,7 +55,6 @@ const AdminDoctors = () => {
         }
     };
 
-
     const handleDelete = async (doctorId) => {
         if (!doctorId) {
             console.error("Invalid doctor ID:", doctorId);
@@ -67,14 +67,13 @@ const AdminDoctors = () => {
         if (window.confirm("Are you sure you want to delete this doctor?")) {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/${doctorId}`, {
+                const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/upload/deleteDoctor/${doctorId}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 });
-
                 if (!response.ok) {
                     throw new Error(`Error deleting doctor: ${response.status}`);
                 }
@@ -90,7 +89,6 @@ const AdminDoctors = () => {
             }
         }
     };
-
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -158,9 +156,9 @@ const AdminDoctors = () => {
                             <tbody>
                                 {doctors.map((doctor) => (
                                     <tr key={doctor._id}>
-                                        <td style={{ padding: '0px 10px' }}>{doctor.firstName} {doctor.lastName}</td>
+                                        <td style={{ padding: '0px 10px' }}>{doctor.firstname} {doctor.lastname}</td>
                                         <td style={{ padding: '0px 10px' }}>{doctor.email}</td>
-                                        <td style={{ padding: '0px 10px' }}>{doctor.phone}</td>
+                                        <td style={{ padding: '0px 10px' }}>{doctor.whatsapp}</td>
                                         <td style={{ padding: '0px 10px' }}><button onClick={() => handleDelete(doctor._id)}>Delete</button></td>
                                     </tr>
                                 ))}
