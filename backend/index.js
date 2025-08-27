@@ -17,6 +17,7 @@ const searchRoutes = require("./routes/searchRoutes");
 
 const uploadRoutes = require("./routes/uploadRoutes");
 const generateBlogRoutes = require("./routes/generateBlogRoutes");
+const getAllRecords = require("./routes/patientRecordsRoutes");
 
 
 mongoose.set('debug', true);
@@ -54,6 +55,7 @@ app.use("/api/search", searchRoutes);
 
 app.use("/api/upload", uploadRoutes);
 app.use("/api/webhook", generateBlogRoutes);
+app.use("/api/patient-records", getAllRecords);
 
 
 // Start the server
