@@ -79,3 +79,26 @@ exports.uploadDoctorsFromGoogleSheet = async () => {
         console.error('❌ Failed to upload doctors from Excel:', error.message);
     }
 };
+
+
+exports.deleteDoctor = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Doctor ID is required.' });
+    }
+
+    try {
+        const deletedDoctor = await Doctor.findByIdAndDelete(id);
+
+        if (!deletedDoctor) {
+            return res.status(404).json({ message: 'Doctor not found.' });
+        }
+
+        console.log(`✅ Successfully deleted doctor with ID: ${id}`);
+        res.status(200).json({ message: 'Doctor deleted successfully!', deletedDoctor });
+    } catch (error) {
+        console.error(`❌ Error deleting doctor with ID ${id}:`, error.message);
+        res.status(500).json({ message: 'Server error while deleting the doctor.' });
+    }
+};

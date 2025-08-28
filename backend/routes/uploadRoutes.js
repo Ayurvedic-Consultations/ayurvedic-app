@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { uploadDoctorsFromGoogleSheet } = require('../controllers/uploadController');
-const {getAllDoctors} = require('../controllers/uploadController');
+const { uploadDoctorsFromGoogleSheet, getAllDoctors, deleteDoctor } = require('../controllers/uploadController');
 
 router.post('/', async (req, res) => {
     try {
@@ -13,5 +12,6 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/getdoctors', getAllDoctors);
+router.delete('/deleteDoctor/:id', deleteDoctor);
 
 module.exports = router;
