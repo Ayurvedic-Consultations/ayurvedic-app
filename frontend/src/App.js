@@ -10,13 +10,9 @@ import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
 import ChatbotWidget from './components/ChatbotWidget';
 
-<<<<<<< HEAD
-import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
-=======
 // import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
 
->>>>>>> 913ce784ee74384c1681a190307810f557142a8d
 import CartScreen from './screens/Cart';
 import PaymentScreen from './screens/Payment';
 import BlogScreen from './screens/Blogs';
@@ -63,6 +59,10 @@ import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor
 import RetailerNotification from './screens/Retailers/RetailerNotification';
 import { AuthContext } from './context/AuthContext';
 import PaymentPage from './screens/Patients/Appointments/PaymentPage';
+
+// make changes by myself
+import PatientFullDetails from "./screens/admin/PatientFullDetails";
+
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -112,6 +112,10 @@ function App() {
         <Route path="/admin/consultations" element={<AdminDoctors />} />
         <Route path="/admin/medicine-orders" element={<AdminRetailers />} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
+
+       {/* make changes by me */}
+       <Route path="/patients/:id" element={<PatientFullDetails />} />
+        
 
 
         <Route element={<ProtectedRoute />}>

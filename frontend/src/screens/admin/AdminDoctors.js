@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
+import { useNavigate } from "react-router-dom";
 
 const AdminDoctors = () => {
     const [selectedTab, setSelectedTab] = useState("doctors");
@@ -7,6 +8,8 @@ const AdminDoctors = () => {
     const [loading, setLoading] = useState(true);
     const [bookings, setBookings] = useState([]);
     const [file, setFile] = useState(null);
+
+      const navigate = useNavigate();
 
     useEffect(() => {
         if (selectedTab === "doctors") fetchDoctors();
@@ -53,6 +56,11 @@ const AdminDoctors = () => {
             console.error("Error fetching bookings:", error);
         }
     };
+
+    const handleRowClick = (id) => {
+    navigate(`/patients/${id}`);
+    };
+
 
 
     const handleDelete = async (doctorId) => {
@@ -157,11 +165,24 @@ const AdminDoctors = () => {
                             </thead>
                             <tbody>
                                 {doctors.map((doctor) => (
-                                    <tr key={doctor._id}>
+                                    <tr 
+                                      key={doctor._id}
+                                      onClick={() => handleRowClick(doctor._id)}
+                                      style={{ cursor: "pointer" }}
+                                    
+                                   >
                                         <td style={{ padding: '0px 10px' }}>{doctor.firstName} {doctor.lastName}</td>
                                         <td style={{ padding: '0px 10px' }}>{doctor.email}</td>
                                         <td style={{ padding: '0px 10px' }}>{doctor.phone}</td>
-                                        <td style={{ padding: '0px 10px' }}><button onClick={() => handleDelete(doctor._id)}>Delete</button></td>
+                                        <td style={{ padding: '0px 10px' }}>
+                                             <button onClick={() => handleDelete(doctor._id)} style={{ marginLeft: '10px', color: 'blue' }}>Delete</button>
+                                             <button   onClick={(e) => {
+                                                   e.stopPropagation();
+                                                   navigate(`/patients/${doctor._id}`);
+                                                   }}
+                                                  style={{ marginLeft: '50px', color: 'blue' }}>Update</button>
+                                
+                                                  </td>
                                     </tr>
                                 ))}
                             </tbody>

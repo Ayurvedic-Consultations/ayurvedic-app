@@ -16,7 +16,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",

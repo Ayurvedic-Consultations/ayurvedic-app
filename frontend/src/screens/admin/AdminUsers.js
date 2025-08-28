@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import patients from './Patientdata';
 
 const AdminUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
+    
+//   const handleUpdate = (id) => {
+//     navigate(`/patients/update/${id}`);
+//   };
+
+  // Row click → go to details page
+  const handleRowClick = (id) => {
+    navigate(`/patients/${id}`);
+  };
+
+
 
     useEffect(() => {
         fetchUsers();
@@ -84,8 +99,13 @@ const AdminUsers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
-                            <tr key={user._id}>
+                        {patients.map(user => (
+                            <tr      
+                             key={user._id}
+                             onClick={() => handleRowClick(user._id)}
+                             style={{ cursor: "pointer" }}
+                            
+                            >
                                 <td style={{ padding: '0px 10px' }}>{user.firstName} {user.lastName}</td>
                                 <td style={{ padding: '0px 10px' }}>{user.email}</td>
                                 <td style={{ padding: '0px 10px' }}>{user.phone}</td>
@@ -93,7 +113,13 @@ const AdminUsers = () => {
                                 <td style={{ padding: '0px 10px' }}>{user.age}</td>
                                 <td style={{ padding: '0px 10px' }}>{user.zipCode}</td>
                                 <td style={{ padding: '0px 10px' }}>
-                                    <button onClick={() => handleDelete(user._id)} style={{ marginLeft: '10px', color: 'red' }}>Delete</button>
+                                    <button onClick={() => handleDelete(user._id)} style={{ marginLeft: '10px', color: 'blue' }}>Delete</button>
+                                    <button   onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/patients/${user._id}`);
+                                            }}
+                                            style={{ marginLeft: '20px', color: 'blue' }}>Update</button>
+                                
                                 </td>
                             </tr>
                         ))}
