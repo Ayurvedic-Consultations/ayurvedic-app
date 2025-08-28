@@ -32,6 +32,7 @@ function BlogsVideosScreen() {
             .then((data) => {
                 if (data.blogs) {
                     setBlogs(data.blogs);
+                    console.log(data.blogs);
                 }
                 setLoading(false);
             })

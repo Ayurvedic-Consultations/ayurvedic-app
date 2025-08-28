@@ -1,4 +1,4 @@
-const AIBlog = require('../models/AIBlog'); // Import the model you just made
+const AIBlog = require('../models/AIBlog');
 
 // Webhook endpoint
 exports.generateBlogs = async (req, res) => {
@@ -7,12 +7,10 @@ exports.generateBlogs = async (req, res) => {
 
         const { title, url, content, tags, user, timestamp } = req.body;
 
-        // Basic validation
         if (!title || !url || !content?.text || !user?.userId || !user?.name) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        // Create the blog in Mongo
         await AIBlog.create({
             title,
             url,
@@ -59,5 +57,40 @@ exports.deleteBlog = async (req, res) => {
     } catch (error) {
         console.error("Error deleting AI Blog:", error);
         res.status(500).json({ error: "Server error while deleting blog" });
+    }
+};
+
+
+// UPDATE a blog by ID
+exports.updateBlog = async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+        const updatedBlog = await AIBlog.findByIdAndUpdate(id, updateData, {
+            new: true, 
+            runValidators: true, 
+        });
+
+        if (!updatedBlog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found."
+            });
+        }
+   
+        res.status(200).json({
+            success: true,
+            message: "Blog updated successfully!",
+            blog: updatedBlog
+        });
+
+    } catch (error) {
+        console.error("Error updating AI Blog:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server error while updating blog.",
+            error: error.message
+        });
     }
 };
