@@ -42,8 +42,8 @@ import CheckoutScreen from './screens/CheckoutScreen';
 
 import AdminPage from './screens/admin/AdminPage';
 import AdminUsers from './screens/admin/AdminUsers';
-import AdminDoctors from './screens/admin/AdminDoctors';
-import AdminRetailers from './screens/admin/AdminRetailers';
+import AdminDoctors from './screens/admin/doctors/AdminDoctors';
+import AdminRetailers from './screens/admin/Retailer/AdminRetailers';
 import AdminNavBar from './screens/admin/AdminNavbar';
 import AdminBlogs from './screens/admin/AdminBlogs';
 
@@ -61,8 +61,13 @@ import { AuthContext } from './context/AuthContext';
 import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 
 // make changes by myself
-import PatientFullDetails from "./screens/admin/PatientFullDetails";
-
+import PatientFullDetails from "./screens/admin/patient/PatientFullDetails";
+import DoctorFullDetails from './screens/admin/doctors/DoctorFullDetails';
+import Transactions from './screens/admin/transactions';
+import RetailerManagement from './screens/admin/Retailer/RetailerManagement';  
+import Patientprofile from './screens/admin/patient/PatientProfile';
+import DoctorList from './screens/admin/doctors/DoctorList';
+import RetailerFullDetails from './screens/admin/Retailer/RetailerFullDetails';
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -108,13 +113,20 @@ function App() {
         <Route path="/patient-home" element={<PatientPage />} />
 
         <Route path="/admin-home" element={<AdminPage />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/consultations" element={<AdminDoctors />} />
-        <Route path="/admin/medicine-orders" element={<AdminRetailers />} />
+        {/* here i made changes; */}
+        {/* <Route path="/admin/consultations" element={<AdminDoctors />} /> */}
+        {/* <Route path="/admin/medicine-orders" element={<AdminRetailers/>} /> */}
+        <Route path="/admin/consultations" element={<DoctorList/>} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
 
+        {/* <Route path="/admin/users" element={<AdminUsers />} />  */}
        {/* make changes by me */}
-       <Route path="/patients/:id" element={<PatientFullDetails />} />
+       <Route path="/patients/:id" element={<Patientprofile/>} />
+       <Route path="/admin/consultations/:id" element={<DoctorFullDetails />} />
+       <Route path="/admin/transactions" element={<Transactions/>} />
+        <Route path="/admin/medicine-orders" element={<RetailerManagement/>} />
+         <Route path="/admin/users" element={<PatientFullDetails />} />
+         <Route path="/admin/medicine-orders/:id" element={<RetailerFullDetails/>} />
         
 
 

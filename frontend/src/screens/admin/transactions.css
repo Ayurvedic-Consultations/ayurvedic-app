@@ -1,0 +1,238 @@
+/*
+ * Transactions Component Styles
+ * A modern, clean, and animated design for a transactions dashboard.
+ */
+
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #2c3e50;
+  --bg-light: #f4f7f9;
+  --text-dark: #333;
+  --text-light: #666;
+  --border-color: #e0e6ed;
+  --success-color: #2ecc71;
+  --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  background-color: var(--bg-light);
+}
+
+/* Container */
+.transactions-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 160px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: var(--box-shadow-light);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.transactions-container:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+/* Header */
+.transactions-header {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--secondary-color);
+  text-align: center;
+  position: relative;
+}
+
+.transactions-header::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+  animation: header-underline 0.5s ease-out forwards;
+}
+
+@keyframes header-underline {
+  from { width: 0; }
+  to { width: 60px; }
+}
+
+/* Filter Controls */
+.filter-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+}
+
+.filter-controls label {
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.filter-controls select {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--text-dark);
+  transition: all 0.3s ease-in-out;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px;
+}
+
+.filter-controls select:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+}
+
+/* Table */
+.transactions-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow-light);
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.transactions-table th {
+  background: var(--bg-light);
+  font-weight: 600;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.transactions-table tbody tr {
+  background: #ffffff;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.transactions-table tbody tr:hover {
+  background: #f0f8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+/* Amount column style */
+.transactions-table td:nth-child(4) {
+  font-weight: 700;
+  color: var(--success-color);
+}
+
+/* No Data */
+.no-transactions {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-light);
+  font-style: italic;
+  font-size: 18px;
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* === extra styles for search bar === */
+.filter-controls {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-controls label {
+  font-weight: 500;
+}
+
+.transaction-search {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px; /* ensures it fits even on small screens */
+}
+
+.transaction-search:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+/* responsive tweaks if needed */
+@media (max-width: 480px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .transaction-search {
+    width: 100%;
+  }
+}
+
+
+/* Animation for loading/error messages */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.transactions-error {
+  padding: 20px;
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  border-radius: 8px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .transactions-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .transactions-header {
+    font-size: 26px;
+  }
+
+  .transactions-table th,
+  .transactions-table td {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+}

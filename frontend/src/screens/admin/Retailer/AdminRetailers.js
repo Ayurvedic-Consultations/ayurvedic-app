@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './AdminRetailers.css';
 
 const AdminRetailers = () => {
     const [retailers, setRetailers] = useState([]);

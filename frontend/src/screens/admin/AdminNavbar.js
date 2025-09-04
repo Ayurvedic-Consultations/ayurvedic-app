@@ -265,11 +265,11 @@ function AdminNavBar() {
 										Medicines
 									</NavLink>
 								</li>
-								<li>
+								{/* <li>
 									<NavLink to="/diet-yoga" activeClassName="active">
 										Diet and Yoga Plan
 									</NavLink>
-								</li>
+								</li> */}
 								<li>
 									<NavLink to="/blogs-videos" activeClassName="active">
 										Blogs and Videos
@@ -307,11 +307,11 @@ function AdminNavBar() {
 								Medicines
 							</NavLink>
 						</li>
-						<li>
+						{/* <li>
 							<NavLink to="/diet-yoga" activeClassName="active">
 								Diet and Yoga Plan
 							</NavLink>
-						</li>
+						</li> */}
 						<li>
 							<NavLink to="/blogs-videos" activeClassName="active">
 								Blogs and Videos

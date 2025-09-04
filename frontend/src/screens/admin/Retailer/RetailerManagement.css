@@ -1,0 +1,380 @@
+/*
+  RetailerManagement.css - Alternative Design
+
+  This stylesheet provides a modern, clean, and professional aesthetic
+  for the RetailerManagement React component. It uses a deep blue/teal color palette,
+  subtle gradients, and soft shadows to create an attractive user interface.
+  The layout is fully responsive, adapting to various screen sizes.
+*/
+
+:root {
+  --primary-color: #2c5282;
+  --secondary-color: #3182ce;
+  --text-color: #2d3748;
+  --light-gray: #edf2f7;
+  --border-color: #e2e8f0;
+  --bg-color-gradient-start: #f7fafc;
+  --bg-color-gradient-end: #ebf4ff;
+  --success-color: #48bb78;
+  --danger-color: #e53e3e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--light-gray);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0px;
+  line-height: 1.6;
+}
+
+.retailer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 150px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.retailer-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.page-title {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 2.8em;
+  font-weight: 700;
+  margin-bottom: 30px;
+  letter-spacing: -1px;
+}
+
+/* Controls (Search, Filter, Add) */
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-box, .filter-dropdown {
+  padding: 14px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+}
+
+.search-box:focus, .filter-dropdown:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.2);
+  outline: none;
+}
+
+.filter-dropdown {
+  width: auto;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn-add {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.btn-add:hover {
+  background-color: #2a4365;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Table Styling */
+.retailer-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 25px;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.retailer-table th,
+.retailer-table td {
+  padding: 20px;
+  text-align: left;
+}
+
+.retailer-table th {
+  background-color: var(--light-gray);
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+.retailer-table tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.retailer-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.retailer-table tbody tr:hover {
+  background-color: #f7fafc;
+}
+
+.retailer-table .status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+}
+
+.status.active {
+  background-color: #c6f6d5;
+  color: var(--success-color);
+}
+
+.status.inactive {
+  background-color: #fed7d7;
+  color: var(--danger-color);
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px;
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 1.2em;
+}
+
+.btn-edit, .btn-delete {
+  padding: 10px 18px;
+  margin-right: 10px;
+  font-size: 0.9em;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.btn-edit {
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background-color: #2b6cb0;
+}
+
+.btn-delete {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background-color: #c53030;
+}
+
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  padding: 70px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s forwards;
+}
+
+.modal {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: var(--primary-color);
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.modal p {
+  text-align: center;
+  font-size: 1.1em;
+  margin-bottom: 25px;
+}
+
+.modal strong {
+  color: var(--primary-color);
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal input, .modal select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal input:focus, .modal select:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.btn-cancel {
+  background-color: var(--light-gray);
+  color: var(--text-color);
+}
+
+.btn-cancel:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-save {
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+.btn-save:hover {
+  background-color: #2b6cb0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .retailer-container {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .retailer-container {
+    padding: 20px;
+  }
+  
+  .page-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .search-box, .filter-dropdown, .btn-add {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .retailer-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .retailer-table thead, .retailer-table tbody, .retailer-table tr {
+    display: table;
+    width: 100%;
+  }
+
+  .retailer-table th, .retailer-table td {
+    padding: 12px;
+    font-size: 0.9em;
+  }
+
+  .modal {
+    padding: 25px;
+  }
+
+  .modal h3 {
+    font-size: 1.5em;
+  }
+}
+
+/* Small screens/mobile responsiveness */
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.8em;
+  }
+
+  .btn {
+    padding: 12px 20px;
+  }
+  
+  .btn-edit, .btn-delete {
+    padding: 8px 12px;
+  }
+}

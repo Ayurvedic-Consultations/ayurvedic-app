@@ -1,0 +1,78 @@
+/* ==============================================
+  Feedback Display Component Styles
+  ==============================================
+*/
+
+.feedback-display-card h3 {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-md);
+}
+
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.feedback-item-card {
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-lg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.feedback-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.feedback-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #eef2ff;
+  color: #4338ca;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.feedback-date {
+  font-size: 0.8rem;
+  color: var(--color-tertiary-text);
+  font-weight: 500;
+}
+
+/* Read-only star display */
+.star-display {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.star {
+  color: #d1d5db; /* Gray for empty stars */
+}
+
+.star.filled {
+  color: #f59e0b; /* Amber for filled stars */
+}
+
+.feedback-item-comment {
+  font-size: 0.95rem;
+  color: var(--color-secondary-text);
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-border);
+}
+
+.no-feedback {
+  text-align: center;
+  color: var(--color-muted-text);
+  padding: var(--space-xl);
+}

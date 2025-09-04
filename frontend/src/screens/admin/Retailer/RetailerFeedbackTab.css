@@ -1,0 +1,199 @@
+/* =============================================
+   CSS Variables for Theming
+   ============================================= */
+:root {
+  --primary-text: #2c3e50;
+  --secondary-text: #5a6a79;
+  --border-color: #e9ecef;
+  --card-bg: #ffffff;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  --star-filled-color: #ffc107;
+  --star-empty-color: #d6d9de;
+  --feedback-item-bg: #f8f9fa;
+  --avatar-bg: #007bff;
+  --avatar-text: #ffffff;
+}
+
+/* =============================================
+   Main Container Card
+   ============================================= */
+.feedback-display-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 1.75rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.feedback-display-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* =============================================
+   Feedback List and Items
+   ============================================= */
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.feedback-item-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background-color: #fff; /* Keep it clean */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.feedback-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* =============================================
+   User Avatar
+   ============================================= */
+.feedback-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--avatar-bg);
+  color: var(--avatar-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.feedback-content {
+  flex-grow: 1;
+}
+
+/* =============================================
+   Feedback Item Header (Name & Date)
+   ============================================= */
+.feedback-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.customer-name {
+  font-weight: 600;
+  color: var(--primary-text);
+  font-size: 1rem;
+}
+
+.feedback-date {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+}
+
+/* =============================================
+   Star Rating
+   ============================================= */
+.star-display {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.75rem;
+}
+
+.star {
+  color: var(--star-empty-color);
+}
+
+.star.filled {
+  color: var(--star-filled-color);
+}
+
+/* =============================================
+   Feedback Comment
+   ============================================= */
+.feedback-item-comment {
+  margin: 0;
+  color: var(--secondary-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* =============================================
+   No Feedback Message
+   ============================================= */
+.no-feedback {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--secondary-text);
+}
+
+.no-feedback p {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+/* =============================================
+   RESPONSIVE DESIGN (down to 321px)
+   ============================================= */
+@media (max-width: 480px) {
+  .feedback-display-card {
+    padding: 1.25rem;
+  }
+
+  .feedback-display-card h3 {
+    font-size: 1.15rem;
+  }
+
+  /* Make avatar smaller to save crucial horizontal space */
+  .feedback-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  /* Reduce gap and padding inside each feedback item */
+  .feedback-item-card {
+    gap: 0.7rem;
+    padding: 0.7rem;
+  }
+
+  /* Stack customer name and date vertically for better fit */
+  .feedback-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem; /* Tighter vertical spacing */
+    margin-bottom: 0.5rem; /* Add space below the header block */
+  }
+
+  .customer-name {
+    font-size: 0.9rem; /* Reduced font size */
+  }
+
+  .feedback-date {
+    font-size: 0.75rem; /* Kept this small */
+  }
+
+  /* Prevent long words in comments from breaking the layout */
+  .feedback-item-comment {
+    font-size: 0.85rem; /* Reduced font size */
+    word-break: break-word;
+    line-height: 1.5; /* Tighter line height for smaller text */
+  }
+}
+

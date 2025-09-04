@@ -1,0 +1,231 @@
+/* ==============================================
+   Base Container and Font Styles
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.retailer-profile-page {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fa;
+  padding: 25px;
+  color: #343a40;
+  min-height: 100vh;
+}
+
+.retailer-profile-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #212529;
+}
+
+.retailer-profile-page .subtitle {
+  font-size: 16px;
+  color: #6c757d;
+  margin-bottom: 25px;
+}
+
+/* ==============================================
+   Back Button
+   ============================================== */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 20px;
+}
+
+.back-btn:hover {
+  background-color: #f1f3f5;
+  border-color: #ced4da;
+}
+
+/* ==============================================
+   Main Two-Panel Layout
+   ============================================== */
+.retailer-profile-container {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* ==============================================
+   Left Panel - Retailer Summary
+   ============================================== */
+.left-panel {
+  flex: 0 0 320px; /* Fixed width */
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.left-panel .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.left-panel h2 {
+  font-size: 22px;
+  margin-bottom: 5px;
+  color: #212529;
+}
+
+.left-panel .muted {
+  font-size: 15px;
+  color: #6c757d;
+  margin-bottom: 25px;
+}
+
+.left-panel .info {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.left-panel .info p {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #495057;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+
+.left-panel .info p svg {
+  flex-shrink: 0;
+  color: #868e96;
+}
+
+/* ==============================================
+   Stats Section (Rating, Experience)
+   ============================================== */
+.left-panel .stats {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e9ecef;
+}
+
+.stats .stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.stats .stat-label {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ==============================================
+   Right Panel - Tabbed Content
+   ============================================== */
+.right-panel {
+  flex-grow: 1;
+  padding: 30px;
+}
+
+.tabs-container {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 25px;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px; /* To align with the container's border */
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+  color: #0056b3;
+}
+
+.tab-btn.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+.tab-content {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==============================================
+   Responsive Design
+   ============================================== */
+@media (max-width: 992px) {
+  .retailer-profile-container {
+    flex-direction: column;
+  }
+  .left-panel {
+    flex-basis: auto; /* Reset fixed width */
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+}
+
+@media (max-width: 768px) {
+  .retailer-profile-page {
+    padding: 15px;
+  }
+  .left-panel, .right-panel {
+    padding: 20px;
+  }
+  .tabs-container {
+    overflow-x: auto;
+  }
+}

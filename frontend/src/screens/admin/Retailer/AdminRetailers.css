@@ -1,0 +1,249 @@
+/*
+ * AdminRetailers Component Styles
+ * A modern, clean, and animated design for the retailer management dashboard.
+ */
+
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #2c3e50;
+  --bg-light: #f4f7f9;
+  --text-dark: #333;
+  --text-light: #666;
+  --border-color: #e0e6ed;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  background-color: var(--bg-light);
+}
+
+/* Container */
+.retailer-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: var(--box-shadow-light);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.retailer-container:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+.retailer-header {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--secondary-color);
+  text-align: center;
+}
+
+/* File Upload Section */
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f9fbfc;
+  border-radius: 12px;
+  border: 1px dashed var(--border-color);
+}
+
+.upload-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+}
+
+.file-input-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.file-input-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-color);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-weight: 500;
+}
+
+.file-input-btn:hover {
+  background: #3b7ad1;
+}
+
+/* Table Section */
+.retailer-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow-light);
+}
+
+.retailer-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+}
+
+.retailer-table th,
+.retailer-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.retailer-table th {
+  background: var(--bg-light);
+  font-weight: 600;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.retailer-table tbody tr {
+  background: #ffffff;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.retailer-table tbody tr:hover {
+  background: #f0f8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.retailer-table td:last-child {
+  white-space: nowrap;
+}
+
+/* Actions Buttons */
+.action-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-btn {
+  background: var(--danger-color);
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+/* Modal and Message Box */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-message {
+  font-size: 18px;
+  margin-bottom: 25px;
+  color: var(--text-dark);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.modal-btn-confirm {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.modal-btn-confirm:hover {
+  background: #3b7ad1;
+}
+
+.modal-btn-cancel {
+  background: var(--border-color);
+  color: var(--text-dark);
+}
+
+.modal-btn-cancel:hover {
+  background: #d4d8dd;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .retailer-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .retailer-header {
+    font-size: 26px;
+  }
+
+  .retailer-table th,
+  .retailer-table td {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+}

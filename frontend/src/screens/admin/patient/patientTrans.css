@@ -1,0 +1,112 @@
+/* ==============================================
+  Transaction Component Styles
+  ==============================================
+*/
+
+.transaction-card {
+  padding: 0;
+}
+
+.transaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--color-muted-text);
+}
+
+.search-container input {
+  padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-family-main);
+  font-size: 0.9rem;
+  width: 280px; /* Increased width for longer placeholder */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Table Styles */
+.transaction-table-container {
+  width: 100%;
+  overflow-x: auto; /* Ensures table is scrollable on small screens */
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: var(--space-md);
+  text-align: left;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.transaction-table th {
+  font-weight: 600;
+  color: var(--color-secondary-text);
+  background-color: var(--color-surface-alt);
+}
+
+.transaction-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.transaction-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.transaction-id {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+}
+
+.doctor-name {
+  font-weight: 600;
+  color: var(--color-primary-text);
+}
+
+.transaction-amount {
+  font-weight: 600;
+  color: var(--color-primary-text);
+}
+
+.no-results {
+  text-align: center;
+  color: var(--color-muted-text);
+  padding: var(--space-xl);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .transaction-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  .search-container input {
+    width: 100%;
+  }
+}

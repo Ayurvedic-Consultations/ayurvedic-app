@@ -1,0 +1,154 @@
+/* Importing fonts for a more polished look. 'Inter' is kept, with 'Roboto' as a fallback */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* ==============================================
+   CSS Variables for a beautiful, cohesive theme
+   ==============================================
+*/
+:root {
+  /* Color Palette */
+  --color-text-primary: #1e2a3a;
+  --color-text-secondary: #5a6473;
+  --color-text-tertiary: #8893a7;
+  --color-surface: #ffffff;
+  --color-background-light: #f5f8fa;
+  --color-border: #e6eaf0;
+  --color-license-active: #2c974b; /* A more vibrant green for active status */
+  --color-license-active-bg: #dff6e3;
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.5rem;
+
+  /* Typography & Border Radius */
+  --font-family-main: 'Inter', sans-serif;
+  --border-radius-md: 0.75rem;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.08); /* Enhanced shadow for a floating effect */
+}
+
+/* ==============================================
+   Profile Details Container
+   ==============================================
+*/
+.profile-details {
+  display: flex;
+  flex-direction: row; /* Arranges the cards side-by-side */
+  gap: var(--space-lg);
+  align-items: stretch; /* Ensures both cards have the same height */
+  width: 100%;
+}
+
+/* ==============================================
+   Individual Card Styles
+   ==============================================
+*/
+.detail-item {
+  flex: 1; /* Allows the card to grow and fill available space */
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.detail-item h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-lg) 0;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.detail-item ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-item li {
+  margin-bottom: var(--space-sm);
+  font-size: 0.95rem; /* Slightly larger font for readability */
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ==============================================
+   Two-Column Data Layout within a Card
+   ==============================================
+*/
+.professional-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.professional-info-grid p {
+  margin: 0;
+  font-size: 0.95rem; /* Slightly larger font for readability */
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  margin-right: var(--space-md);
+}
+
+.data-value {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: right;
+  flex-grow: 1;
+}
+
+.license-status {
+  background-color: var(--color-license-active-bg);
+  color: var(--color-license-active);
+  padding: 0.2rem 0.8rem;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.license-status svg {
+  color: var(--color-license-active);
+}
+
+/* ==============================================
+   Responsive Adjustments
+   ==============================================
+*/
+@media (max-width: 768px) {
+  .profile-details {
+    flex-direction: column; /* Stacks the cards vertically on small screens */
+  }
+
+  .detail-item {
+    padding: var(--space-lg);
+  }
+}

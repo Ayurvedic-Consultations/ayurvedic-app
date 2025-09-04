@@ -1,0 +1,249 @@
+/* ==============================================
+  Patient History Component Styles
+  ==============================================
+*/
+
+.history-card {
+  padding: var(--space-lg);
+}
+
+.history-section {
+  margin-top: 2rem;
+}
+
+.history-section h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary-text);
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ==============================================
+  Upcoming Appointments Styles
+  ==============================================
+*/
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upcoming-appointment-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--color-surface-alt);
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.2s ease;
+}
+
+.upcoming-appointment-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+}
+
+.upcoming-date {
+  background-color: #eef2ff;
+  color: #4338ca;
+  border-radius: var(--border-radius-sm);
+  width: 55px;
+  height: 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.upcoming-date span:first-child {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+.upcoming-date span:last-child {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.upcoming-details {
+  flex-grow: 1;
+}
+
+.upcoming-details p {
+  margin: 0;
+}
+
+.doctor-name {
+  font-weight: 600;
+  color: var(--color-primary-text);
+}
+
+.appointment-reason {
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+}
+
+.upcoming-time {
+  font-weight: 600;
+  color: #4f46e5;
+  background-color: #e0e7ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* ==============================================
+  Past Visits - Timeline Styles
+  ==============================================
+*/
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 2px solid var(--color-border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.65rem;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+  border: 3px solid #4f46e5; /* Indigo */
+}
+
+.timeline-content {
+  background-color: var(--color-surface-alt);
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap; /* Allows wrapping on small screens */
+  gap: 0.5rem;
+}
+
+.timeline-doctor {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary-text);
+  margin: 0;
+}
+
+.timeline-date {
+  font-size: 0.85rem;
+  color: var(--color-tertiary-text);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.timeline-details p {
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+  line-height: 1.6;
+  margin: 0.5rem 0 0 0;
+}
+
+.no-history {
+  text-align: center;
+  color: var(--color-muted-text);
+  padding: var(--space-lg);
+}
+
+/* ==============================================
+  Responsive Adjustments
+  ==============================================
+*/
+
+/* For Tablets and Small Laptops */
+@media (max-width: 768px) {
+  .history-card {
+    padding: var(--space-md);
+  }
+
+  .timeline {
+    padding-left: 1.5rem;
+  }
+
+  .timeline-item::before {
+    left: -2.15rem;
+  }
+}
+
+/* For Mobile Phones */
+@media (max-width: 480px) {
+  .history-section h4 {
+    font-size: 1rem;
+  }
+
+  .upcoming-appointment-card {
+    flex-wrap: wrap;
+  }
+
+  .upcoming-details {
+    width: 100%;
+    order: 3; /* Move details to a new line */
+    margin-top: 0.5rem;
+  }
+
+  .upcoming-date {
+    width: 50px;
+    height: 50px;
+  }
+  .upcoming-date span:first-child {
+    font-size: 1.25rem;
+  }
+
+  .upcoming-time {
+    margin-left: auto; /* Push time to the right */
+  }
+
+  .timeline {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .timeline-item {
+    padding-left: 1.75rem; /* Space for the dot */
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-item::before {
+    left: 0;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border-width: 2px;
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    margin-bottom: 0.75rem;
+  }
+}

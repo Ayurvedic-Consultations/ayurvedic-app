@@ -1,0 +1,228 @@
+/* =============================================
+   CSS Variables for Theming
+   ============================================= */
+:root {
+  --primary-text: #2c3e50;
+  --secondary-text: #5a6a79;
+  --border-color: #dee2e6;
+  --header-bg: #f8f9fa;
+  --row-hover-bg: #f1f3f5;
+  --button-primary-bg: #007bff;
+  --button-primary-hover-bg: #0056b3;
+
+  /* Status Colors */
+  --status-delivered-text: #155724;
+  --status-delivered-bg: #d4edda;
+  --status-shipped-text: #004085;
+  --status-shipped-bg: #cce5ff;
+  --status-pending-text: #721c24;
+  --status-pending-bg: #f8d7da;
+}
+
+/* =============================================
+   Main Container and Header
+   ============================================= */
+.orders-tab-container {
+  font-family: 'Inter', sans-serif;
+}
+
+.orders-header {
+  margin-bottom: 1.5rem;
+}
+
+.orders-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin: 0 0 0.25rem 0;
+}
+
+.orders-subtitle {
+  font-size: 0.95rem;
+  color: var(--secondary-text);
+  margin: 0;
+}
+
+/* =============================================
+   Table Styling
+   ============================================= */
+.orders-table-wrapper {
+  overflow-x: auto; /* Allows horizontal scrolling on small screens if needed */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Ensures table looks good even if container is squeezed */
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.orders-table thead {
+  background-color: var(--header-bg);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.orders-table th {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.orders-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.orders-table tbody tr:hover {
+  background-color: var(--row-hover-bg);
+}
+
+.order-id {
+  font-weight: 600;
+  color: var(--button-primary-bg);
+}
+
+.order-total {
+    font-weight: 600;
+}
+
+/* =============================================
+   Status Badges
+   ============================================= */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.status-delivered {
+  background-color: var(--status-delivered-bg);
+  color: var(--status-delivered-text);
+}
+.status-badge.status-shipped {
+  background-color: var(--status-shipped-bg);
+  color: var(--status-shipped-text);
+}
+.status-badge.status-pending {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending-text);
+}
+
+/* =============================================
+   Action Buttons
+   ============================================= */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  background-color: #fff;
+  color: var(--primary-text);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: var(--header-bg);
+  border-color: #adb5bd;
+}
+
+.action-btn span {
+    display: block;
+}
+
+
+/* =============================================
+   No Orders Message
+   ============================================= */
+.no-orders-container {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--secondary-text);
+}
+.no-orders-icon {
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+.no-orders-container h3 {
+    font-size: 1.25rem;
+    color: var(--primary-text);
+}
+
+
+/* =============================================
+   RESPONSIVE DESIGN (for mobile screens)
+   ============================================= */
+@media (max-width: 768px) {
+  .orders-table {
+    min-width: 0; /* Remove min-width for card layout */
+  }
+
+  .orders-table thead {
+    display: none; /* Hide table headers */
+  }
+
+  .orders-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .orders-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f1f3f5;
+  }
+  
+  .orders-table td:last-child {
+      border-bottom: none;
+  }
+
+  /* Add labels using data attributes */
+  .orders-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--secondary-text);
+  }
+
+  .orders-table tbody tr:hover {
+    background-color: transparent;
+  }
+
+  .action-btn span {
+    /* On mobile, text can be hidden to save space if needed */
+    display: none;
+  }
+  .action-btn {
+      padding: 8px;
+  }
+}

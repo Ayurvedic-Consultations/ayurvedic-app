@@ -1,0 +1,139 @@
+/* =============================================
+   CSS Variables for Easy Theming
+   ============================================= */
+:root {
+  --primary-text: #2c3e50;
+  --secondary-text: #5a6a79;
+  --card-bg: #ffffff;
+  --border-color: #e9ecef;
+  --status-text: #166534;
+  --status-bg: #dcfce7;
+  --card-radius: 12px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================
+   Main Layout Container
+   ============================================= */
+.retailer-profile-row {
+  display: flex;
+  flex-wrap: wrap; /* Allows cards to stack on smaller screens */
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* =============================================
+   Card Styling
+   ============================================= */
+.retailer-card {
+  flex: 1 1 320px; /* Grow, shrink, and basis. Allows responsiveness. */
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  padding: 1.75rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.retailer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.retailer-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin: 0 0 1.5rem 0; /* Clear top margin, add bottom margin */
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* =============================================
+   Content Rows (Label/Value Pairs)
+   ============================================= */
+.retailer-card p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 1rem 0;
+  font-size: 0.95rem;
+}
+
+/* Add a separator line between rows */
+.retailer-card p + p {
+  border-top: 1px solid #f3f4f6;
+}
+
+.retailer-card .label {
+  color: var(--secondary-text);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.retailer-card .value {
+  color: var(--primary-text);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word; /* Prevents long text from overflowing */
+}
+
+/* =============================================
+   Active Status Badge
+   ============================================= */
+.status-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--status-bg);
+  color: var(--status-text);
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 0.9rem;
+}
+
+/* =============================================
+   RESPONSIVE DESIGN (FOR MOBILE)
+   ============================================= */
+/* Targets tablets and smaller phones */
+@media (max-width: 768px) {
+  .retailer-card {
+    flex-basis: 100%; /* Each card takes full width */
+  }
+}
+
+/* Targets very narrow screens (down to 321px) */
+@media (max-width: 480px) {
+  .retailer-card {
+    padding: 1.25rem; /* Reduce padding on small screens */
+  }
+
+  .retailer-card h3 {
+    font-size: 1.1rem;
+  }
+
+  /*
+    KEY CHANGE for small screens:
+    Stack the label on top of the value for better readability.
+  */
+  .retailer-card p {
+    flex-direction: column; /* Stack vertically */
+    align-items: flex-start; /* Align to the left */
+    gap: 0.3rem; /* Reduce gap */
+    padding: 0.75rem 0;
+  }
+
+  .retailer-card .value {
+    text-align: left; /* Align value text to the left */
+    font-size: 1rem; /* Make value slightly larger than label */
+  }
+}

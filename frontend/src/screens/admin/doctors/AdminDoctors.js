@@ -59,7 +59,7 @@ const AdminDoctors = () => {
     };
 
     const handleRowClick = (id) => {
-    navigate(`/patients/${id}`);
+    navigate(`/doctor/${id}`);
     };
 
 
@@ -174,12 +174,12 @@ const AdminDoctors = () => {
                                         <td style={{ padding: '0px 10px' }}>{doctor.email}</td>
                                         <td style={{ padding: '0px 10px' }}>{doctor.phone}</td>
                                         <td style={{ padding: '0px 10px' }}>
-                                             <button onClick={() => handleDelete(doctor._id)} style={{ marginLeft: '10px', color: 'blue' }}>Delete</button>
+                                             <button onClick={() => handleDelete(doctor._id)} style={{ marginLeft: '10px', color: 'white' }}>Delete</button>
                                              <button   onClick={(e) => {
                                                    e.stopPropagation();
                                                    navigate(`/patients/${doctor._id}`);
                                                    }}
-                                                  style={{ marginLeft: '50px', color: 'blue' }}>Update</button>
+                                                  style={{ marginLeft: '50px', color: 'white' }}>Update</button>
                                 
                                                   </td>
                                     </tr>
@@ -205,7 +205,13 @@ const AdminDoctors = () => {
                             </thead>
                             <tbody>
                                 {bookings.map((booking) => (
-                                    <tr key={booking._id}>
+                                    <tr key={booking._id}
+                                    
+                                
+                                    //  onClick={() => handleRowClick(booking._id)}
+                                      style={{ cursor: "pointer" }}
+                                
+                                    >
                                         <td style={{ padding: '0px 10px' }}>{booking.patientName}</td>
                                         <td style={{ padding: '0px 10px' }}>{booking.doctorName}</td>
                                         <td style={{ padding: '0px 10px' }}>{new Date(booking.dateOfAppointment).toLocaleDateString()}</td>
