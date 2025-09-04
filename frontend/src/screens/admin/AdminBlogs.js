@@ -1,5 +1,6 @@
 // src/AdminBlogs.jsx
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "./AdminBlogs.css";
 import { AuthContext } from "../../context/AuthContext";
@@ -9,6 +10,7 @@ const formatDate = (isoString) => moment(isoString).format("DD MMM YYYY");
 
 const AdminBlogs = () => {
   const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // State management
   const [activeTab, setActiveTab] = useState("view");
@@ -32,7 +34,7 @@ const AdminBlogs = () => {
   const fetchBlogs = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("http://localhost:8080/api/webhook/getAllBlogs/");
+      const res = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/webhook/getAllBlogs/`);
       // expected shape: { blogs: [...] }
       const items = Array.isArray(res.data?.blogs) ? res.data.blogs : [];
       // sort by timestamp desc (matches screen)
@@ -85,7 +87,7 @@ const AdminBlogs = () => {
 
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:8080/api/webhook/createBlog", payload);
+      await axios.post(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/webhook/createBlog`, payload);
       await fetchBlogs();
 
       setNewBlog({
@@ -103,7 +105,7 @@ const AdminBlogs = () => {
       console.error("Error adding blog:", err);
       setError("Failed to create blog. Please try again.");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   };
 
@@ -113,7 +115,7 @@ const AdminBlogs = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:8080/api/webhook/deleteBlog/${id}`);
+      await axios.delete(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/webhook/deleteBlog/${id}`);
       setBlogs((prev) => prev.filter((b) => b._id !== id));
       setSuccessAlert("Blog deleted successfully!");
       setTimeout(() => setSuccessAlert(null), 3000);
@@ -124,6 +126,10 @@ const AdminBlogs = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleUpdateClick = (blog) => {
+    navigate(`/admin/blogs/update/${blog._id}`, { state: { initialBlog: blog } });
   };
 
   return (
@@ -192,6 +198,13 @@ const AdminBlogs = () => {
                       </div>
                     )}
                     <div className="blog-actions">
+                      <button
+                        onClick={() => handleUpdateClick(blog)}
+                        className="delete-btn"
+                        disabled={isLoading}
+                      >
+                        Update
+                      </button>
                       <button
                         onClick={() => deleteBlog(blog._id)}
                         className="delete-btn"

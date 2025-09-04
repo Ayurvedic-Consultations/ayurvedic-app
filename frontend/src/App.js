@@ -46,6 +46,7 @@ import AdminDoctors from './screens/admin/doctors/AdminDoctors';
 import AdminRetailers from './screens/admin/Retailer/AdminRetailers';
 import AdminNavBar from './screens/admin/AdminNavbar';
 import AdminBlogs from './screens/admin/AdminBlogs';
+import AdminBlogsUpdate from './screens/admin/AdminBlogsUpdate';
 
 import RetailerDashboard from './screens/Retailers/RetailerDashboard';
 import ManageProducts from './screens/Retailers/ManageProducts';
@@ -118,6 +119,7 @@ function App() {
         {/* <Route path="/admin/medicine-orders" element={<AdminRetailers/>} /> */}
         <Route path="/admin/consultations" element={<DoctorList/>} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
+        <Route path="/admin/blogs/update/:id" element={<AdminBlogsUpdate />} />
 
         {/* <Route path="/admin/users" element={<AdminUsers />} />  */}
        {/* make changes by me */}

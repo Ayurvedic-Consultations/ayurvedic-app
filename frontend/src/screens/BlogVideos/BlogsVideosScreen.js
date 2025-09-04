@@ -25,21 +25,22 @@ function BlogsVideosScreen() {
     contentSection?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Fetch blogs from backend
-  useEffect(() => {
-    fetch("http://localhost:8080/api/webhook/getAllBlogs/")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.blogs) {
-          setBlogs(data.blogs);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching blogs:", err);
-        setLoading(false);
-      });
-  }, []);
+    // Fetch blogs from backend
+    useEffect(() => {
+        fetch("http://localhost:8080/api/webhook/getAllBlogs/")
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.blogs) {
+                    setBlogs(data.blogs);
+                    console.log(data.blogs);
+                }
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error fetching blogs:", err);
+                setLoading(false);
+            });
+    }, []);
 
   // Filtering
   const filteredData = blogs.filter((item) => {
