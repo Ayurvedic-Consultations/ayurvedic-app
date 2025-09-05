@@ -7,7 +7,7 @@ const MedicineSchema = new mongoose.Schema({
   category: { type: String, required: true },
   prescription: { type: Boolean, required: true },
   image: { type: String }, // Image path for the medicine
-  retailerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Retailer', required: true }, // The retailer who added this medicine
+  retailerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Retailer', required: true }, 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Medicine', MedicineSchema);
+module.exports = mongoose.model('Medicine', MedicineSchema); 

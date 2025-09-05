@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Patients/SignUpPatientScreen';
 import '../SignUpScreen.css'
@@ -9,6 +9,7 @@ function SignUpRetailerScreen() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    BusinessName: '',
     email: '',
     phone: '',
     dob: '',
@@ -63,7 +64,7 @@ function SignUpRetailerScreen() {
         <div className="form-column">
           <div className="form-group">
             <label>First Name</label>
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Ram" required/>
+            <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Ram" required />
           </div>
           <div className="form-group">
             <label>Last Name</label>
@@ -73,6 +74,16 @@ function SignUpRetailerScreen() {
               value={formData.lastName}
               onChange={handleInputChange}
               placeholder="Singh"
+              required
+            />
+          </div><div className="form-group">
+            <label>Business Name</label>
+            <input
+              type="text"
+              name="BusinessName"
+              value={formData.BusinessName}
+              onChange={handleInputChange}
+              placeholder="ABC Pharmacy"
               required
             />
           </div>

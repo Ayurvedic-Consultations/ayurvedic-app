@@ -120,6 +120,7 @@ h1 {
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	gap: 50px;
 	margin-top: 20px;
+	overflow: hidden;
 }
 
 .item-card {

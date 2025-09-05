@@ -121,7 +121,7 @@ function AdminNavBar() {
 
 	return (
 		<header className="navbar-header">
-			<div className="top-navbar">
+			<div className="top-navbar"> 
 				<div className="logo-container">
 					<img src={logo} alt="Ayurvedic Logo" className="nav-logo" />
 					<div className="text-container">

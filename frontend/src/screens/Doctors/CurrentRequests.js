@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./CurrentRequests.css"; // Ensure this CSS file is linked
+import "./CurrentRequests.css"; 
 import { AuthContext } from "../../context/AuthContext";
 
 function CurrentRequests() {
-  const [requests, setRequests] = useState([]); // Initialize state to hold the requests as an array
-  const [loading, setLoading] = useState(true); // State to manage loading status
-  const [error, setError] = useState(null); // State to manage any potential errors
+  const [requests, setRequests] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
-  const [denyingRequest, setDenyingRequest] = useState(null); // Track which request is being denied
-  const [doctorsMessage, setDoctorsMessage] = useState(""); // Track the doctor's message for denial
+  const [denyingRequest, setDenyingRequest] = useState(null); 
+  const [doctorsMessage, setDoctorsMessage] = useState(""); 
 
   const { auth } = useContext(AuthContext);
   const firstName = auth.user?.firstName || "Doctor";
@@ -53,7 +53,7 @@ function CurrentRequests() {
     };
 
     fetchRequests();
-  }, [email]); // Empty dependency array ensures this runs once when the component mounts
+  }, [email]); 
 
   // Function to accept request
   const acceptRequest = async (id) => {
@@ -123,11 +123,11 @@ function CurrentRequests() {
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Display loading indicator
+    return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Loading...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>; // Display error message if any
+    return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Error: {error}</p>; 
   }
 
   return (

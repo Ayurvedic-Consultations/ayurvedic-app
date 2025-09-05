@@ -4,18 +4,16 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
   // Array of medicine items instead of a single medicine
   items: [{
-    name: String,
-    price: Number,
-    image: String,
-    retailerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    quantity: Number,
-    subtotal: Number
+    medicineId: { type: mongoose.Schema.Types.ObjectId, ref: 'Medicine', required: true },
+    quantity: { type: Number, required: true },
+    subTotal: { type: Number, required: true }
   }],
   totalPrice: Number,
   buyer: {
     firstName: String,
     lastName: String,
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    type: { type: String, enum: ['Patient', 'Doctor'], required: true },
+    buyerId: { type: mongoose.Schema.Types.ObjectId, refPath: 'buyer.type', required: true }
   },
   shippingAddress: {
     street: String,

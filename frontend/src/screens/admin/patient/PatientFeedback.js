@@ -47,8 +47,6 @@ id: 6,
  comment: 'The clinic is very clean and modern. A comfortable and professional environment.',
  }
 ];
- // Dummy data for previously submitted feedback
-
 
 // A helper component to render the read-only stars
 const StarRating = ({ rating }) => {

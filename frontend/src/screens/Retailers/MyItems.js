@@ -16,6 +16,7 @@ function MyItems() {
         const data = await response.json();
         if (response.ok) {
           setItems(data);
+          console.log("Fetched items:", data);
         } else {
           setError(data.message || 'Failed to fetch items');
         }
@@ -35,7 +36,7 @@ function MyItems() {
           <h3>{item.name}</h3>
           <p>Price: {item.price}</p>
           <p>Quantity: {item.quantity}</p>
-          <p>Cures: {item.cures}</p>
+          <p>Category: {item.category}</p>
           <button>Edit</button>
           <button>Delete</button>
         </div>

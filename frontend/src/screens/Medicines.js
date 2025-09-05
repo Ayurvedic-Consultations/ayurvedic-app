@@ -8,7 +8,6 @@ const Medicines = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cart, setCart] = useState(() => {
-    // Retrieve initial cart state from local storage
     const savedCart = localStorage.getItem('cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
@@ -25,7 +24,7 @@ const Medicines = () => {
       }
     };
 
-    fetchMedicines(); 
+    fetchMedicines();
   }, []);
 
   const addToCart = (medicine) => {
@@ -50,12 +49,11 @@ const Medicines = () => {
   };
 
   useEffect(() => {
-    // Store cart in local storage for persistence
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Loading...</p>;
+  if (error) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Error: {error}</p>;
 
   return (
     <div className="medicines-page">

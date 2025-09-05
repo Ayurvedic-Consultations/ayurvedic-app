@@ -41,7 +41,7 @@ exports.addMedicinesFromZip = async (req, res) => {
 
       // Create a medicine entry according to the schema
       medicines.push({
-        name: item.name,
+        name: item.name, 
         price: item.price,
         quantity: item.quantity,
         category: item.category,
@@ -50,6 +50,7 @@ exports.addMedicinesFromZip = async (req, res) => {
         retailerId: retailerId, // Reference to the retailer
       });
     }
+    
 
     // Save all medicines in the database
     await Medicine.insertMany(medicines);

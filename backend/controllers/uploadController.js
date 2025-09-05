@@ -80,7 +80,6 @@ exports.uploadDoctorsFromGoogleSheet = async () => {
     }
 };
 
-
 exports.deleteDoctor = async (req, res) => {
     const { id } = req.params;
 

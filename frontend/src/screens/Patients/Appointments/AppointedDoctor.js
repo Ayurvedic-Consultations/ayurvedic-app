@@ -183,13 +183,13 @@ function AppointedDoctor() {
 
 
 
-	if (loading) {
-		return <p>Loading...</p>;
-	}
+	// if (loading) {
+	// 	return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Loading...</p>;
+	// }
 
-	if (error) {
-		return <p>Error: {error}</p>;
-	}
+	// if (error) {
+	// 	return <p style={{marginTop:"150px",padding:"15px", background:"white", width:"max-content", borderRadius:"15px", marginLeft:"50px"}}>Error: {error}</p>;
+	// }
 
 	return (
 		<>

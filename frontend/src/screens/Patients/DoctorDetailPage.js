@@ -21,7 +21,7 @@ function DoctorDetail() {
 	const [selectedTime, setSelectedTime] = useState(null); // Track selected time slot
 	const [patientIllness, setPatientIllness] = useState(""); // Track patient illness
 	const [dateOfAppointment, setDateOfAppointment] = useState(""); // Track the date of appointment
-  const [reviews, setReviews] = useState([]);
+	const [reviews, setReviews] = useState([]);
 
 	const handleTimeSlotClick = (time) => {
 		setSelectedTime(time); // Set the selected time slot
@@ -89,24 +89,24 @@ function DoctorDetail() {
 		}
 	};
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctor.email}`);
-        const data = await res.json();
-        setReviews(data);
-      } catch (err) {
-        console.error("Error fetching reviews:", err);
-      }
-    };
-    fetchReviews();
-  }, [doctor.email]);
+	useEffect(() => {
+		const fetchReviews = async () => {
+			try {
+				const res = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/reviews/${doctor.email}`);
+				const data = await res.json();
+				setReviews(data);
+			} catch (err) {
+				console.error("Error fetching reviews:", err);
+			}
+		};
+		fetchReviews();
+	}, [doctor.email]);
 
 	return (
 		<div className="doctor-detail-container">
 			<div className="left-section">
 				<div className="doctor-info">
-        
+
 					<div className="doctor-info-header">
 						<div className="doctor-image">
 							<img
@@ -133,20 +133,20 @@ function DoctorDetail() {
 					{/* Additional details can be listed here */}
 				</div>
 
-        <div className="reviews-section">
-          <h2>Patient Reviews</h2>
-          {reviews.length > 0 ? (
-            reviews.map((r, i) => (
-              <div key={i} className="review-card">
-                <p><strong>{r.patientName}</strong> rated: {r.rating}★</p>
-                <p className="review-text">{r.review}</p>
-                <p className="review-date">{new Date(r.dateOfAppointment).toLocaleDateString()}</p>
-              </div>
-            ))
-          ) : (
-            <p>No reviews yet for this doctor.</p>
-          )}
-        </div>
+				<div className="reviews-section">
+					<h2>Patient Reviews</h2>
+					{reviews.length > 0 ? (
+						reviews.map((r, i) => (
+							<div key={i} className="review-card">
+								<p><strong>{r.patientName}</strong> rated: {r.rating}★</p>
+								<p className="review-text">{r.review}</p>
+								<p className="review-date">{new Date(r.dateOfAppointment).toLocaleDateString()}</p>
+							</div>
+						))
+					) : (
+						<p>No reviews yet for this doctor.</p>
+					)}
+				</div>
 			</div>
 
 			<div className="right-section">

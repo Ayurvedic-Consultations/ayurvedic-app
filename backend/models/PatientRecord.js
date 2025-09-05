@@ -1,21 +1,10 @@
 const mongoose = require("mongoose");
 
 const PrescriptionSchema = new mongoose.Schema({
-    medicineName: { type: String, required: true },
+    medicineName: { type: String, required: true }, // "Metformin 500mg"
     dosage: { type: String, required: true },   // "2 pills/day"
-    duration: { type: String, required: true }  // "7 days"
-});
-
-const RecommendationSchema = new mongoose.Schema({
-    doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
-    text: { type: String, required: true },
-    date: { type: Date, default: Date.now }
-});
-
-const TransactionSchema = new mongoose.Schema({
-    amount: { type: Number, required: true },
-    date: { type: Date, default: Date.now },
-    details: { type: String }
+    instructions: { type: String, required: true },  // "Take after meals"
+    duration: { type: String, required: true }, // "3 months"
 });
 
 const PatientRecordSchema = new mongoose.Schema({
@@ -23,13 +12,17 @@ const PatientRecordSchema = new mongoose.Schema({
 
     doctorsConnected: [{
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
-        feedback: { type: String }, // patient feedback for this doctor
+        feedback: { type: mongoose.Schema.Types.ObjectId, ref: "Feedback" }, // patient feedback for this doctor
         connectedAt: { type: Date, default: Date.now },
-        prescriptions: [PrescriptionSchema],
-        recommendations: [RecommendationSchema],
+        prescriptions: [PrescriptionSchema], 
+        recommendations: { type: String, required: true }, // eg - avoid sugar, exercise daily etc
+        reason: { type: String }, // reason for connecting with this doctor
     }],
 
-    transactions: [TransactionSchema],
+    // dietYogaPlan - find diet and yoga plans by searching with patient id
+
+    // transactions - for transactions of this patient - do a transaction.find({payer: patientId}) - here patientid is this.patient
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("PatientRecord", PatientRecordSchema);
