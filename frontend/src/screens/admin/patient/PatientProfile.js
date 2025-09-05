@@ -200,37 +200,40 @@ const PatientProfile = () => {
 							)}
 						</h3>
 
-						{!dietYogaData?.message && (
+						{dietYogaData && !dietYogaData?.message && (
 							<>
 								<h4>Daily Meal Plan</h4>
 								<div className="meal-grid">
-									{dietYogaData.diet.daily && Object.entries(dietYogaData.diet.daily).map(([mealType, mealValue]) => (
-										<div key={mealType} className="sub-card meal-card">
-											<h5>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h5>
-											<p>{mealValue}</p>
-										</div>
-									))}
+									{dietYogaData?.diet?.daily &&
+										Object.entries(dietYogaData.diet.daily).map(([mealType, mealValue]) => (
+											<div key={mealType} className="sub-card meal-card">
+												<h5>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h5>
+												<p>{mealValue}</p>
+											</div>
+										))}
 								</div>
 
 								<h4>Weekly Meal Plan</h4>
 								<div className="meal-grid">
-									{dietYogaData.diet.weekly && Object.entries(dietYogaData.diet.weekly).map(([day, meals]) => (
-										<div key={day} className="sub-card meal-card">
-											<h5>{day.charAt(0).toUpperCase() + day.slice(1)}</h5>
-											<ul>
-												{Object.entries(meals).map(([mealType, mealValue], i) => (
-													<li key={i}>
-														<strong>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}:</strong> {mealValue}
-													</li>
-												))}
-											</ul>
-										</div>
-									))}
+									{dietYogaData?.diet?.weekly &&
+										Object.entries(dietYogaData.diet.weekly).map(([day, meals]) => (
+											<div key={day} className="sub-card meal-card">
+												<h5>{day.charAt(0).toUpperCase() + day.slice(1)}</h5>
+												<ul>
+													{Object.entries(meals).map(([mealType, mealValue], i) => (
+														<li key={i}>
+															<strong>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}:</strong>{" "}
+															{mealValue}
+														</li>
+													))}
+												</ul>
+											</div>
+										))}
 								</div>
 
 								<h3>Herbs</h3>
 								<ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
-									{dietYogaData.diet.herbs?.map((herb, i) => (
+									{dietYogaData?.diet?.herbs?.map((herb, i) => (
 										<li key={i}>{herb}</li>
 									))}
 								</ul>
@@ -239,17 +242,18 @@ const PatientProfile = () => {
 								<div className="meal-grid">
 									<div className="sub-card meal-card">
 										<h5>Morning Plan</h5>
-										<p>{dietYogaData.yoga.morningPlan}</p>
+										<p>{dietYogaData?.yoga?.morningPlan}</p>
 									</div>
 									<div className="sub-card meal-card">
 										<h5>Evening Plan</h5>
-										<p>{dietYogaData.yoga.eveningPlan}</p>
+										<p>{dietYogaData?.yoga?.eveningPlan}</p>
 									</div>
 								</div>
 							</>
 						)}
 					</div>
 				);
+
 			case "History":
 				return <PatientHistory />;
 			case "Transactions":
