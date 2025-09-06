@@ -20,69 +20,6 @@ import {
 	HeartPulse, // Kept for placeholder example, but Vitals tab is removed
 } from "lucide-react";
 
-// Dummy data (remains the same)
-const patient = {
-	id: 1,
-	name: "Sarah Johnson",
-	email: "sarah.johnson@email.com",
-	contact: "+1-555-0123",
-	address: "123 Main St, New York, NY 10001",
-	joinedDate: "2024-01-15",
-	age: 34,
-	gender: "Female",
-	prescriptions: [
-		{
-			id: 1,
-			medicine: "Amoxicillin 500mg",
-			frequency: "Twice daily",
-			duration: "7 days",
-			doctorName: "Dr. Smith",
-			dosage: "1 tablet",
-			instruction: "Take with meal",
-			prescribedDate: "2024-08-20",
-		},
-		{
-			id: 2,
-			medicine: "Vitamin D3",
-			frequency: "Once daily",
-			duration: "30 days",
-			doctorName: "Dr. Wilson",
-			dosage: "1000 IU",
-			instruction: "Take with meal",
-			prescribedDate: "2024-08-25",
-		},
-	],
-	dietPlan: {
-		planName: "Weight Loss Plan",
-		calories: 1500,
-		subscriptionDate: "2024-08-01",
-		duration: "3 months",
-		meals: [
-			{
-				type: "Breakfast",
-				items: ["Oatmeal with berries", "Green tea"],
-				calories: 350,
-			},
-			{
-				type: "Lunch",
-				items: ["Grilled chicken salad", "Water"],
-				calories: 450,
-			},
-			{
-				type: "Dinner",
-				items: ["Salmon with vegetables", "Herbal tea"],
-				calories: 500,
-			},
-			{ type: "Juice", items: ["Carrot juice", "Apple juice"], calories: 150 },
-		],
-	},
-};
-
-// Placeholder components for new tabs
-const HistoryTab = () => <div className="card"><h3><History size={20} /> Patient History</h3><p>Medical history will be displayed here.</p></div>;
-const Transactions = () => <div className="card"><h3><IndianRupee size={20} /> Transactions</h3><p>Billing and transaction details will be displayed here.</p></div>;
-const Feedback = () => <div className="card"><h3><MessageSquareText size={20} /> Feedback</h3><p>Patient feedback will be displayed here.</p></div>;
-
 // Array to manage tabs and their icons (Vitals removed)
 const tabs = [
 	{ name: "Prescriptions", icon: Pill },
@@ -94,13 +31,44 @@ const tabs = [
 
 const PatientProfile = () => {
 	const { id: patientId } = useParams();
-	console.log("Patient ID from URL:", patientId);
 	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState("Diet Plan");
 	const [patientData, setPatientData] = useState(null);
 	const [dietYogaData, setDietYogaData] = useState(null);
 	const [loadingDiet, setLoadingDiet] = useState(true);
 	const [loading, setLoading] = useState(true);
+	const [patientBookings, setPatientBookings] = useState([]);
+	const [loadingBookings, setLoadingBookings] = useState(true);
+
+	// ✅ Fetch all bookings for a patient
+	useEffect(() => {
+		const fetchPatientBookings = async () => {
+			try {
+				const res = await fetch(
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/patient/${patientId}`
+				);
+
+				if (!res.ok) {
+					if (res.status === 404) {
+						setPatientBookings([]);
+						return;
+					}
+					throw new Error("Failed to fetch patient bookings");
+				}
+
+				const data = await res.json();
+				setPatientBookings(data.bookings);
+				console.log("✅ Fetched patient bookings:", data.bookings);
+			} catch (error) {
+				console.error("❌ Error fetching patient bookings:", error);
+			} finally {
+				setLoadingBookings(false);
+			}
+		};
+
+		if (patientId) fetchPatientBookings();
+	}, [patientId]);
+
 
 	// patient details fetch
 	useEffect(() => {
@@ -136,7 +104,6 @@ const PatientProfile = () => {
 				}
 				const data = await res.json();
 				setDietYogaData(data);
-				console.log("Fetched diet & yoga plan:", data);
 			} catch (error) {
 				console.error("Error fetching diet & yoga plan:", error);
 			} finally {
@@ -154,43 +121,53 @@ const PatientProfile = () => {
 					<div className="card">
 						<h3>
 							<Pill size={20} /> Medicines Prescribed{" "}
-							<span className="badge">{patient.prescriptions.length}</span>
+							<span className="badge">
+								{patientBookings.reduce(
+									(total, booking) => total + booking.recommendedSupplements.length,
+									0
+								)}
+							</span>
 						</h3>
-						{patient.prescriptions.map((p) => (
-							<div key={p.id} className="sub-card">
-								<div className="sub-card-header">
-									<h4>{p.medicine}</h4>
-									<span className="dosage">{p.dosage}</span>
-								</div>
-								<div className="prescription-details">
-									<div>
-										<p className="label">Frequency</p>
-										<p>{p.frequency}</p>
+
+						{patientBookings.length > 0 &&
+							patientBookings.map((booking, bIdx) =>
+								booking.recommendedSupplements.map((supp, sIdx) => (
+									<div key={`${bIdx}-${sIdx}`} className="sub-card" style={{ width: "100%" }}>
+										<div className="sub-card-header">
+											<h4>{supp.medicineName}</h4>
+											<span className="dosage">{supp.dosage}</span>
+										</div>
+										<div className="prescription-details">
+											<div>
+												<p className="label">For</p>
+												<p>{supp.forIllness}</p>
+											</div>
+											<div>
+												<p className="label">Duration</p>
+												<p>{supp.duration}</p>
+											</div>
+											<div>
+												<p className="label">Instruction</p>
+												<p>{supp.instructions}</p>
+											</div>
+											<div>
+												<p className="label">Prescribed by</p>
+												<p>{booking.doctorName}</p>
+											</div>
+										</div>
+										<p className="prescribed-date">
+											⏱ Prescribed on {new Date(booking.createdAt).toLocaleDateString()}
+										</p>
 									</div>
-									<div>
-										<p className="label">Duration</p>
-										<p>{p.duration}</p>
-									</div>
-									<div>
-										<p className="label">Instruction</p>
-										<p>{p.instruction}</p>
-									</div>
-									<div>
-										<p className="label">Prescribed by</p>
-										<p>{p.doctorName}</p>
-									</div>
-								</div>
-								<p className="prescribed-date">
-									⏱ Prescribed on{" "}
-									{new Date(p.prescribedDate).toLocaleDateString()}
-								</p>
-							</div>
-						))}
+								))
+							)}
 					</div>
 				);
 			case "Diet Plan":
 				return (
-					<div className="card">
+					loadingDiet ? (
+						<p style={{ marginTop: "200px" }}>Loading diet plan...</p>
+					) : (<div className="card">
 						<h3>
 							<Apple size={20} /> Diet Plan{" "}
 							{dietYogaData?.message ? (
@@ -231,12 +208,15 @@ const PatientProfile = () => {
 										))}
 								</div>
 
-								<h3>Herbs</h3>
-								<ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
-									{dietYogaData?.diet?.herbs?.map((herb, i) => (
-										<li key={i}>{herb}</li>
-									))}
-								</ul>
+								<div className="sub-card meal-card" style={{ padding: "10px 25px" }}>
+									<h3>Herbs</h3>
+									<ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
+										{dietYogaData?.diet?.herbs?.map((herb, i) => (
+											<li key={i}>{herb}</li>
+										))}
+									</ul>
+								</div>
+
 
 								<h3>Yoga Plan</h3>
 								<div className="meal-grid">
@@ -251,11 +231,10 @@ const PatientProfile = () => {
 								</div>
 							</>
 						)}
-					</div>
+					</div>)
 				);
-
 			case "History":
-				return <PatientHistory />;
+				return patientBookings ? <PatientHistory bookings={patientBookings} /> : <p style={{ marginTop: "150px" }}>Loading patients...</p>;
 			case "Transactions":
 				return <PatientTrans />;
 			case "Feedback":

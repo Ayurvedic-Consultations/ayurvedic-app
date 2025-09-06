@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const bookingController = require("../controllers/bookingController");
+const { uploadPaymentScreenshot } = require("../controllers/bookingController");
+const Booking = require("../models/Booking");
 const {
   createBooking,
   getAllBookings,
@@ -11,13 +14,11 @@ const {
   getRecommendedSupplements,
   updateRatingAndReview,
   getRatingAndReview,
+
+  addTempBooking,
+  getBookingsByPatientId,
+  getBookingsByDoctorId
 } = require("../controllers/bookingController");
-
-const bookingController = require("../controllers/bookingController");
-
-const { uploadPaymentScreenshot } = require("../controllers/bookingController");
-
-const Booking = require("../models/Booking");
 
 // POST route to book an appointment
 router.post("/", createBooking);
@@ -74,5 +75,14 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error fetching bookings" });
   }
 });
+
+// Temporary route for adding a booking (for testing)
+router.post("/temp", addTempBooking);
+
+// Get bookings by patient ID
+router.get("/patient/:patientId", getBookingsByPatientId);
+
+// Get bookings by doctor ID
+router.get("/doctor/:doctorId", getBookingsByDoctorId);
 
 module.exports = router;

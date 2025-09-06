@@ -1,5 +1,3 @@
-// controllers/bookingController.js
-
 const Booking = require("../models/Booking");
 const Doctor = require("../models/Doctor");
 const path = require("path");
@@ -218,7 +216,6 @@ exports.uploadPaymentScreenshot = (req, res) => {
   });
 };
 
-
 exports.getNotifications = async (req, res) => {
   const { email } = req.query;
   console.log(email);
@@ -276,8 +273,6 @@ exports.updateBookingStatus = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
-
-// controllers/bookingController.js
 
 // New controller function to update the meetLink
 exports.updateMeetLink = async (req, res) => {
@@ -381,3 +376,115 @@ exports.getRecommendedSupplements = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+// 🔹 Temporary uploader (to push dummy JSON from Postman)
+exports.addTempBooking = async (req, res) => {
+  try {
+    const data = req.body;
+
+    // Basic required fields check
+    const requiredFields = [
+      "doctorId",
+      "doctorName",
+      "doctorEmail",
+      "timeSlot",
+      "dateOfAppointment",
+      "patientId",
+      "patientEmail",
+      "patientName",
+      "patientGender",
+      "patientAge",
+      "patientIllness",
+      "requestAccept",
+      "meetLink",
+      "amountPaid"
+    ];
+
+    const missing = requiredFields.filter((field) => !data[field]);
+    if (missing.length > 0) {
+      return res.status(400).json({
+        message: "Missing required fields",
+        missingFields: missing
+      });
+    }
+
+    // 🔹 Validate recommendedSupplements if provided
+    if (data.recommendedSupplements && Array.isArray(data.recommendedSupplements)) {
+      const invalidSupplements = data.recommendedSupplements.filter((supp) => {
+        return !supp.medicineName || !supp.forIllness || !supp.dosage || !supp.instructions || !supp.duration;
+      });
+
+      if (invalidSupplements.length > 0) {
+        return res.status(400).json({
+          message: "Each recommendedSupplement must include medicineName, forIllness, dosage, instructions, and duration",
+          invalidSupplements
+        });
+      }
+    }
+
+    // Create booking
+    const newBooking = new Booking(data);
+    await newBooking.save();
+
+    res.status(201).json({
+      message: "Booking added successfully",
+      booking: newBooking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add booking",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Get bookings by patientId
+exports.getBookingsByPatientId = async (req, res) => {
+  const { patientId } = req.params;
+
+  if (!patientId) {
+    return res.status(400).json({ error: "Patient ID is required" });
+  }
+
+  try {
+    const bookings = await Booking.find({ patientId }).sort({ createdAt: -1 });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found for this patient" });
+    }
+
+    return res.status(200).json({
+      message: "Bookings retrieved successfully for patient",
+      bookings,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching bookings by patient ID:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+// ✅ Get bookings by doctorId
+exports.getBookingsByDoctorId = async (req, res) => {
+  const { doctorId } = req.params;
+
+  if (!doctorId) {
+    return res.status(400).json({ error: "Doctor ID is required" });
+  }
+
+  try {
+    const bookings = await Booking.find({ doctorId }).sort({ createdAt: -1 });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found for this doctor" });
+    }
+
+    return res.status(200).json({
+      message: "Bookings retrieved successfully for doctor",
+      bookings,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching bookings by doctor ID:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+

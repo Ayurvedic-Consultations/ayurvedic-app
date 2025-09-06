@@ -24,6 +24,11 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  patientId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Patient",
+    required: true,
+  },
   patientEmail: {
     type: String,
     required: true,
@@ -70,7 +75,10 @@ const bookingSchema = new mongoose.Schema({
       forIllness: {
         type: String,
         required: true
-      }
+      },
+      dosage: { type: String, required: true },   
+      instructions: { type: String, required: true }, 
+      duration: { type: String, required: true }, 
     }
   ],
   rating: {
