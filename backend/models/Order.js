@@ -40,6 +40,11 @@ const orderSchema = new mongoose.Schema({
     type: String, // Path to the QR code image
     required: false
   },
+  review: {
+    rating: { type: Number, min: 1, max: 5 },
+    comment: { type: String, trim: true },
+    createdAt: { type: Date, default: Date.now }
+  },
   orderStatus: {
     type: String,
     enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
@@ -50,9 +55,9 @@ const orderSchema = new mongoose.Schema({
     enum: ['received', 'accepted', 'rejected', 'shipped'],
     default: 'received'
   },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 

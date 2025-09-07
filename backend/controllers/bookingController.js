@@ -488,3 +488,35 @@ exports.getBookingsByDoctorId = async (req, res) => {
   }
 };
 
+// ✅ Get reviewed bookings by patientId
+exports.getReviewedBookingsByPatientId = async (req, res) => {
+  const { patientId } = req.params;
+
+  if (!patientId) {
+    return res.status(400).json({ error: "Patient ID is required" });
+  }
+
+  try {
+    const bookings = await Booking.find({
+      patientId,
+      review: { $exists: true, $ne: null, $ne: "" },
+    }).sort({ createdAt: -1 });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({
+        message: "No reviewed bookings found for this patient",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Reviewed bookings retrieved successfully for patient",
+      bookings,
+    });
+    
+  } catch (error) {
+    console.error("❌ Error fetching reviewed bookings by patient ID:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './PatientHistory.css'; // Make sure you create this new CSS file
 import { History as HistoryIcon, CalendarClock, FileText } from 'lucide-react';
 
-
+ 
 const History = ({ bookings }) => {
 	const [upcomingAppointments, setUpcomingAppointments] = useState([]);
 	const [pastAppointments, setPastAppointments] = useState([]);

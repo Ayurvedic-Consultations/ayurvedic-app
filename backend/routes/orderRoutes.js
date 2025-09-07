@@ -28,5 +28,6 @@ router.get('/:id', auth, orderController.getOrderById);
 router.post('/status', auth, orderController.updateOrderStatus);
 router.post('/retailer-status', auth, orderController.updateRetailerStatus);
 router.post('/:orderId/payment-proof', auth, upload.single('paymentProof'), orderController.uploadPaymentProof);
+router.get('/reviews/:buyerId', orderController.getReviewedOrdersByBuyerId);
 
 module.exports = router;

@@ -49,7 +49,7 @@ const PatientProfile = () => {
 				);
 
 				if (!res.ok) {
-					if (res.status === 404) {
+					if (res.status === 404) { 
 						setPatientBookings([]);
 						return;
 					}
@@ -58,7 +58,6 @@ const PatientProfile = () => {
 
 				const data = await res.json();
 				setPatientBookings(data.bookings);
-				console.log("✅ Fetched patient bookings:", data.bookings);
 			} catch (error) {
 				console.error("❌ Error fetching patient bookings:", error);
 			} finally {
@@ -236,9 +235,9 @@ const PatientProfile = () => {
 			case "History":
 				return patientBookings ? <PatientHistory bookings={patientBookings} /> : <p style={{ marginTop: "150px" }}>Loading patients...</p>;
 			case "Transactions":
-				return <PatientTrans />;
+				return patientBookings ? <PatientTrans bookings={patientBookings} patientId={patientId}/> : <p style={{ marginTop: "150px" }}>Loading patients...</p>;
 			case "Feedback":
-				return <PatientFeedback />;
+				return <PatientFeedback patientId={patientId}/>;
 			default:
 				return null;
 		}

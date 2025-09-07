@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Doctor = require('../models/Doctor');
 const Retailer = require('../models/Retailer');
 const Patient = require('../models/Patient');
-const Admin = require('../models/Admin'); // Import Admin model
+const Admin = require('../models/Admin'); 
 
 const auth = async (req, res, next) => {
   try {
