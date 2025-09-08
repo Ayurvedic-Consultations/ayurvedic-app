@@ -80,7 +80,22 @@ exports.loginUser = async (req, res) => {
 
 // Register a new doctor
 exports.registerDoctor = async (req, res) => {
-	const { firstName, lastName, email, phone, dob, age, experience, gender, zipCode, education, designation, price, password } = req.body;
+	const {
+		firstName,
+		lastName,
+		email,
+		phone,
+		dob,
+		age,
+		experience,
+		specialization,
+		gender,
+		zipCode,
+		education,
+		designation,
+		price,
+		password
+	} = req.body;
 	const certificate = req.files?.certificate ? req.files.certificate[0].path : null;
 	const qrCode = req.files?.qrCode ? req.files.qrCode[0].path : null;
 
@@ -91,7 +106,32 @@ exports.registerDoctor = async (req, res) => {
 
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const doctor = new Doctor({ firstName, lastName, email, phone, dob, age, experience, gender, zipCode, education, designation, price, password: hashedPassword, certificate, qrCode });
+		let specializationArray = [];
+		if (specialization) {
+			specializationArray = Array.isArray(specialization)
+				? specialization
+				: specialization.split(",").map(item => item.trim());
+		} else {
+			specializationArray = [];
+		}
+		const doctor = new Doctor({
+			firstName,
+			lastName,
+			email,
+			phone,
+			dob,
+			age,
+			experience,
+			gender,
+			specialization: specializationArray, 
+			zipCode,
+			education,
+			designation,
+			price,
+			password: hashedPassword,
+			certificate,
+			qrCode
+		});
 		await doctor.save();
 		const token = generateToken(doctor);
 		res.status(201).json({

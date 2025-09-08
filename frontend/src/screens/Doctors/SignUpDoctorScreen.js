@@ -16,13 +16,14 @@ function SignUpDoctorScreen() {
 		dob: "",
 		age: "",
 		experience: "",
+		specialization: "",
 		gender: "",
 		zipCode: "",
 		education: "",
 		designation: "",
 		price: "",
 		password: "",
-		confirmPassword: "", // Added confirmPassword for validation
+		confirmPassword: "", 
 	});
 
 	const handleQrCodeChange = (e) => {
@@ -39,6 +40,7 @@ function SignUpDoctorScreen() {
 			formData.dob !== "" &&
 			formData.age !== "" &&
 			formData.gender !== "" &&
+			formData.specialization !== "" &&
 			formData.zipCode !== "" &&
 			formData.password !== "" &&
 			formData.confirmPassword !== "" &&
@@ -207,6 +209,17 @@ function SignUpDoctorScreen() {
 							value={formData.experience}
 							onChange={handleInputChange}
 							placeholder="24"
+							required
+						/>
+					</div>
+					<div className="form-group">
+						<label>Specialization</label>
+						<input
+							type="text"
+							name="specialization"
+							value={formData.specialization}
+							onChange={handleInputChange}
+							placeholder="Dermatology , Cardiology etc."
 							required
 						/>
 					</div>

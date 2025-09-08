@@ -18,14 +18,14 @@ const doctorDataSchema = new mongoose.Schema({
     },
 
     education: {
-        degree: { type: String},
+        degree: { type: String}, 
         college: { type: String},
     },
 
     fee: { type: Number},
     certificateLink: { type: String},
 
-    specialization: [{ type: String}],
+    specialization: { type: [String], required: true },
     introduction: { type: String},
     languages: [{ type: String}],
     timings: { type: String},

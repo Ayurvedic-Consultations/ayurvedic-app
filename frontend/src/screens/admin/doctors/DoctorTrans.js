@@ -1,56 +1,120 @@
-import React, { useState } from 'react';
-// import './patientTrans.css'; // Assuming your CSS file is named this
+import React, { useState, useEffect } from 'react';
 import { ReceiptText, Search } from 'lucide-react';
+// import './doctorTrans.css'; // add CSS if needed
 
-// Updated dummy data with a 'doctor' field
-const transactionData = [
-  {
-    id: 'TXN75631A',
-    date: '2025-09-02',
-    patient: 'john',
-    description: 'General Consultation',
-    amount: 1500,
-  },
-  {
-    id: 'TXN84592B',
-    date: '2025-08-22',
-    patient: 'sohan',
-    description: 'Annual Health Check-up',
-    amount: 8500,
-  },
-  {
-    id: 'TXN34589C',
-    date: '2025-08-15',
-    patient: 'levin',
-    description: 'Lab Test: Blood Panel',
-    amount: 2200,
-  },
-  {
-    id: 'TXN12543D',
-    date: '2025-07-30',
-    patient: 'seema',
-    description: 'Follow-up Visit',
-    amount: 1000,
-  },
-  {
-    id: 'TXN98765E',
-    date: '2025-07-21',
-    patient: 'rishab',
-    description: 'X-Ray Diagnostics',
-    amount: 3500,
-  },
-];
-
-const Transactions = () => {
+const Transactions = ({ doctorId }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [doctorBookings, setDoctorBookings] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [transactions, setTransactions] = useState([]);
 
-  // Updated filter logic to search by doctor, amount, and ID
-  const filteredTransactions = transactionData.filter((t) => {
+  // ✅ Fetch all orders associated with this doctor
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/doctor/${doctorId}`
+        );
+
+        if (!res.ok) {
+          if (res.status === 404) {
+            setOrders([]);
+            return;
+          }
+          throw new Error('Failed to fetch doctor orders');
+        }
+
+        const data = await res.json();
+        setOrders(data.orders || []);
+      } catch (error) {
+        console.error('❌ Error fetching doctor orders:', error);
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+
+    if (doctorId) fetchOrders();
+  }, [doctorId]);
+
+  // ✅ Fetch all bookings for this doctor
+  useEffect(() => {
+    const fetchDoctorBookings = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/doctor/${doctorId}`
+        );
+
+        if (!res.ok) {
+          if (res.status === 404) {
+            setDoctorBookings([]);
+            return;
+          }
+          throw new Error('Failed to fetch doctor bookings');
+        }
+
+        const data = await res.json();
+        setDoctorBookings(data.bookings || []);
+      } catch (error) {
+        console.error('❌ Error fetching doctor bookings:', error);
+      } finally {
+        setLoadingBookings(false);
+      }
+    };
+
+    if (doctorId) fetchDoctorBookings();
+  }, [doctorId]);
+
+  // 🩺 Map Bookings to Transactions
+  const mapBookingsToTransactions = (bookings) => {
+    return bookings.map((b) => ({
+      id: b._id,
+      date: b.dateOfAppointment || b.createdAt,
+      patient: b.patientName,
+      description: `Consultation with ${b.patientName} (${b.patientIllness})`,
+      amount: b.amountPaid,
+      type: 'consultation',
+    }));
+  };
+
+  // 💊 Map Orders to Transactions
+  const mapOrdersToTransactions = (orders) => {
+    return orders.map((o) => ({
+      id: o._id,
+      date: o.createdAt,
+      patient: `${o.buyer?.firstName || ''} ${o.buyer?.lastName || ''}`.trim(),
+      description: `Medicine order (${o.items?.length || 0} items, ${o.orderStatus})`,
+      amount: o.totalPrice,
+      type: 'medicine',
+    }));
+  };
+
+  // ✅ Combine and sort all transactions
+  useEffect(() => {
+    if (!loadingBookings && !loadingOrders) {
+      const allTransactions = [
+        ...mapBookingsToTransactions(doctorBookings),
+        ...mapOrdersToTransactions(orders),
+      ];
+
+      allTransactions.forEach((t) => {
+        t.dateObj = new Date(t.date);
+      });
+
+      allTransactions.sort((a, b) => b.dateObj - a.dateObj);
+      setTransactions(allTransactions);
+    }
+  }, [doctorBookings, orders, loadingBookings, loadingOrders]);
+
+  // 🔍 Search filter
+  const filteredTransactions = transactions.filter((t) => {
     const term = searchTerm.toLowerCase();
     return (
-      t.patient.toLowerCase().includes(term) ||
-      t.amount.toString().includes(term) ||
-      t.id.toLowerCase().includes(term)
+      t.patient?.toLowerCase().includes(term) ||
+      t.amount?.toString().includes(term) ||
+      t.id?.toLowerCase().includes(term) ||
+      t.type?.toLowerCase().includes(term)
     );
   });
 
@@ -88,14 +152,23 @@ const Transactions = () => {
                 <tr key={t.id}>
                   <td className="transaction-id">{t.id}</td>
                   <td>{new Date(t.date).toLocaleDateString()}</td>
-                  <td className="doctor-name">{t.patient}</td>
-                  <td>{t.description}</td>
-                  <td className="transaction-amount">₹{t.amount.toLocaleString('en-IN')}</td>
+                  <td className="patient-name">{t.patient || 'N/A'}</td>
+                  <td>
+                    {t.description}{' '}
+                    <span className={`badge ${t.type}`}>
+                      {t.type === 'consultation' ? 'Consultation' : 'Medicine'}
+                    </span>
+                  </td>
+                  <td className="transaction-amount">
+                    ₹{t.amount?.toLocaleString('en-IN') || 0}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="no-results">No transactions found.</td>
+                <td colSpan="5" className="no-results">
+                  No transactions found.
+                </td>
               </tr>
             )}
           </tbody>

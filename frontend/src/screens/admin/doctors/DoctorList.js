@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DoctorList.css"; // Using the same professional CSS
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,7 +19,8 @@ import {
 const initialDoctorsData = [
 	{
 		id: 1,
-		name: "Dr. Evelyn Reed",
+		firstName: "Dr. Evelyn Reed",
+		lastName: "Smith",
 		email: "evelyn.reed@clinic.com",
 		contact: "+1 (555) 0101",
 		specialization: "Cardiology",
@@ -27,61 +28,65 @@ const initialDoctorsData = [
 		location: "Wellness City",
 		patientsAssigned: 12,
 	},
-	{
-		id: 2,
-		name: "Dr. Marcus Thorne",
-		email: "marcus.thorne@clinic.com",
-		contact: "+1 (555) 0102",
-		specialization: "Neurology",
-		experience: 12,
-		location: "Central Hospital",
-		patientsAssigned: 8,
-	},
-	{
-		id: 3,
-		name: "Dr. Samuel Chen",
-		email: "samuel.chen@clinic.com",
-		contact: "+1 (555) 0103",
-		specialization: "Pediatrics",
-		experience: 10,
-		location: "Green Valley Clinic",
-		patientsAssigned: 25,
-	},
-	{
-		id: 4,
-		name: "Dr. Anya Sharma",
-		email: "anya.sharma@clinic.com",
-		contact: "+1 (555) 0104",
-		specialization: "Cardiology",
-		experience: 8,
-		location: "Wellness City",
-		patientsAssigned: 15,
-	},
+
 ];
 
 const DoctorManagement = () => {
 	const [doctors, setDoctors] = useState(initialDoctorsData);
+	const [loadingDoctors, setLoadingDoctors] = useState(true);
 	const [search, setSearch] = useState("");
 	const [specializationFilter, setSpecializationFilter] = useState("All");
-
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [doctorToDelete, setDoctorToDelete] = useState(null);
-
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [doctorToEdit, setDoctorToEdit] = useState(null);
 
 	const navigate = useNavigate();
 
-	// Combined filter logic for search and specialization
+	// ✅ Fetch all doctors (from both Doctor + DoctorData schemas)
+	useEffect(() => {
+		const fetchAllDoctors = async () => {
+			try {
+				const res = await fetch(
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/allDoctors`
+				);
+
+				if (!res.ok) {
+					if (res.status === 404) {
+						setDoctors([]);
+						return;
+					}
+					throw new Error("Failed to fetch doctors");
+				}
+
+				const data = await res.json();
+				setDoctors(data);
+			} catch (error) {
+				console.error("❌ Error fetching doctors:", error);
+			} finally {
+				setLoadingDoctors(false);
+			}
+		};
+
+		fetchAllDoctors();
+	}, []);
+
 	const filteredDoctors = doctors.filter((d) => {
+		const specializationStr = Array.isArray(d.specialization) && d.specialization.length > 0
+			? d.specialization.join(", ").toLowerCase()
+			: "not specified";
+
 		const matchesSearch =
-			d.name.toLowerCase().includes(search.toLowerCase()) ||
+			d.firstName.toLowerCase().includes(search.toLowerCase()) ||
+			d.lastName.toLowerCase().includes(search.toLowerCase()) ||
 			d.email.toLowerCase().includes(search.toLowerCase()) ||
-			d.specialization.toLowerCase().includes(search.toLowerCase());
+			specializationStr.includes(search.toLowerCase());
 
 		const matchesFilter =
 			specializationFilter === "All" ||
-			d.specialization === specializationFilter;
+			(Array.isArray(d.specialization)
+				? d.specialization.includes(specializationFilter)
+				: d.specialization === specializationFilter);
 
 		return matchesSearch && matchesFilter;
 	});
@@ -118,7 +123,13 @@ const DoctorManagement = () => {
 
 	const uniqueSpecializations = [
 		"All",
-		...new Set(initialDoctorsData.map((d) => d.specialization)),
+		...new Set(
+			doctors.flatMap((d) =>
+				Array.isArray(d.specialization) && d.specialization.length > 0
+					? d.specialization
+					: ["Not specified"]
+			)
+		),
 	];
 
 	return (
@@ -194,19 +205,26 @@ const DoctorManagement = () => {
 					<tbody>
 						{filteredDoctors.length > 0 ? (
 							filteredDoctors.map((doctor) => (
-								<tr key={doctor.id} onClick={() => handleRowClick(doctor.id)}>
+								<tr key={doctor._id} onClick={() => handleRowClick(doctor._id)}>
 									<td data-label="Name">
 										<div className="doctor-name-cell">
-											<div className="avatar-sm">{doctor.name.charAt(4)}</div>
+											<div className="avatar-sm">{doctor.firstName.charAt(0)}</div>
 											<div>
-												{doctor.name}
+												{doctor.firstName} {doctor.lastName}
 												<div className="doctor-email">{doctor.email}</div>
 											</div>
 										</div>
 									</td>
-									<td data-label="Specialization">{doctor.specialization}</td>
+									<td data-label="Specialization">
+										{Array.isArray(doctor.specialization) && doctor.specialization.length > 0
+											? (() => {
+												const specStr = doctor.specialization.join(", ");
+												return specStr.length > 45 ? specStr.slice(0, 45) + "..." : specStr;
+											})()
+											: "Not specified"}
+									</td>
 									<td data-label="Experience">{doctor.experience} years</td>
-									<td data-label="Location">{doctor.location}</td>
+									<td data-label="Location">{doctor.zipCode}</td>
 									<td data-label="Actions" className="action-buttons">
 										<button
 											className="edit-btn"
@@ -269,11 +287,18 @@ const DoctorManagement = () => {
 
 // Reusable Edit Modal Component
 const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
-	const [formData, setFormData] = useState(doctor);
+	const [formData, setFormData] = useState({
+		...doctor,
+		specialization: doctor.specialization || ["Not specified"],
+	});
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		if (name === "specialization") {
+			setFormData((prev) => ({ ...prev, specialization: value.split(",").map(s => s.trim()) }));
+		} else {
+			setFormData((prev) => ({ ...prev, [name]: value }));
+		}
 	};
 
 	const handleSubmit = (e) => {
@@ -282,6 +307,7 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 	};
 
 	if (!isOpen) return null;
+
 	return (
 		<div className="modal-overlay">
 			<div className="modal-content">
@@ -292,14 +318,25 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 					</button>
 				</div>
 				<form onSubmit={handleSubmit} className="edit-form">
-					<div className="form-group">
-						<label>Name</label>
-						<input
-							type="text"
-							name="name"
-							value={formData.name}
-							onChange={handleChange}
-						/>
+					<div className="form-row">
+						<div className="form-group">
+							<label>First Name</label>
+							<input
+								type="text"
+								name="firstName"
+								value={formData.firstName}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="form-group">
+							<label>Last Name</label>
+							<input
+								type="text"
+								name="lastName"
+								value={formData.lastName}
+								onChange={handleChange}
+							/>
+						</div>
 					</div>
 					<div className="form-group">
 						<label>Email</label>
@@ -310,32 +347,30 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 							onChange={handleChange}
 						/>
 					</div>
-					<div className="form-row">
-						<div className="form-group">
-							<label>Specialization</label>
-							<input
-								type="text"
-								name="specialization"
-								value={formData.specialization}
-								onChange={handleChange}
-							/>
-						</div>
-						<div className="form-group">
-							<label>Experience (yrs)</label>
-							<input
-								type="number"
-								name="experience"
-								value={formData.experience}
-								onChange={handleChange}
-							/>
-						</div>
+					<div className="form-group">
+						<label>Specialization (comma separated)</label>
+						<input
+							type="text"
+							name="specialization"
+							value={formData.specialization.join(", ")}
+							onChange={handleChange}
+						/>
+					</div>
+					<div className="form-group">
+						<label>Experience (yrs)</label>
+						<input
+							type="number"
+							name="experience"
+							value={formData.experience}
+							onChange={handleChange}
+						/>
 					</div>
 					<div className="form-group">
 						<label>Location</label>
 						<input
 							type="text"
-							name="location"
-							value={formData.location}
+							name="zipCode"
+							value={formData.zipCode}
 							onChange={handleChange}
 						/>
 					</div>
@@ -352,5 +387,6 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 		</div>
 	);
 };
+
 
 export default DoctorManagement;

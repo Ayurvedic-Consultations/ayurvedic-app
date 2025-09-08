@@ -65,7 +65,7 @@ import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 import PatientFullDetails from "./screens/admin/patient/PatientFullDetails";
 import DoctorFullDetails from './screens/admin/doctors/DoctorFullDetails';
 import Transactions from './screens/admin/transactions';
-import RetailerManagement from './screens/admin/Retailer/RetailerManagement';  
+import RetailerManagement from './screens/admin/Retailer/RetailerManagement';
 import Patientprofile from './screens/admin/patient/PatientProfile';
 import DoctorList from './screens/admin/doctors/DoctorList';
 import RetailerFullDetails from './screens/admin/Retailer/RetailerFullDetails';
@@ -110,26 +110,20 @@ function App() {
         <Route path="/signup-retailer" element={<SignUpRetailerScreen />} />
         <Route path="/prakritidetermination" element={<PrakritiDetermination />} />
         <Route path="/appointed-doctor" element={<AppointedDoctor />} />
-        <Route path="/payment2" element={<PaymentPage/>} />
+        <Route path="/payment2" element={<PaymentPage />} />
         <Route path="/patient-home" element={<PatientPage />} />
 
         <Route path="/admin-home" element={<AdminPage />} />
-        {/* here i made changes; */}
-        {/* <Route path="/admin/consultations" element={<AdminDoctors />} /> */}
-        {/* <Route path="/admin/medicine-orders" element={<AdminRetailers/>} /> */}
-        <Route path="/admin/consultations" element={<DoctorList/>} />
+        <Route path="/admin/consultations" element={<DoctorList />} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
         <Route path="/admin/blogs/update/:id" element={<AdminBlogsUpdate />} />
+        <Route path="/patients/:id" element={<Patientprofile />} />
+        <Route path="/admin/consultations/:id" element={<DoctorFullDetails />} />
+        <Route path="/admin/transactions" element={<Transactions />} />
+        <Route path="/admin/medicine-orders" element={<RetailerManagement />} />
+        <Route path="/admin/users" element={<PatientFullDetails />} />
+        <Route path="/admin/medicine-orders/:id" element={<RetailerFullDetails />} />
 
-        {/* <Route path="/admin/users" element={<AdminUsers />} />  */}
-       {/* make changes by me */}
-       <Route path="/patients/:id" element={<Patientprofile/>} />
-       <Route path="/admin/consultations/:id" element={<DoctorFullDetails />} />
-       <Route path="/admin/transactions" element={<Transactions/>} />
-        <Route path="/admin/medicine-orders" element={<RetailerManagement/>} />
-         <Route path="/admin/users" element={<PatientFullDetails />} />
-         <Route path="/admin/medicine-orders/:id" element={<RetailerFullDetails/>} />
-        
 
 
         <Route element={<ProtectedRoute />}>

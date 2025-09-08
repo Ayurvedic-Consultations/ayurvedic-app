@@ -18,7 +18,8 @@ const {
   addTempBooking,
   getBookingsByPatientId,
   getBookingsByDoctorId,
-  getReviewedBookingsByPatientId
+  getReviewedBookingsByPatientId,
+  getReviewedBookingsForDoctorId
 } = require("../controllers/bookingController");
 
 // POST route to book an appointment
@@ -88,5 +89,8 @@ router.get("/doctor/:doctorId", getBookingsByDoctorId);
 
 // Get reviewed bookings by patient ID
 router.get("/patient/reviews/:patientId", getReviewedBookingsByPatientId);
+
+// Get reviewed bookings by doctor ID
+router.get("/doctor/reviews/:doctorId", getReviewedBookingsForDoctorId);
 
 module.exports = router;

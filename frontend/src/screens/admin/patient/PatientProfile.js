@@ -68,7 +68,6 @@ const PatientProfile = () => {
 		if (patientId) fetchPatientBookings();
 	}, [patientId]);
 
-
 	// patient details fetch
 	useEffect(() => {
 		const fetchPatient = async () => {

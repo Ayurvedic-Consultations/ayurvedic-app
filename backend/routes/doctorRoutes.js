@@ -2,21 +2,48 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const XLSX = require("xlsx");
-const Doctor = require("../models/Doctor"); // Import Doctor model
-const QRCode = require("qrcode"); // Import the qrcode library
-const path = require("path"); // Import path module
+const Doctor = require("../models/Doctor"); 
+const QRCode = require("qrcode"); 
+const path = require("path"); 
 const fs = require("fs");
 
-const { getAllDoctors } = require("../controllers/doctorController");
+const { getAllDoctors, 
+    getAllDoctorsData, 
+    getDoctorById } = require("../controllers/doctorController");
 
 // Public Routes
-router.get("/", getAllDoctors); // Public route to view all Doctors
+router.get("/", getAllDoctors); 
 
 // Multer setup for file upload
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
 const uploadDirectory = path.join(__dirname, "../uploads/doctos");
+
+// Upload Excel file and process
+router.post("/upload", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        console.log("File received:", req.file.originalname);
+
+        // Process Excel file
+        const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+        const sheetName = workbook.SheetNames[0];
+        const doctorsData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        console.log("Parsed Data:", doctorsData);
+
+        // Insert into MongoDB
+        await Doctor.insertMany(doctorsData);
+
+        res.status(200).json({ message: "Doctors uploaded successfully" });
+    } catch (error) {
+        console.error("Error processing file:", error);
+        res.status(500).json({ message: "Server error while uploading doctors" });
+    }
+});
 
 const generateQRCode = async (doctorId) => {
     const qrData = `doctor:${doctorId}`;
@@ -78,31 +105,7 @@ router.get("/:id/qr-code", async (req, res) => {
     }
 });
 
-router.post("/upload", upload.single("file"), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: "No file uploaded" });
-        }
-
-        console.log("File received:", req.file.originalname);
-
-        // Process Excel file
-        const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-        const sheetName = workbook.SheetNames[0];
-        const doctorsData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-        console.log("Parsed Data:", doctorsData);
-
-        // Insert into MongoDB
-        await Doctor.insertMany(doctorsData);
-
-        res.status(200).json({ message: "Doctors uploaded successfully" });
-    } catch (error) {
-        console.error("Error processing file:", error);
-        res.status(500).json({ message: "Server error while uploading doctors" });
-    }
-});
-
+// Delete doctor by ID
 router.delete("/:id", async (req, res) => {
     try {
         const doctor = await Doctor.findByIdAndDelete(req.params.id);
@@ -117,5 +120,11 @@ router.delete("/:id", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+// New route to get all doctors from both collections
+router.get("/allDoctors", getAllDoctorsData); 
+
+// New route to get doctor by ID from both collections
+router.get("/getDoctorById/:id", getDoctorById);
 
 module.exports = router;

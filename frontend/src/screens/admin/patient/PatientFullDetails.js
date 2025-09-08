@@ -5,26 +5,6 @@ import { useNavigate } from "react-router-dom";
 const PatientManagement = () => {
 	const [patients, setPatients] = useState([
 		{
-			id: 1,
-			firstName: "Sarah",
-			lastName: "Johnson",
-			email: "sarah.johnson@email.com",
-			phone: "+1 (555) 123-4567",
-			gender: "Female",
-			zipCode: 212544,
-			dietPlan: true,
-		},
-		{
-			id: 2,
-			firstName: "Michael",
-			lastName: "Chen",
-			email: "michael.chen@email.com",
-			phone: "+1 (555) 234-5678",
-			gender: "Male",
-			zipCode: 112544,
-			dietPlan: false,
-		},
-		{
 			id: 3,
 			firstName: "Emily",
 			lastName: "Davis",

@@ -85,8 +85,8 @@ exports.getOrdersByBuyerId = async (req, res) => {
 			.populate({
 				path: "items.medicineId",
 				populate: {
-					path: "retailerId", // retailer inside medicine
-					select: "BusinessName", // only bring BusinessName
+					path: "retailerId", 
+					select: "BusinessName", 
 				},
 			})
 			.populate("buyer.buyerId");
