@@ -205,4 +205,55 @@ exports.getReviewedOrdersByBuyerId = async (req, res) => {
   }
 };
 
+// ✅ Get orders by buyerId (with retailer BusinessNames)
+exports.getOrdersByBuyerId = async (req, res) => {
+  const { buyerId } = req.params;
+
+  if (!buyerId) {
+    return res.status(400).json({ error: "Buyer ID is required" });
+  }
+
+  try {
+    const orders = await Order.find({
+      "buyer.buyerId": buyerId
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "items.medicineId",
+        populate: {
+          path: "retailerId",
+          select: "BusinessName",
+        },
+      })
+      .populate("buyer.buyerId");
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({
+        message: "No orders found for this buyer",
+      });
+    }
+
+    // 🔥 Add retailer BusinessNames just like getOrdersByBuyerId
+    const enrichedOrders = orders.map(order => ({
+      ...order.toObject(),
+      retailers: [
+        ...new Set(
+          order.items
+            .map(item => item.medicineId?.retailerId?.BusinessName)
+            .filter(Boolean) // strip null/undefined
+        ),
+      ],
+    }));
+
+    return res.status(200).json({
+      message: "Orders retrieved successfully for buyer",
+      orders: enrichedOrders,
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching orders by buyer ID:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
 
