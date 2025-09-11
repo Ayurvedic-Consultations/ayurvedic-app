@@ -3,7 +3,6 @@ import { Briefcase, CheckCircle2, User, AtSign, Phone, MapPin } from "lucide-rea
 import "./RetailerProfileTab.css";
 
 const RetailerProfileTab = ({ retailer }) => {
-  // If no retailer data is passed, don't render anything.
   if (!retailer) {
     return (
       <div className="loading-message">
@@ -11,6 +10,10 @@ const RetailerProfileTab = ({ retailer }) => {
       </div>
     );
   }
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   return (
     <div className="retailer-profile-row">
@@ -21,20 +24,20 @@ const RetailerProfileTab = ({ retailer }) => {
         </h3>
         <p>
           <span className="label">Business Name</span>
-          <span className="value">{retailer.storeName}</span>
+          <span className="value">{retailer.BusinessName}</span>
         </p>
         <p>
           <span className="label">License Number</span>
-          <span className="value">BP-2023-001</span>
+          <span className="value">{retailer.licenseNumber}</span>
         </p>
         <p>
-          <span className="label">Joined Date</span>
-          <span className="value">2023-01-15</span>
+          <span className="label">Date of Birth</span>
+          <span className="value">{new Date(retailer.dob).toLocaleDateString()}</span>
         </p>
         <p>
           <span className="label">Status</span>
-          <span className="value status-active">
-            <CheckCircle2 size={16} /> Active
+          <span className={`value status-${retailer.status}`}>
+            <CheckCircle2 size={16} /> {capitalizeFirstLetter(retailer.status)}
           </span>
         </p>
       </div>
@@ -50,11 +53,11 @@ const RetailerProfileTab = ({ retailer }) => {
         </p>
         <p>
           <span className="label"><Phone size={14} /> Phone</span>
-          <span className="value">{retailer.contact}</span>
+          <span className="value">{retailer.phone}</span>
         </p>
         <p>
           <span className="label"><MapPin size={14} /> Address</span>
-          <span className="value">{retailer.location}</span>
+          <span className="value">{retailer.zipCode}</span>
         </p>
       </div>
     </div>

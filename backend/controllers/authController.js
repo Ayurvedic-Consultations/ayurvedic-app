@@ -155,7 +155,7 @@ exports.registerRetailer = async (req, res) => {
 	try {
 		console.log("Creating retailer:", firstName, lastName, BusinessName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const retailer = new Retailer({ firstName, lastName, BusinessName, email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword });
+		const retailer = new Retailer({ firstName, lastName, BusinessName, email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status:"active" });
 		await retailer.save();
 		const token = generateToken(retailer);
 		res.status(201).json({

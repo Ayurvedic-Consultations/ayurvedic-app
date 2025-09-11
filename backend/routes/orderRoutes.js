@@ -31,5 +31,6 @@ router.post('/:orderId/payment-proof', auth, upload.single('paymentProof'), orde
 router.get('/reviews/:buyerId', orderController.getReviewedOrdersByBuyerId);
 
 router.get('/getOrdersByBuyerId/:buyerId', orderController.getOrdersByBuyerId);
+router.get('/getOrdersByRetailerId/:retailerId', orderController.getOrdersByRetailerId);
 
 module.exports = router;

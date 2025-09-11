@@ -65,7 +65,6 @@ exports.addMedicinesFromZip = async (req, res) => {
   }
 };
 
-
 // Add Medicine (Retailer Only)
 exports.addMedicine = async (req, res) => {
   const { name, price, quantity ,category, prescription} = req.body;

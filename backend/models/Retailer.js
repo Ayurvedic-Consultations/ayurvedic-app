@@ -12,6 +12,7 @@ const RetailerSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   zipCode: { type: String, required: true },
   password: { type: String, required: true },
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   // inventory - search for whatever this retailer is selling using Medicine model , by serching for retailerId
 });
 
