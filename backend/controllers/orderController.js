@@ -2,6 +2,7 @@
 const Order = require('../models/Order');
 const mongoose = require('mongoose');
 const Medicine = require('../models/Medicine');
+const Booking = require('../models/Booking');
 const Retailer = require('../models/Retailer');
 const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
@@ -378,5 +379,90 @@ exports.getFeedbackByRetailerId = async (req, res) => {
     } catch (error) {
         console.error("❌ Error fetching feedback by retailer ID:", error);
         return res.status(500).json({ error: "Server error" });
+    }
+};
+
+// ✅ Get all transactions
+exports.getAllTransactions = async (req, res) => {
+    try {
+        // Fetch all orders from the database
+        const orders = await Order.find({})
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'buyer.buyerId',
+                select: 'firstName lastName',
+            })
+            .populate({
+                path: 'items.medicineId',
+                select: 'retailerId',
+                populate: {
+                    path: 'retailerId',
+                    model: 'Retailer',
+                    select: 'BusinessName',
+                },
+            });
+
+        // Fetch all patient-doctor bookings
+        const bookings = await Booking.find({})
+            .sort({ createdAt: -1 })
+            .populate('patientId', 'firstName lastName')
+            .populate('doctorId', 'firstName lastName');
+
+        // Process and flatten the orders to match the frontend table structure
+        const orderTransactions = orders.map((order) => {
+            const fromName = `${order.buyer.firstName} ${order.buyer.lastName} (${order.buyer.type})`;
+            const toName = order.items[0]?.medicineId?.retailerId?.BusinessName
+                ? `${order.items[0].medicineId.retailerId.BusinessName} (Retailer)`
+                : 'Unknown Retailer';
+
+            let transactionType = 'General';
+            if (order.buyer.type === 'Patient') {
+                transactionType = 'Patient-Retailer';
+            } else if (order.buyer.type === 'Doctor') {
+                transactionType = 'Doctor-Retailer';
+            }
+
+            return {
+                id: order._id,
+                type: transactionType,
+                date: new Date(order.createdAt).toLocaleDateString(),
+                amount: order.totalPrice,
+                from: fromName,
+                to: toName,
+            };
+        });
+
+        // Process and flatten the bookings to match the frontend table structure
+        const bookingTransactions = bookings.map((booking) => {
+            const fromName = `${booking.patientId?.firstName} ${booking.patientId?.lastName} (Patient)`;
+            const toName = `${booking.doctorId?.firstName} ${booking.doctorId?.lastName} (Doctor)`;
+
+            return {
+                id: booking._id,
+                type: 'Patient-Doctor',
+                date: new Date(booking.createdAt).toLocaleDateString(),
+                amount: booking.amountPaid,
+                from: fromName,
+                to: toName,
+            };
+        });
+
+        // Combine both sets of transactions
+        const allTransactions = [...orderTransactions, ...bookingTransactions];
+
+        // Sort the combined list by date
+        allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (allTransactions.length === 0) {
+            return res.status(404).json({
+                message: "No transactions found in the database.",
+            });
+        }
+
+        res.status(200).json({ transactions: allTransactions });
+
+    } catch (error) {
+        console.error("❌ Error fetching transactions:", error);
+        res.status(500).json({ error: "Server error" });
     }
 };
