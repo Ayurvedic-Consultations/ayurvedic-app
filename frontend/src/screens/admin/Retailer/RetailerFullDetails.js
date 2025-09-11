@@ -77,6 +77,7 @@ const RetailerFullDetails = () => {
 	const tabs = [
 		{ name: "Profile", icon: Briefcase },
 		{ name: "Orders", icon: ShoppingBag },
+		// { name: "Transactions", icon: IndianRupee },
 		{ name: "Feedback", icon: MessageCircleMore },
 	];
 
@@ -87,6 +88,8 @@ const RetailerFullDetails = () => {
 				return <RetailerProfileTab retailer={retailer} />;
 			case "Orders":
 				return <RetailerOrdersTab retailerId={retailerId} />;
+			// case "Transactions":
+			// 	return <RetailerTransactions retailerId={retailerId} />;
 			case "Feedback":
 				return <RetailerFeedbackTab retailerId={retailerId} />;
 			default:

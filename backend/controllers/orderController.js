@@ -2,6 +2,9 @@
 const Order = require('../models/Order');
 const mongoose = require('mongoose');
 const Medicine = require('../models/Medicine');
+const Retailer = require('../models/Retailer');
+const Patient = require('../models/Patient');
+const Doctor = require('../models/Doctor');
 const path = require('path');
 const fs = require('fs');
 
@@ -320,6 +323,60 @@ exports.getOrdersByRetailerId = async (req, res) => {
         });
     } catch (error) {
         console.error("❌ Error fetching orders by retailer ID:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
+};
+
+
+// ✅ Get feedback for a specific retailer (by retailerId)
+exports.getFeedbackByRetailerId = async (req, res) => {
+    const { retailerId } = req.params;
+
+    if (!retailerId || !mongoose.Types.ObjectId.isValid(retailerId)) {
+        return res.status(400).json({ error: "Invalid or missing retailer ID" });
+    }
+
+    try {
+        // Find all medicine IDs associated with the given retailer
+        const medicines = await Medicine.find({ retailerId }).select('_id');
+        const medicineIds = medicines.map(med => med._id);
+
+        if (medicineIds.length === 0) {
+            return res.status(404).json({
+                message: "No products found for this retailer.",
+            });
+        }
+
+        const ordersWithFeedback = await Order.find({
+            'items.medicineId': { $in: medicineIds },
+            'review.comment': { $exists: true, $ne: null, $ne: '' }
+        })
+            .sort({ 'review.createdAt': -1 })
+            .populate({
+                path: 'buyer.buyerId',
+                select: 'firstName lastName',
+            });
+
+        if (!ordersWithFeedback || ordersWithFeedback.length === 0) {
+            return res.status(404).json({
+                message: "No feedback found for this retailer.",
+            });
+        }
+
+        const flattenedFeedback = ordersWithFeedback.map(order => ({
+            id: order._id,
+            customerName: `${order.buyer.firstName} ${order.buyer.lastName}`,
+            rating: order.review.rating,
+            comment: order.review.comment,
+            date: order.review.createdAt,
+        }));
+
+        return res.status(200).json({
+            message: "Feedback retrieved successfully for retailer",
+            feedback: flattenedFeedback,
+        });
+    } catch (error) {
+        console.error("❌ Error fetching feedback by retailer ID:", error);
         return res.status(500).json({ error: "Server error" });
     }
 };

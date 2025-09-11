@@ -32,5 +32,6 @@ router.get('/reviews/:buyerId', orderController.getReviewedOrdersByBuyerId);
 
 router.get('/getOrdersByBuyerId/:buyerId', orderController.getOrdersByBuyerId);
 router.get('/getOrdersByRetailerId/:retailerId', orderController.getOrdersByRetailerId);
+router.get('/getFeedbackByRetailerId/:retailerId', orderController.getFeedbackByRetailerId);
 
 module.exports = router;
