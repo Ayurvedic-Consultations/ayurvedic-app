@@ -124,6 +124,9 @@ function App() {
         <Route path="/admin/users" element={<PatientFullDetails />} />
         <Route path="/admin/medicine-orders/:id" element={<RetailerFullDetails />} />
 
+        <Route path="/profile/doctor/:id" element={<DoctorFullDetails />} />
+        <Route path="/profile/retailer/:id" element={<RetailerFullDetails />} />
+        <Route path="/profile/patient/:id" element={<Patientprofile />} />
 
 
         <Route element={<ProtectedRoute />}>

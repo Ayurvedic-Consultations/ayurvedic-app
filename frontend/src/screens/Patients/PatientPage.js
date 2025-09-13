@@ -8,6 +8,8 @@ import doctorImage from "../../media/doctor.png";
 import treatmentImage from "../../media/treatment.png";
 import yogaImage from "../../media/yoga.jpeg";
 import medicineImage from "../../media/medicine.png";
+import { jwtDecode } from 'jwt-decode';
+
 //import step1Icon from "../../media/step1.png"; // Import icons for steps
 //import step2Icon from "../../media/step2.png";
 //import step3Icon from "../../media/step3.png";
@@ -18,6 +20,19 @@ function PatientPage() {
 	const firstName = auth.user?.firstName || "Patient";
 	const navigate = useNavigate();
 	const [isPrakritiFilled, setIsPrakritiFilled] = useState(false); // Track if Prakriti form is filled
+	const [userId, setUserId] = useState(null);
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (token) {
+			try {
+				const decodedToken = jwtDecode(token);
+				setUserId(decodedToken.id);
+			} catch (error) {
+				console.error("Invalid token:", error);
+			}
+		}
+	}, []);
 
 	// Fetch Prakriti Determination data from the backend
 	useEffect(() => {
@@ -56,6 +71,10 @@ function PatientPage() {
 		navigate("/appointed-doctor"); // Navigate to the appointed doctor page
 	};
 
+	const goToProfile = () => {
+		navigate(`/profile/patient/${userId}`);
+	};
+
 	const goToTreatmentPlans = () => {
 		navigate("/treatments"); // Navigate to the treatment plans page
 	};
@@ -68,9 +87,9 @@ function PatientPage() {
 		navigate("/medicines"); // Navigate to the Ayurvedic medicines page
 	};
 
-  const handleOpenPrakritiForm = () => {
-    navigate("/prakritidetermination"); // Redirect to Prakriti Determination form page
-  };
+	const handleOpenPrakritiForm = () => {
+		navigate("/prakritidetermination"); // Redirect to Prakriti Determination form page
+	};
 
 	return (
 		<div className="patient-container">
@@ -81,85 +100,96 @@ function PatientPage() {
 					you achieve balance and harmony in your life.
 				</p>
 
-        {/* Match Doctor Automatically Button */}
-        <div className="match-section">
-          {isPrakritiFilled ? (
-            <>
-              <p>
-                Thank you filling the prakriti determination form. 
-                Now Let us find the perfect Ayurvedic doctor for you based on your needs.
-              </p>
-            </>
-          ) : (
-            <>
-              <button className="match-btn" onClick={handleOpenPrakritiForm}>
-                Prakriti Determination
-              </button>
-              <p>
-                Kindly complete the Prakriti Determination Form. This will enable
-                us to automatically identify the most suitable doctor for your
-                needs.
-              </p>
-            </>
-          )}
-        </div>
+				{/* Match Doctor Automatically Button */}
+				<div className="match-section">
+					{isPrakritiFilled ? (
+						<>
+							<p>
+								Thank you filling the prakriti determination form.
+								Now Let us find the perfect Ayurvedic doctor for you based on your needs.
+							</p>
+						</>
+					) : (
+						<>
+							<button className="match-btn" onClick={handleOpenPrakritiForm}>
+								Prakriti Determination
+							</button>
+							<p>
+								Kindly complete the Prakriti Determination Form. This will enable
+								us to automatically identify the most suitable doctor for your
+								needs.
+							</p>
+						</>
+					)}
+				</div>
 
-        {/* Key Services Section */}
-        <section className="services-section">
-          <h2>What can we help you with today?</h2>
-          <div className="services-cards">
-            <div className="service-card" onClick={goToAppointedDoctor}>
-              <img
-                src={doctorImage}
-                alt="Appointed Doctor"
-                className="service-image"
-              />
-              <h3>Your Appointed Doctor</h3>
-              <p>
-                View the details of your currently assigned Ayurvedic doctor.
-              </p>
-            </div>
-            <div className="service-card" onClick={goToTreatmentPlans}>
-              <img
-                src={treatmentImage}
-                alt="Treatment Plans"
-                className="service-image"
-              />
-              <h3>Treatment Plans</h3>
-              <p>
-                Explore personalized Ayurvedic treatment plans designed for your
-                needs.
-              </p>
-            </div>
-            <div className="service-card" onClick={goToYogaAndDiet}>
-              <img
-                src={yogaImage}
-                alt="Yoga & Diet"
-                className="service-image"
-              />
-              <h3>Yoga & Diet</h3>
-              <p>
-                Discover Ayurvedic yoga practices and diet recommendations for
-                better health.
-              </p>
-            </div>
-            <div className="service-card" onClick={goToMedicines}>
-              <img
-                src={medicineImage}
-                alt="Medicines & Remedies"
-                className="service-image"
-              />
-              <h3>Medicines & Remedies</h3>
-              <p>
-                Browse our selection of Ayurvedic medicines and natural
-                remedies.
-              </p>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-  );
+				{/* Key Services Section */}
+				<section className="services-section">
+					<h2>What can we help you with today?</h2>
+					<div className="services-cards">
+						<div className="service-card" onClick={goToProfile}>
+							<img
+								src={doctorImage}
+								alt="Appointed Doctor"
+								className="service-image"
+							/>
+							<h3>Your Profile</h3>
+							<p>
+								View and update your details.
+							</p>
+						</div>
+						<div className="service-card" onClick={goToAppointedDoctor}>
+							<img
+								src={doctorImage}
+								alt="Appointed Doctor"
+								className="service-image"
+							/>
+							<h3>Your Appointed Doctor</h3>
+							<p>
+								View the details of your currently assigned Ayurvedic doctor.
+							</p>
+						</div>
+						<div className="service-card" onClick={goToTreatmentPlans}>
+							<img
+								src={treatmentImage}
+								alt="Treatment Plans"
+								className="service-image"
+							/>
+							<h3>Treatment Plans</h3>
+							<p>
+								Explore personalized Ayurvedic treatment plans designed for your
+								needs.
+							</p>
+						</div>
+						<div className="service-card" onClick={goToYogaAndDiet}>
+							<img
+								src={yogaImage}
+								alt="Yoga & Diet"
+								className="service-image"
+							/>
+							<h3>Yoga & Diet</h3>
+							<p>
+								Discover Ayurvedic yoga practices and diet recommendations for
+								better health.
+							</p>
+						</div>
+						<div className="service-card" onClick={goToMedicines}>
+							<img
+								src={medicineImage}
+								alt="Medicines & Remedies"
+								className="service-image"
+							/>
+							<h3>Medicines & Remedies</h3>
+							<p>
+								Browse our selection of Ayurvedic medicines and natural
+								remedies.
+							</p>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+	);
 }
 
 export default PatientPage;

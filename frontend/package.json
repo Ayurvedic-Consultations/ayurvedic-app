@@ -15,6 +15,7 @@
     "gapi-script": "^1.2.0",
     "gsap": "^3.12.5",
     "jquery": "^3.7.1",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.468.0",
     "moment": "^2.30.1",
     "owl.carousel": "^2.3.4",
