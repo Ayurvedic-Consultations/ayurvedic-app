@@ -6,7 +6,7 @@ const MedicineSchema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   category: { type: String, required: true },
   prescription: { type: Boolean, required: true },
-  image: { type: String }, // Image path for the medicine
+  image: { type: String }, 
   retailerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Retailer', required: true }, 
 }, { timestamps: true });
 

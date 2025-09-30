@@ -5,35 +5,39 @@ import { AuthContext } from "../../context/AuthContext";
 
 function MyOrders() {
 	const [orders, setOrders] = useState([]);
-	const [status, setStatus] = useState("received");
-	const { auth } = useContext(AuthContext); // Access auth context
+	const [status, setStatus] = useState("pending"); // backend uses "pending" not "received"
+	const { auth } = useContext(AuthContext);
 	const retailerId = auth?.user?.id;
 
 	useEffect(() => {
 		const fetchOrders = async () => {
 			try {
 				const response = await axios.get(
-					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/user`,
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/getOrdersByRetailerId/${retailerId}`,
 					{
-						params: { retailerId },
 						headers: { Authorization: `Bearer ${auth.token}` },
 					}
 				);
-				setOrders(response.data);
+				// backend sends { message, orders: [...] }
+				setOrders(response.data.orders || []);
+				console.log(response.data.orders);
 			} catch (error) {
 				console.error("Error fetching orders:", error);
 			}
 		};
 
 		if (retailerId) fetchOrders();
-	}, [retailerId]);
+	}, [retailerId, auth.token]);
 
 	const updateOrderStatus = async (orderId, newStatus) => {
 		try {
-			await axios.patch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/status`, {
-				orderId,
-				status: newStatus,
-			});
+			await axios.patch(
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/status`,
+				{
+					orderId,
+					status: newStatus,
+				}
+			);
 			setOrders((prevOrders) =>
 				prevOrders.map((order) =>
 					order._id === orderId ? { ...order, status: newStatus } : order
@@ -45,12 +49,12 @@ function MyOrders() {
 	};
 
 	return (
-		<div className="orders-container">
+		<div className="orders-container" style={{marginTop:"175px", padding:"15px", borderRadius:"15px"}}>
 			<h1>My Orders</h1>
 			<div className="order-tabs">
 				<button
-					className={status === "received" ? "active" : ""}
-					onClick={() => setStatus("received")}
+					className={status === "pending" ? "active" : ""}
+					onClick={() => setStatus("pending")}
 				>
 					Received
 				</button>
@@ -62,15 +66,17 @@ function MyOrders() {
 				</button>
 			</div>
 			{orders
-				.filter((order) => order.status === status)
+				.filter((order) => (order.status === "all") || (order.status === "delivered") || (order.status))
 				.map((order) => (
 					<div key={order._id} className="order-card">
 						<p>
-							<strong>Buyer Name:</strong>{" "}
-							{order.buyer.firstName + " " + order.buyer.lastName}
+							<strong>Buyer Name:</strong> {order.customerName}
 						</p>
 						<p>
-							<strong>Item Name:</strong> {order.medicine.name}
+							<strong>Date:</strong> {order.date}
+						</p>
+						<p>
+							<strong>Item Name:</strong> {order.medicineName}
 						</p>
 						<p>
 							<strong>Quantity:</strong> {order.quantity}
@@ -78,16 +84,12 @@ function MyOrders() {
 						<p>
 							<strong>Status:</strong> {order.status}
 						</p>
-						{status === "received" && (
+						{status === "pending" && (
 							<div className="action-buttons">
-								<button
-									onClick={() => updateOrderStatus(order._id, "accepted")}
-								>
+								<button onClick={() => updateOrderStatus(order._id, "accepted")}>
 									Accept
 								</button>
-								<button
-									onClick={() => updateOrderStatus(order._id, "rejected")}
-								>
+								<button onClick={() => updateOrderStatus(order._id, "rejected")}>
 									Reject
 								</button>
 							</div>

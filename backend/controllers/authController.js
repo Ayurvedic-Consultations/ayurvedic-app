@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 // Helper function to generate JWT token
 const generateToken = (user) => {
+	console.log("generating token : user : ", user.role);
 	return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
@@ -64,6 +65,8 @@ exports.loginUser = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid credentials' });
 		}
 
+
+		console.log("before token : user - ", user);
 		const token = generateToken(user);
 		res.status(200).json({
 			message: 'Login successful', token, user: {
@@ -123,14 +126,15 @@ exports.registerDoctor = async (req, res) => {
 			age,
 			experience,
 			gender,
-			specialization: specializationArray, 
+			specialization: specializationArray,
 			zipCode,
 			education,
 			designation,
 			price,
 			password: hashedPassword,
 			certificate,
-			qrCode
+			qrCode,
+			role: 'doctor' 
 		});
 		await doctor.save();
 		const token = generateToken(doctor);
@@ -155,7 +159,7 @@ exports.registerRetailer = async (req, res) => {
 	try {
 		console.log("Creating retailer:", firstName, lastName, BusinessName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const retailer = new Retailer({ firstName, lastName, BusinessName, email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status:"active" });
+		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer' ,email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
 		await retailer.save();
 		const token = generateToken(retailer);
 		res.status(201).json({
@@ -163,7 +167,7 @@ exports.registerRetailer = async (req, res) => {
 				id: retailer._id,
 				firstName: retailer.firstName,
 				lastName: retailer.lastName,
-				role: 'doctor',
+				role: 'retailer',
 			},
 		});
 	} catch (error) {
@@ -178,7 +182,7 @@ exports.registerPatient = async (req, res) => {
 	try {
 		console.log("Registering patient:", firstName, lastName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const patient = new Patient({ firstName, lastName, email, phone, dob, age, gender, zipCode, password: hashedPassword });
+		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient' ,age, gender, zipCode, password: hashedPassword });
 		await patient.save();
 		const token = generateToken(patient);
 		console.log("Patient registered successfully:", patient);

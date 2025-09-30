@@ -10,6 +10,7 @@ const PatientSchema = new mongoose.Schema({
   gender: { type: String, required: true },
   zipCode: { type: String, required: true },
   password: { type: String, required: true },
+  role: { type: String, default: 'patient' }
 });
 
 module.exports = mongoose.model('Patient', PatientSchema);

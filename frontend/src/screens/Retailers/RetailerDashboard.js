@@ -23,30 +23,30 @@ function RetailerDashboard() {
 		}
 	}, []);
 
-	useEffect(() => {
-		const fetchRetailerData = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/profile`, {
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-				if (response.ok) {
-					setRetailer(data);
-					console.log("Retailer Data:", data);
-				} else {
-					console.error("Failed to fetch retailer data:", data.message);
-				}
-			} catch (error) {
-				console.error("An error occurred:", error);
-			}
-		};
+	// useEffect(() => {
+	// 	const fetchRetailerData = async () => {
+	// 		try {
+	// 			const token = localStorage.getItem("token");
+	// 			const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/profile`, {
+	// 				method: "GET",
+	// 				headers: {
+	// 					Authorization: `Bearer ${token}`,
+	// 				},
+	// 			});
+	// 			const data = await response.json();
+	// 			if (response.ok) {
+	// 				setRetailer(data);
+	// 				console.log("Retailer Data:", data);
+	// 			} else {
+	// 				console.error("Failed to fetch retailer data:", data.message);
+	// 			}
+	// 		} catch (error) {
+	// 			console.error("An error occurred:", error);
+	// 		}
+	// 	};
 
-		fetchRetailerData();
-	}, []);
+	// 	fetchRetailerData();
+	// }, []);
 
 	return (
 		<div className="retailer-dashboard">
