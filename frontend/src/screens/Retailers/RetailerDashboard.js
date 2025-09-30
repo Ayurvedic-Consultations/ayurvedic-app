@@ -2,36 +2,51 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./RetailerDashboard.css";
 import { AuthContext } from "../../context/AuthContext";
+import { jwtDecode } from 'jwt-decode';
 
 function RetailerDashboard() {
 	const [retailer, setRetailer] = useState(null);
 	const { auth, setAuth } = useContext(AuthContext);
 	const firstName = auth.user?.firstName || "Doctor";
 	const navigate = useNavigate();
+	const [userId, setUserId] = useState(null);
 
 	useEffect(() => {
-		const fetchRetailerData = async () => {
+		const token = localStorage.getItem('token');
+		if (token) {
 			try {
-				const token = localStorage.getItem("token");
-				const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/profile`, {
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				const data = await response.json();
-				if (response.ok) {
-					setRetailer(data);
-				} else {
-					console.error("Failed to fetch retailer data:", data.message);
-				}
+				const decodedToken = jwtDecode(token);
+				setUserId(decodedToken.id);
 			} catch (error) {
-				console.error("An error occurred:", error);
+				console.error("Invalid token:", error);
 			}
-		};
-
-		fetchRetailerData();
+		}
 	}, []);
+
+	// useEffect(() => {
+	// 	const fetchRetailerData = async () => {
+	// 		try {
+	// 			const token = localStorage.getItem("token");
+	// 			const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/auth/profile`, {
+	// 				method: "GET",
+	// 				headers: {
+	// 					Authorization: `Bearer ${token}`,
+	// 				},
+	// 			});
+	// 			const data = await response.json();
+	// 			if (response.ok) {
+	// 				setRetailer(data);
+	// 				console.log("Retailer Data:", data);
+	// 			} else {
+	// 				console.error("Failed to fetch retailer data:", data.message);
+	// 			}
+	// 		} catch (error) {
+	// 			console.error("An error occurred:", error);
+	// 		}
+	// 	};
+
+	// 	fetchRetailerData();
+	// }, []);
 
 	return (
 		<div className="retailer-dashboard">
@@ -41,6 +56,9 @@ function RetailerDashboard() {
 				buyers effortlessly.
 			</p>
 			<div className="dashboard-buttons">
+				<Link to={`/profile/retailer/${userId}`}>
+					<button className="dashboard-btn">Your Profile</button>
+				</Link>
 				<Link to="/manage-products">
 					<button className="dashboard-btn">Manage Products</button>
 				</Link>

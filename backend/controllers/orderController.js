@@ -143,20 +143,36 @@ exports.updateOrderStatus = async (req, res) => {
 };
 
 exports.getOrders = async (req, res) => {
-	try {
-		const { retailerId } = req.query;
-		let orders;
+  try {
+	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get all orders by a given retialer id called")
+    const { retailerId } = req.query;
+    let orders;
 
-		if (retailerId) {
-			orders = await Order.find({ 'items.retailerId': retailerId }).sort({ createdAt: -1 });
-		} else {
-			orders = await Order.find().sort({ createdAt: -1 });
-		}
+    if (retailerId) {
+      orders = await Order.find()
+        .populate({
+          path: 'items.medicineId',
+          model: 'Medicine',
+          select: 'name retailerId price',
+        })
+        .sort({ createdAt: -1 });
 
-		res.status(200).json(orders);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+      // Filter orders to include only those that contain at least one medicine with this retailerId
+      orders = orders.filter(order =>
+        order.items.some(item =>
+          item.medicineId?.retailerId?.toString() === retailerId
+        )
+      );
+    } else {
+      orders = await Order.find()
+        .populate('items.medicineId', 'name retailerId price')
+        .sort({ createdAt: -1 });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // ✅ Get reviewed orders by buyerId (with retailer BusinessNames)

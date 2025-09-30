@@ -17,6 +17,7 @@ const doctorSchema = new mongoose.Schema({
     education: { type: String, required: true },
     dob: { type: Date, required: true },
     qrCode: { type: String },
+    role: { type: String, default: 'doctor' }
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

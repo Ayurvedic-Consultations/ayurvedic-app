@@ -115,7 +115,10 @@ router.post("/admin/login", async (req, res) => {
 //  Get Current Logged-in User (Admin or Regular User)
 router.get("/user", auth, async (req, res) => {
   try {
-    const user = req.user;
+    console.log("loggging in user , auth middleware - after :")
+    const user = req.user; 
+    console.log(user, ">>>>>>>>>>",user.role)
+
     res.status(200).json({
       user: {
         id: user._id,

@@ -8,16 +8,16 @@ const mongoose = require('mongoose'); // Added missing mongoose import for valid
 
 // Configure storage for payment proof screenshots
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    const dir = 'uploads/payment-proofs';
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
-  },
-  filename: function(req, file, cb) {
-    cb(null, `payment-${Date.now()}-${file.originalname}`);
-  }
+	destination: function (req, file, cb) {
+		const dir = 'uploads/payment-proofs';
+		if (!fs.existsSync(dir)) {
+			fs.mkdirSync(dir, { recursive: true });
+		}
+		cb(null, dir);
+	},
+	filename: function (req, file, cb) {
+		cb(null, `payment-${Date.now()}-${file.originalname}`);
+	}
 });
 
 const upload = multer({ storage });
@@ -27,7 +27,7 @@ router.post('/', auth, orderController.createOrder);
 router.get('/', auth, orderController.getOrders);
 
 // ✅ Specific routes should be defined before generic ones.
-router.get('/getAllTransactions', auth ,orderController.getAllTransactions);
+router.get('/getAllTransactions', auth, orderController.getAllTransactions);
 router.get('/getOrdersByBuyerId/:buyerId', orderController.getOrdersByBuyerId);
 router.get('/getOrdersByRetailerId/:retailerId', orderController.getOrdersByRetailerId);
 router.get('/getFeedbackByRetailerId/:retailerId', orderController.getFeedbackByRetailerId);
@@ -42,4 +42,3 @@ router.post('/:orderId/payment-proof', auth, upload.single('paymentProof'), orde
 
 
 module.exports = router;
-  
