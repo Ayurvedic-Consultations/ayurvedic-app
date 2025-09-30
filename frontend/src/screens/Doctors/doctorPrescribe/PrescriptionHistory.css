@@ -1,0 +1,206 @@
+/* --- CSS Variables for Theming --- */
+:root {
+  --primary-color: #007bff;
+  --primary-light: #e6f2ff;
+  --success-color: #28a745;
+  --success-light: #e9f7ec;
+  --muted-color: #6c757d;
+  --muted-light: #f8f9fa;
+  --text-dark: #343a40;
+  --border-color: #e9ecef;
+  --card-bg: #ffffff;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Main Container --- */
+.prescription-history-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* --- Section Styling (Active & Past) --- */
+.history-section {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--muted-light);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.section-icon {
+  stroke-width: 2.5px;
+}
+
+.section-icon.active-icon {
+  color: var(--success-color);
+}
+
+.section-icon.past-icon {
+  color: var(--muted-color);
+}
+
+/* --- Record List & Scrollbar --- */
+.record-list {
+  padding: 8px 24px 24px 24px;
+  max-height: 350px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Custom Scrollbar for a cleaner look */
+.record-list::-webkit-scrollbar {
+  width: 6px;
+}
+.record-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.record-list::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 20px;
+}
+
+/* --- Individual Prescription Card --- */
+.record-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.record-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Style for past records to de-emphasize them */
+.record-card.past-record {
+  border-left-color: var(--muted-color);
+  background-color: var(--muted-light);
+}
+.record-card.past-record .pill-icon {
+  color: var(--muted-color);
+}
+
+.record-content {
+  padding: 16px;
+}
+
+/* --- Card Header --- */
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.record-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pill-icon {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.record-title {
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+/* --- Status Badge (Active/Completed) --- */
+.record-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.record-badge.active {
+  background-color: var(--success-light);
+  color: var(--success-color);
+}
+
+.record-badge.completed {
+  background-color: #e5e7eb;
+  color: var(--muted-color);
+}
+
+/* --- Card Details --- */
+.record-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.875rem; /* 14px */
+  color: var(--muted-color);
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.record-item, .record-item-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.record-item-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted-color);
+}
+
+.record-reason, .record-instructions {
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.record-prescribed-by {
+  font-size: 0.8rem; /* 12.8px */
+  color: var(--muted-color);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Empty State --- */
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: var(--muted-color);
+  font-style: italic;
+}

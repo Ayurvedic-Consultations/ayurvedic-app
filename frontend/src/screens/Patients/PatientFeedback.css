@@ -1,0 +1,268 @@
+/* Basic Variables and Font Setup */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover-color: #1d4ed8;
+    --warning-color: #f59e0b;
+    --card-bg: #ffffff;
+    --muted-bg: #f1f5f9;
+    --border-color: #e5e7eb;
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+    --text-light: #ffffff;
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    background-color: var(--muted-bg);
+    font-family: 'Inter', sans-serif;;
+    color: var(--text-primary);
+}
+
+/* Main container */
+.drbfi-container {
+    max-width: 56rem;
+    margin: 2rem auto;
+    padding:6rem 2rem;
+}
+
+/* Card Styling */
+.drbfi-card {
+    background-color: var(--card-bg);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.drbfi-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.drbfi-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.drbfi-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Session Details Section */
+.drbfi-session-info {
+    background-color: var(--muted-bg);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.drbfi-session-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.drbfi-doctor-info {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.drbfi-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.drbfi-doctor-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.drbfi-date, .drbfi-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.drbfi-icon {
+    width: 1rem;
+    height: 1rem;
+    color: var(--text-muted);
+}
+
+.drbfi-value {
+    font-weight: 500;
+}
+
+
+/* Prescriptions Section */
+.drbfi-prescriptions-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.drbfi-icon-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+.drbfi-prescription-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.drbfi-prescription {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.drbfi-prescription-header {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.drbfi-med-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.drbfi-dosage, .drbfi-reason {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.drbfi-duration {
+    font-size: 0.875rem;
+}
+
+.drbfi-instructions {
+    font-size: 0.875rem;
+    background-color: var(--muted-bg);
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+}
+
+/* Form Styling */
+.drbfi-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.drbfi-main-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+/* Star Rating */
+.drbfi-stars {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.drbfi-star-btn {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
+.drbfi-star-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--text-muted);
+    transition: color 0.2s, fill 0.2s;
+}
+
+.drbfi-star-icon.filled {
+    color: var(--warning-color);
+    fill: var(--warning-color);
+}
+
+.drbfi-rating-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* Comment Section */
+.drbfi-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.drbfi-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Action Buttons */
+.drbfi-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.drbfi-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.drbfi-submit {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.drbfi-submit:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.drbfi-submit:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.drbfi-cancel {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.drbfi-cancel:hover {
+    background-color: var(--muted-bg);
+}
+
+/* Responsive Grid Layouts */
+@media (min-width: 768px) {
+    .drbfi-doctor-info {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .drbfi-prescription-header {
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+    }
+    .drbfi-duration {
+        text-align: right;
+    }
+}
+

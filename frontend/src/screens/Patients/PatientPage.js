@@ -14,80 +14,89 @@ import medicineImage from "../../media/medicine.png";
 //import step4Icon from "../../media/step4.png";
 
 function PatientPage() {
-	const { auth, setAuth } = useContext(AuthContext);
-	const firstName = auth.user?.firstName || "Patient";
-	const navigate = useNavigate();
-	const [isPrakritiFilled, setIsPrakritiFilled] = useState(false); // Track if Prakriti form is filled
+  const { auth, setAuth } = useContext(AuthContext);
+  const firstName = auth.user?.firstName || "Patient";
+  const navigate = useNavigate();
+  const [isPrakritiFilled, setIsPrakritiFilled] = useState(false); // Track if Prakriti form is filled
 
-	// Fetch Prakriti Determination data from the backend
-	useEffect(() => {
-		const fetchPrakritiData = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-						},
-					}
-				);
+  // Fetch Prakriti Determination data from the backend
+  useEffect(() => {
+    const fetchPrakritiData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-				if (response.ok) {
-					const data = await response.json();
-					if (data) {
-						setIsPrakritiFilled(true); // Prakriti form is filled
-					}
-				} else {
-					setIsPrakritiFilled(false); // Prakriti form is not filled
-				}
-			} catch (error) {
-				console.error("Error fetching Prakriti Determination data:", error);
-				setIsPrakritiFilled(false); // Assume form is not filled in case of error
-			}
-		};
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            setIsPrakritiFilled(true); // Prakriti form is filled
+          }
+        } else {
+          setIsPrakritiFilled(false); // Prakriti form is not filled
+        }
+      } catch (error) {
+        console.error("Error fetching Prakriti Determination data:", error);
+        setIsPrakritiFilled(false); // Assume form is not filled in case of error
+      }
+    };
 
-		if (auth.user?.email) {
-			fetchPrakritiData(); // Fetch data only if the user is logged in
-		}
-	}, [auth.user?.email]);
+    if (auth.user?.email) {
+      fetchPrakritiData(); // Fetch data only if the user is logged in
+    }
+  }, [auth.user?.email]);
 
-	const goToAppointedDoctor = () => {
-		navigate("/appointed-doctor"); // Navigate to the appointed doctor page
-	};
+  const goToAppointedDoctor = () => {
+    navigate("/appointed-doctor"); // Navigate to the appointed doctor page
+  };
 
-	const goToTreatmentPlans = () => {
-		navigate("/treatments"); // Navigate to the treatment plans page
-	};
+  const goToTreatmentPlans = () => {
+    navigate("/treatments"); // Navigate to the treatment plans page
+  };
 
-	const goToYogaAndDiet = () => {
-		navigate("/diet-yoga"); // Navigate to Yoga and Diet page
-	};
+  const goToYogaAndDiet = () => {
+    navigate("/diet-yoga"); // Navigate to Yoga and Diet page
+  };
 
-	const goToMedicines = () => {
-		navigate("/medicines"); // Navigate to the Ayurvedic medicines page
-	};
+  const goToMedicines = () => {
+    navigate("/medicines"); // Navigate to the Ayurvedic medicines page
+  };
 
   const handleOpenPrakritiForm = () => {
     navigate("/prakritidetermination"); // Redirect to Prakriti Determination form page
   };
 
-	return (
-		<div className="patient-container">
-			<main className="content">
-				<h1>Hi {firstName}!</h1>
-				<p>
-					Welcome back to your Ayurvedic wellness journey. We're here to help
-					you achieve balance and harmony in your life.
-				</p>
+  const goToProfile = () => {
+  if (auth.user?.id) {
+    navigate(`/profile/patients/${auth.user.id}`);
+  } else {
+    console.error("User ID not found");
+  }
+};
+
+
+  return (
+    <div className="patient-container">
+      <main className="content">
+        <h1>Hi {firstName}!</h1>
+        <p>
+          Welcome back to your Ayurvedic wellness journey. We're here to help
+          you achieve balance and harmony in your life.
+        </p>
 
         {/* Match Doctor Automatically Button */}
         <div className="match-section">
           {isPrakritiFilled ? (
             <>
               <p>
-                Thank you filling the prakriti determination form. 
-                Now Let us find the perfect Ayurvedic doctor for you based on your needs.
+                Thank you filling the prakriti determination form. Now Let us
+                find the perfect Ayurvedic doctor for you based on your needs.
               </p>
             </>
           ) : (
@@ -96,9 +105,9 @@ function PatientPage() {
                 Prakriti Determination
               </button>
               <p>
-                Kindly complete the Prakriti Determination Form. This will enable
-                us to automatically identify the most suitable doctor for your
-                needs.
+                Kindly complete the Prakriti Determination Form. This will
+                enable us to automatically identify the most suitable doctor for
+                your needs.
               </p>
             </>
           )}
@@ -107,7 +116,21 @@ function PatientPage() {
         {/* Key Services Section */}
         <section className="services-section">
           <h2>What can we help you with today?</h2>
+
           <div className="services-cards">
+            <div className="service-card" onClick={goToProfile}>
+              <img
+                src={doctorImage} // You can replace with a proper profile/user icon later
+                alt="Your Profile"
+                className="service-image"
+              />
+              <h3>Your Profile</h3>
+              <p>
+                View and manage your personal information, medical history, and
+                wellness journey.
+              </p>
+            </div>
+
             <div className="service-card" onClick={goToAppointedDoctor}>
               <img
                 src={doctorImage}

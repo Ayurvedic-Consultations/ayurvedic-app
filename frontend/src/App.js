@@ -69,6 +69,11 @@ import RetailerManagement from './screens/admin/Retailer/RetailerManagement';
 import Patientprofile from './screens/admin/patient/PatientProfile';
 import DoctorList from './screens/admin/doctors/DoctorList';
 import RetailerFullDetails from './screens/admin/Retailer/RetailerFullDetails';
+import { PatientHeader } from './screens/Doctors/doctorPrescribe/PatientHeader';
+import DoctorPrescribe from './screens/Doctors/doctorPrescribe/Doctor-Prescribe';
+import PrescribeIndex from './screens/Doctors/doctorPrescribe/PrescribeIndex';
+import PatientFeedback from './screens/Patients/PatientFeedback';
+import BuyerFeedback from './screens/Patients/BuyerFeedback';
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -124,12 +129,24 @@ function App() {
         <Route path="/admin/users" element={<PatientFullDetails />} />
         <Route path="/admin/medicine-orders/:id" element={<RetailerFullDetails />} />
 
+        <Route path="/profile/patients/:id" element={<Patientprofile />} />
+
 
 
         <Route element={<ProtectedRoute />}>
           <Route path="/doctor-home" element={<DoctorHomeScreen />} />
           <Route path="/current-requests" element={<CurrentRequests />} />
           <Route path="/appointment-slots" element={<AppointmentSlots />} />
+          {/* my changes */}
+
+          {/* <Route path ="/patient-header" element={<PatientHeader/>} />
+          <Route path="/doctor-prescribe" element={<DoctorPrescribe/>} /> */}
+          <Route path="/doctorsprescribe" element={<PrescribeIndex />}/>
+          <Route path ="/PatientFeedback" element={<PatientFeedback/>} />
+          <Route path ="/BuyerFeedback" element={<BuyerFeedback/>} />
+
+
+
           <Route path="/doctor-analytics" element={<DoctorAnalytics />} />
           <Route path="/patient-list" element={<PatientList />} />
           <Route path="/health-blogs" element={<HealthBlogs />} />

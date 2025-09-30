@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* --- CSS Variables for Theming --- */
+:root {
+  /* Colors */
+  --primary-color: #3b82f6; /* Medium Blue */
+  --primary-light: #e0e7ff; /* Light Blue */
+  --surface-color: #ffffff;
+  --bg-color: #f8f9fa;
+  --border-color: #dee2e6;
+  --text-main: #111827;
+  --text-muted: #6c757d;
+  --badge-bg: #f3f4f6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* --- General & Platform Styles --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+}
+
+.platform-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.platform-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.platform-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.platform-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* --- Patient Header Card --- */
+.patient-header-cards {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.patient-header-contents {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* --- Avatar Section (Corrected) --- */
+/* This is now the main container for the avatar, ensuring consistent size and styling */
+.patient-avatars {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%; /* A perfect circle is more standard */
+    border: 3px solid var(--surface-color);
+    box-shadow: 0 0 0 4px var(--primary-color); /* Creates the outer colored ring */
+    overflow: hidden; /* Keeps the image/fallback contained */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-light); /* Sets the background for the fallback */
+}
+
+/* The image will fill the circular container */
+.patient-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The fallback text will be centered and sized correctly within the container */
+.patient-avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%; 
+    color: var(--primary-color);
+    font-size: 2.5rem; /* Correctly sized font for the 90px container */
+    font-weight: 600;
+}
+
+/* --- Info Container --- */
+.patient-info-containers {
+    flex-grow: 1;
+}
+
+.patient-name-id-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.patient-name {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.patient-id-tags {
+    background-color: var(--badge-bg);
+    color: var(--text-muted);
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* --- Details Grid --- */
+.patient-details-grids {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.detail-icon {
+    color: var(--primary-color);
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.detail-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Placeholder Content --- */
+.content-placeholder {
+    border: 2px dashed var(--border-color);
+    border-radius: 1rem;
+    padding: 3rem;
+    text-align: center;
+}
+
+.placeholder-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .patient-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .patient-header-content {
+        flex-direction: column;
+        align-items: center; /* Center avatar and text when stacked */
+        text-align: center;
+    }
+    
+    .patient-name-id-section {
+        justify-content: center;
+    }
+
+    .patient-details-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    .detail-item {
+        justify-content: center;
+    }
+}

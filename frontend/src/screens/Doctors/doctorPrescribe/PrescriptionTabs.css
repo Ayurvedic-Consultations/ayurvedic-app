@@ -1,0 +1,77 @@
+/* --- CSS Variables for Theming --- */
+:root {
+  --primary-color: #007bff;
+  --primary-light: #e6f2ff;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --card-bg: #ffffff;
+  --border-color: #e9ecef;
+  --secondary-bg: #f8f9fa;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Main Tabs Container --- */
+.tabs-container {
+    display: flex;
+    flex-direction: column;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* --- Tab Buttons List --- */
+.tab-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 24px;
+}
+
+/* --- Individual Tab Button --- */
+.tab-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 0.95rem; /* 15.2px */
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.tab-trigger:hover {
+  background-color: #e2e6ea;
+  color: var(--text-dark);
+}
+
+/* --- Active Tab Styling --- */
+.tab-trigger.active {
+  background-color: var(--card-bg);
+  color: var(--primary-color);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-icon {
+  font-size: 1.125rem; /* 18px */
+}
+
+/* --- Tab Content Area --- */
+.tab-content {
+  /* This container will hold the rendered form. 
+     The form itself should have its own internal padding and styles. */
+  margin-top: 16px;
+}

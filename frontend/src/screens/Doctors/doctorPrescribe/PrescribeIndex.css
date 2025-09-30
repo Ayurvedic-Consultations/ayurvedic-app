@@ -1,0 +1,145 @@
+/* Index.css - Refined Styles */
+
+/* --- 1. Variables and Base Reset --- */
+:root {
+  /* Color Palette (Slightly warmer/softer than the original) */
+  --background-color: #f8f9fa; /* Lightest gray for background */
+  --card-background: #ffffff; /* Pure white for cards */
+  --header-background: #ffffff;
+  --border-color: #e9ecef; /* Subtle border color */
+  
+  /* Text Colors */
+  --foreground-color: #212529; /* Darkest text (h1, bold) */
+  --muted-foreground: #6c757d; /* Muted text (subtitles, descriptions) */
+  
+  /* Shadow for Elevation */
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Spacing */
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* Layout */
+  --max-width: 1280px;
+}
+
+/* Reset and Base Body Styles */
+body {
+  /* Using system fonts for performance and native feel */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  line-height: 1.5; /* Improved readability */
+}
+
+/* --- 2. Application Container --- */
+.app-container {
+  min-height: 100vh;
+}
+
+/* --- 3. Header Styling --- */
+.app-header {
+  background-color: var(--header-background);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-md) var(--space-lg); /* 16px vertical, 24px horizontal */
+  position: sticky; /* Optional: Keep header visible on scroll */
+  top: 0;
+  z-index: 10;
+}
+
+.header-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em; /* Slight tightening for modern feel */
+}
+
+.app-subtitle {
+  font-size: 0.95rem; /* Slightly smaller for balance */
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+/* --- 4. Main Content and Layout --- */
+.main-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg); /* 32px vertical, 24px horizontal */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl); /* 32px gap between PatientHeader and main-layout */
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl); /* 32px gap between columns */
+}
+
+/* Desktop Layout (mimics the 1fr 2fr split) */
+@media (min-width: 1280px) {
+  .main-layout {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* --- 5. Component Container Styling (For the PatientHeader, History, and Tabs) --- */
+
+/* Generic card styling for sections */
+.card-section {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px; /* Rounded corners */
+  padding: var(--space-xl); /* Consistent padding inside the cards */
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Apply card-section style to the main columns (assuming components inside use it) 
+   If your React components (PatientHeader, PrescriptionHistory, PrescriptionTabs) 
+   don't have internal card styling, you'll need to wrap them in a <div> with this class, 
+   or add the padding/background directly to your components' root elements. 
+   
+   For this CSS, I'll assume your components use a wrapper div that needs styling:
+*/
+
+/* Example for how you'd style the component containers if they are wrapped */
+.patient-header-wrapper {
+    /* Assuming PatientHeader is wrapped here */
+    composes: card-section; /* Use CSS Modules or a similar technique for reuse */
+    /* Alternatively, manually repeat styles if not using modules: */
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--space-xl);
+    box-shadow: var(--card-shadow);
+}
+
+
+/* Styling the column containers themselves for layout */
+.history-column {
+  /* This column acts as a container for PrescriptionHistory */
+}
+
+.prescription-column {
+  /* This column acts as a container for PrescriptionTabs */
+}
+
+/* Enhance readability for section headers within components */
+h2, h3 {
+    margin-top: 0;
+    color: var(--foreground-color);
+}

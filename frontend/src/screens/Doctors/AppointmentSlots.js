@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import "./AppointmentSlots.css"; // Ensure CSS is correctly linked
 
 function AppointmentSlots() {
@@ -8,8 +9,16 @@ function AppointmentSlots() {
 	const [showInput, setShowInput] = useState({});
 	const [meetLink, setMeetLink] = useState({});
 	const [linkSent, setLinkSent] = useState({});
+    
 
 	const email = localStorage.getItem("email");
+
+	const navigate=useNavigate();
+
+	const handlebtn=()=>{
+		// navigate("/doctor-prescribe");
+		navigate("/doctorsprescribe");
+	}
 
 	useEffect(() => {
 		const fetchAppointments = async () => {
@@ -154,6 +163,10 @@ function AppointmentSlots() {
 	return (
 		<div className="appointments-container">
 			<h1>My Appointment Slots</h1>
+             <button onClick={handlebtn}>
+				Click here
+			 </button>
+
 			<p>Showing upcoming appointments and those from the past 30 minutes.</p>
 			{appointments.length === 0 ? (
 				<p>No upcoming appointments found.</p>

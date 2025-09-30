@@ -1,0 +1,767 @@
+/* --- Global Styles & Variables --- */
+:root {
+  --primary-color: #007bff;
+  --primary-light: #e6f2ff;
+  --secondary-bg: #f8f9fa;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --card-border: #e9ecef;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f9; /* Light background */
+  color: var(--text-dark);
+}
+
+button {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* --- Main App Layout --- */
+
+.app-container {
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--card-border);
+  padding: 16px 24px;
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.app-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.main-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 1280px) {
+  .main-layout {
+    grid-template-columns: 1fr 2fr; /* 1 column for history, 2 for forms */
+  }
+}
+
+/* --- PatientHeader Styles --- */
+
+.patient-header-card {
+  width: 100%;
+  background: linear-gradient(90deg, var(--primary-light), rgba(248, 249, 250, 0.5));
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+}
+
+.patient-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.patient-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 123, 255, 0.4);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.patient-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.patient-avatar-fallback {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.patient-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.patient-name-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.patient-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.patient-id {
+  background-color: var(--secondary-bg);
+  color: var(--text-dark);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.patient-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 24px;
+}
+
+.patient-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+}
+
+.patient-detail-item .icon {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.patient-detail-item .text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .patient-header-content {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+
+/* --- PrescriptionHistory Styles --- */
+
+.prescription-history {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.history-section {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.section-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.active-icon { color: var(--success-color); }
+.past-icon { color: var(--text-muted); }
+
+.record-list {
+  padding: 16px 24px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.record-card {
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background-color: var(--secondary-bg);
+}
+
+.record-content {
+  padding: 12px;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.record-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill-icon {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.record-title {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.record-badge {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.record-badge.active {
+  background-color: var(--success-color);
+  color: #fff;
+}
+
+.record-badge.completed {
+  background-color: #e2e6ea;
+  color: var(--text-muted);
+}
+
+.record-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.record-item .icon {
+  font-size: 0.75rem;
+}
+
+.record-reason {
+  color: var(--text-dark);
+  margin: 0;
+  font-weight: 500;
+}
+
+.record-instructions, .record-prescribed-by {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.record-prescribed-by {
+  font-size: 0.7rem;
+  color: #a0a0a0;
+  margin-top: 4px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-muted);
+}
+
+
+/* --- PrescriptionTabs Styles --- */
+
+.tabs-container-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  border: 1px solid var(--card-border);
+}
+
+.tab-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  background-color: var(--secondary-bg);
+  padding: 4px;
+}
+
+.tab-trigger {
+  background-color: transparent;
+  border: none;
+  padding: 12px 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab-trigger:hover {
+  background-color: #e2e6ea;
+  color: var(--text-dark);
+}
+
+.tab-trigger.active {
+  background-color: #fff;
+  color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tab-icon {
+  font-size: 1.125rem;
+}
+
+
+/* --- Form Shared Styles --- */
+
+.form-container {
+    background-color: #fff;
+    border-radius: 12px;
+}
+
+.form-header-title {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 24px;
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.medicine-form, .diet-form, .yoga-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.form-input, .form-select, .form-textarea, .herb-input, .asana-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus, .herb-input:focus, .asana-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-textarea {
+  resize: vertical;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+
+/* --- DietPlanForm Styles --- */
+
+.diet-plan-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .diet-plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.diet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diet-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.diet-icon {
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.diet-textarea {
+  min-height: 80px;
+}
+
+.herbs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.herbs-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.herb-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.add-herb-btn {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 40px;
+  font-weight: bold;
+}
+
+.herb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.herb-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  font-size: 0.875rem;
+}
+
+.herb-icon {
+  font-size: 0.875rem;
+  color: var(--success-color);
+}
+
+.remove-herb-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  padding: 0;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+.remove-herb-btn:hover {
+  color: var(--danger-color);
+}
+
+
+/* --- YogaPlanForm Styles --- */
+
+.yoga-plan-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .yoga-plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.asana-plan-card {
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.asana-plan-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--card-border);
+  background-color: var(--secondary-bg);
+}
+
+.asana-plan-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.plan-icon {
+  color: var(--primary-color);
+}
+
+.asana-plan-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.asana-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.add-asana-btn {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 40px;
+  font-weight: bold;
+}
+
+.common-asanas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.common-asanas-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.common-asanas-scroll {
+  max-height: 100px;
+  overflow-y: auto;
+  padding-right: 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 8px;
+  background-color: #fcfcfc;
+}
+
+.common-asana-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.common-asana-tag {
+  background-color: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.common-asana-tag:hover:not(:disabled) {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.common-asana-tag:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.selected-asanas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-asanas-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.selected-asanas-scroll {
+  max-height: 150px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.selected-asanas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-asana-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--primary-light);
+  border-radius: 4px;
+}
+
+.selected-asana-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+}
+
+.selected-asana-icon {
+  color: var(--primary-color);
+}
+
+.remove-asana-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.remove-asana-btn:hover {
+  color: var(--danger-color);
+}
+
+.plan-summary {
+  background-color: rgba(0, 123, 255, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.summary-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.summary-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+}
+
+@media (min-width: 768px) {
+  .summary-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

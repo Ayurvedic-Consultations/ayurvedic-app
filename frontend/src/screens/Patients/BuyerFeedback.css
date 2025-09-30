@@ -1,0 +1,226 @@
+/* Container */
+.bf-containerr {
+  max-width: 800px;
+  width: 650px;
+  margin: 20px auto;
+  padding-top: 130px;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+/* Card */
+.bf-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  padding: 24px;
+}
+
+/* Header */
+.bf-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 16px;
+}
+
+.bf-order-info {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.bf-order-info p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Items */
+.bf-order-items h4 {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.bf-item {
+  display: flex;
+  justify-content: space-between;
+  background: #f3f4f6;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.bf-item-name {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.bf-item-price {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.bf-item-total {
+  font-weight: 600;
+}
+
+.bf-total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+  padding-top: 8px;
+  font-weight: bold;
+}
+
+.bf-total-amount {
+  font-size: 16px;
+  color: #2563eb;
+}
+
+/* Form */
+.bf-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Stars */
+.bf-stars {
+  display: flex;
+  gap: 3px;
+}
+
+.bf-star {
+  width: 28px;
+  height: 28px;
+  transition: color 0.2s;
+}
+
+.bf-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.bf-star-empty {
+  color: #9ca3af;
+}
+
+.bf-star-filled {
+  color: #fbbf24;
+}
+
+.bf-rating-text {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* Inputs */
+.bf-input,
+.bf-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.bf-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Buttons */
+.bf-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.bf-btn-primary {
+  flex: 1;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.bf-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.bf-btn-primary:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.bf-btn-outline {
+  flex: 1;
+  background: green;
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.bf-btn-outline:hover {
+  background: #f3f4f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bf-card {
+    padding: 16px;
+  }
+
+  .bf-actions {
+    flex-direction: column;
+  }
+}
+.bf-rating-text {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #333;
+}
+
+.bf-rating-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.bf-rating-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Different colors for each rating */
+.bf-icon-poor {
+  color: #089c0ac7;
+}
+
+.bf-icon-fair {
+  color: #089c0ac7;
+}
+
+.bf-icon-good {
+    color: #089c0ac7;
+}
+
+.bf-icon-verygood {
+  color: #089c0ac7;
+}
+
+.bf-icon-excellent {
+    color: #089c0ac7;
+}

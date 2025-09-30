@@ -1,0 +1,343 @@
+/* --- CSS Variables for Theming --- */
+:root {
+  --primary-color: hwb(92 0% 46% / 0.783); /* A calming purple for yoga theme */
+  --primary-light: #f3e5f5;
+  --primary-dark: #6a1b9a;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --danger-color: #dc3545;
+  --danger-hover: #b02a37;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Main Card & Header --- */
+.form-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.form-header {
+  background-color: var(--secondary-bg);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.form-icon {
+  color: var(--primary-color);
+}
+
+.form-content {
+  padding: 24px;
+}
+
+.yoga-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* --- Two-Column Grid for Morning/Evening Plans --- */
+.yoga-plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* --- Asana Plan Card --- */
+.asana-plan-card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.asana-plan-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--secondary-bg);
+}
+
+.asana-plan-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.plan-icon {
+  color: var(--primary-color);
+}
+
+.asana-plan-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+/* --- Input Groups & Buttons --- */
+.asana-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.asana-input {
+  flex-grow: 1;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.asana-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.add-asana-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0; /* Ensures no default padding interferes with centering */
+  border: none;
+  border-radius: 6px;
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  /* --- FIX 1: Switched to Flexbox for robust centering --- */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-asana-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* --- Asana Lists --- */
+.common-asanas-container,
+.selected-asanas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.common-asanas-label,
+.selected-asanas-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.common-asanas-scroll,
+.selected-asanas-scroll {
+  max-height: 140px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px;
+  background-color: var(--secondary-bg);
+  color: white;
+}
+.common-asanas-scroll::-webkit-scrollbar,
+.selected-asanas-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.common-asanas-scroll::-webkit-scrollbar-thumb,
+.selected-asanas-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.common-asana-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.common-asana-tag {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  color: var(--text-dark);
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.common-asana-tag:hover:not(:disabled) {
+  background-color: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.common-asana-tag:disabled {
+  background-color: #e9ecef;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* --- Selected Asanas List --- */
+.selected-asanas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-asana-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--primary-light);
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.selected-asana-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.selected-asana-text .lucide-yoga {
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.remove-asana-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--primary-color);
+  cursor: pointer;
+  flex-shrink: 0;
+  /* --- FIX 2: Added transition for smooth color changes --- */
+  transition: background-color 0.2s, color 0.2s, transform 0.1s;
+}
+.remove-asana-btn:hover {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+/* --- FIX 2: Added active state for the moment you click the button --- */
+.remove-asana-btn:active {
+    background-color: var(--danger-hover);
+    transform: scale(0.9);
+}
+/* Prevents default blue outline on click for a cleaner look */
+.remove-asana-btn:focus {
+    outline: none;
+}
+/* Adds a custom, accessible focus ring for keyboard navigation */
+.remove-asana-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 1px;
+}
+
+
+/* --- Summary & Submit --- */
+.plan-summary {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  padding: 16px 24px;
+  border-radius: 8px;
+}
+
+.summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--text-dark);
+}
+.summary-title .lucide-list-todo {
+    color: var(--primary-color);
+}
+
+.summary-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* --- General & Responsive --- */
+.empty-state {
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 1024px) {
+  .yoga-plan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+    .form-content {
+        padding: 16px;
+    }
+    .submit-button {
+        width: 100%;
+    }
+    .summary-details {
+        grid-template-columns: 1fr;
+    }
+}

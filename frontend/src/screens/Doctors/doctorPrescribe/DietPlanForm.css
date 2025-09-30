@@ -1,0 +1,329 @@
+/* ===============================
+   CSS Variables for Theming
+================================= */
+:root {
+  --primary-color: #007bff;
+  --primary-dark: #0056b3;
+  --primary-light: #e6f2ff;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --danger-hover: #b02a37;
+}
+
+/* ===============================
+   Main Card & Form Structure
+================================= */
+.form-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.form-header {
+  background-color: var(--secondary-bg);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.form-icon {
+  color: var(--primary-color);
+}
+
+.form-content {
+  padding: 24px;
+}
+
+.diet-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ===============================
+   Tabs Styling
+================================= */
+.tabs-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.tab-trigger {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-trigger:hover {
+  background-color: #e2e6ea;
+  color: var(--text-dark);
+}
+
+.tab-trigger.active {
+  background-color: var(--card-bg);
+  color: var(--primary-color);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tab-content {
+  margin-top: 16px;
+}
+
+/* ===============================
+   Daily Plan Grid
+================================= */
+.diet-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.diet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diet-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.diet-icon {
+  color: var(--text-muted);
+}
+
+.diet-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 90px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.diet-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* ===============================
+   Weekly Plan Styling
+================================= */
+.weekly-plan-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.weekly-day-card {
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.weekly-day-title {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.weekly-day-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.weekly-meal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.weekly-meal-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* ===============================
+   Herbs & Supplements Section
+================================= */
+.herbs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.herbs-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.herbs-title .lucide-sprout {
+  color: var(--success-color);
+}
+
+.herb-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.herb-input {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.add-herb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-herb-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.herb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 20px;
+}
+
+.herb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 16px;
+}
+
+.herb-tag .lucide-leaf {
+  color: var(--success-color);
+}
+
+.remove-herb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--primary-color);
+  cursor: pointer;
+  margin-left: 4px;
+  transition: background-color 0.2s, color 0.2s, transform 0.1s;
+}
+
+.remove-herb-btn:hover {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+
+.remove-herb-btn:active {
+  background-color: var(--danger-hover);
+  transform: scale(0.9);
+}
+
+.remove-herb-btn:focus {
+  outline: none;
+}
+
+.remove-herb-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 1px;
+}
+
+/* ===============================
+   Submit Button
+================================= */
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--success-color);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.submit-button:hover {
+  background-color: #1e7e34;
+}
+
+/* ===============================
+   Responsive Design
+================================= */
+@media (max-width: 768px) {
+  .diet-plan-grid,
+  .weekly-day-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-content {
+    padding: 16px;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}

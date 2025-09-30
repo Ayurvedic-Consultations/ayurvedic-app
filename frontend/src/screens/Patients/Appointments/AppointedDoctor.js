@@ -220,6 +220,14 @@ function AppointedDoctor() {
 					>
 						Previous Appointments
 					</button>
+
+					<button onClick={() => navigate('/PatientFeedback')} >
+						Patient Feedback
+					</button>
+					<button onClick={() => navigate('/BuyerFeedback')} >
+						Buyer Feedback
+					</button>
+		
 				</div>
 
 				<AppointmentTab
