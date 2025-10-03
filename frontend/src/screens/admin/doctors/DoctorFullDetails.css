@@ -112,6 +112,7 @@ h1 {
 }
 
 .right-panel {
+  width: 100%;
   flex-grow: 1;
   padding: var(--space-xl);
   display: flex;

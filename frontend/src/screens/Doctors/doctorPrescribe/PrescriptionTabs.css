@@ -12,7 +12,7 @@
 }
 
 /* --- Main Tabs Container --- */
-.tabs-container {
+.tabs-containers {
     display: flex;
     flex-direction: column;
   background-color: var(--card-bg);

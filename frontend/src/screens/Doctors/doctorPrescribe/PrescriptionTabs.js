@@ -29,7 +29,7 @@ export function PrescriptionTabs() {
   };
 
   return (
-    <div className="tabs-container">
+    <div className="tabs-containers">
       <div className="tab-list">
         {/* 3. Map over the tabs array to render buttons dynamically */}
         {tabs.map(({ id, label, Icon }) => (

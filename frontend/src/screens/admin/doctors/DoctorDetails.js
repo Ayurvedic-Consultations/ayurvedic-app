@@ -44,7 +44,7 @@ const DetailsTab = ({ doctor }) => {
 							)}
 						</li>
 					</ul>
-				</div>
+				
 
 				{/* Professional Info */}
 				<div className="detail-item">
@@ -65,6 +65,8 @@ const DetailsTab = ({ doctor }) => {
 						<span className="label">Zip Code:</span>{" "}
 						{doctor.zipCode || "Not specified"}
 					</p>
+				</div>
+
 				</div>
 			</div>
 		</div>

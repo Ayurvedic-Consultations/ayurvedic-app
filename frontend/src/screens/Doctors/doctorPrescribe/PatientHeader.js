@@ -111,7 +111,7 @@ export default function App() {
         <div className="platform-container">
             {/* Mock Platform Header to match the image context */}
             <header className="platform-header">
-                <h1 className="platform-title">MedCare Platform</h1>
+                <h1 className="platform-title">Ayurvedic Platform</h1>
                 <p className="platform-subtitle">Doctor-Patient Consultation System</p>
                 <div className="header-divider"></div>
             </header>
