@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 function MyOrders() {
 	const [orders, setOrders] = useState([]);
-	const [status, setStatus] = useState("pending"); // backend uses "pending" not "received"
+	const [status, setStatus] = useState("pending" || "delivered" || "accepted" || "rejected" || "shipped");
 	const { auth } = useContext(AuthContext);
 	const retailerId = auth?.user?.id;
 
@@ -18,7 +18,7 @@ function MyOrders() {
 						headers: { Authorization: `Bearer ${auth.token}` },
 					}
 				);
-				// backend sends { message, orders: [...] }
+
 				setOrders(response.data.orders || []);
 				console.log(response.data.orders);
 			} catch (error) {
@@ -31,11 +31,14 @@ function MyOrders() {
 
 	const updateOrderStatus = async (orderId, newStatus) => {
 		try {
-			await axios.patch(
+			await axios.post(
 				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/orders/status`,
 				{
 					orderId,
 					status: newStatus,
+				},
+				{
+					headers: { Authorization: `Bearer ${auth.token}` },
 				}
 			);
 			setOrders((prevOrders) =>
@@ -49,7 +52,7 @@ function MyOrders() {
 	};
 
 	return (
-		<div className="orders-container" style={{marginTop:"175px", padding:"15px", borderRadius:"15px"}}>
+		<div className="orders-container" style={{ marginTop: "175px", padding: "15px", borderRadius: "15px" }}>
 			<h1>My Orders</h1>
 			<div className="order-tabs">
 				<button
@@ -64,36 +67,92 @@ function MyOrders() {
 				>
 					Accepted
 				</button>
+				<button
+					className={status === "delivered" ? "active" : ""}
+					onClick={() => setStatus("delivered")}
+				>
+					Delivered
+				</button>
+				<button
+					className={status === "shipped" ? "active" : ""}
+					onClick={() => setStatus("shipped")}
+				>
+					Shipped
+				</button>
+				<button
+					className={status === "rejected" ? "active" : ""}
+					onClick={() => setStatus("rejected")}
+				>
+					Rejected
+				</button>
 			</div>
 			{orders
-				.filter((order) => (order.status === "all") || (order.status === "delivered") || (order.status))
+				.filter((order) => order.status === status)
 				.map((order) => (
 					<div key={order._id} className="order-card">
 						<p>
 							<strong>Buyer Name:</strong> {order.customerName}
 						</p>
 						<p>
-							<strong>Date:</strong> {order.date}
+							<strong>Order Recieving Date:</strong> {new Date(order.date).toLocaleDateString()}
 						</p>
+
 						<p>
-							<strong>Item Name:</strong> {order.medicineName}
+							<strong>Shipping Address:</strong>{
+								order.shippingAddress
+									? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}`
+									: "N/A"
+							}
 						</p>
+
 						<p>
-							<strong>Quantity:</strong> {order.quantity}
+							<strong>Items:</strong>
+						</p>
+						<table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "10px" }}>
+							<thead>
+								<tr>
+									<th style={{ border: "1px solid #ccc", padding: "6px" }}>Medicine</th>
+									<th style={{ border: "1px solid #ccc", padding: "6px" }}>Unit Price</th>
+									<th style={{ border: "1px solid #ccc", padding: "6px" }}>Quantity</th>
+									<th style={{ border: "1px solid #ccc", padding: "6px" }}>Subtotal</th>
+								</tr>
+							</thead>
+							<tbody>
+								{order.items.map((item, idx) => (
+									<tr key={idx}>
+										<td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.medicineName}</td>
+										<td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.unitPrice}</td>
+										<td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.quantity}</td>
+										<td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.subTotal}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+
+						<p>
+							<strong>Order Total:</strong> {order.orderTotal}
 						</p>
 						<p>
 							<strong>Status:</strong> {order.status}
 						</p>
-						{status === "pending" && (
-							<div className="action-buttons">
+
+						<div className="action-buttons">
+							{(status === "pending" || "accepted") &&
+								"Update Status:"}
+							{(status === "pending") &&
 								<button onClick={() => updateOrderStatus(order._id, "accepted")}>
 									Accept
-								</button>
+								</button>}
+							{(status === "pending") &&
 								<button onClick={() => updateOrderStatus(order._id, "rejected")}>
 									Reject
-								</button>
-							</div>
-						)}
+								</button>}
+							{(status === "accepted") &&
+								<button onClick={() => updateOrderStatus(order._id, "shipped")}>
+									Shipped
+								</button>}
+						</div>
+
 					</div>
 				))}
 		</div>

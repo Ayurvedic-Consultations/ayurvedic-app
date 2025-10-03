@@ -9,276 +9,348 @@ const Doctor = require('../models/Doctor');
 const path = require('path');
 const fs = require('fs');
 
+
+exports.updateOrderReview = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { rating, comment, receivingDate } = req.body;
+
+
+        // Validate required fields
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ message: "Rating must be between 1 and 5" });
+        }
+
+        // Build review object
+        const reviewData = {
+            rating,
+            comment,
+            createdAt: new Date(), // when review submitted
+        };
+
+        // Update the order
+        const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                $set: {
+                    review: reviewData,
+                    deliveredAt: receivingDate ? new Date(receivingDate) : undefined,
+                    orderStatus: "delivered", 
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedOrder) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        res.json({
+            message: "Feedback updated successfully",
+            order: updatedOrder,
+        });
+    } catch (error) {
+        console.error("Error updating feedback:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 exports.createOrder = async (req, res) => {
-	try {
-		const { items, totalPrice, buyer, shippingAddress, paymentMethod } = req.body;
+    try {
+        const { items, totalPrice, buyer, shippingAddress, paymentMethod } = req.body;
 
-		// Create new order with all the checkout details
-		const newOrder = new Order({
-			items,
-			totalPrice,
-			buyer,
-			shippingAddress,
-			paymentMethod,
-			paymentStatus: paymentMethod === 'cashOnDelivery' ? 'pending' : 'pending',
-			orderStatus: 'pending'
-		});
+        // Map frontend items to schema-required fields only
+        const formattedItems = items.map(item => ({
+            medicineId: item.medicineId,   // required
+            quantity: item.quantity,       // required
+            subTotal: item.subtotal        // required
+        }));
 
-		// If online payment, generate QR code (In real app, fetch from payment gateway)
-		if (paymentMethod === 'onlinePayment') {
-			// This would be replaced with actual QR code generation or fetching from payment provider
-			// For demo purposes, we're just setting a placeholder path
-			newOrder.paymentQR = 'uploads/qr-codes/payment-qr.png';
-		}
+        // Map buyer to schema-required fields
+        const formattedBuyer = {
+            firstName: buyer.firstName,
+            lastName: buyer.lastName,
+            type: buyer.type === 'patient' ? 'Patient' : 'Doctor', // ensure enum matches
+            buyerId: buyer.userId           // schema expects buyerId as ObjectId
+        };
 
-		await newOrder.save();
-		res.status(201).json(newOrder);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+        const newOrder = new Order({
+            items: formattedItems,
+            totalPrice,
+            buyer: formattedBuyer,
+            shippingAddress,
+            paymentMethod,
+            paymentStatus: 'pending',
+            orderStatus: 'pending'
+        });
+
+        // Online payment QR code placeholder
+        if (paymentMethod === 'onlinePayment') {
+            newOrder.paymentQR = 'uploads/qr-codes/payment-qr.png';
+        }
+
+        await newOrder.save();
+
+        res.status(201).json(newOrder);
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: error.message });
+    }
 };
 
 exports.uploadPaymentProof = async (req, res) => {
-	try {
-		const { orderId } = req.params;
+    try {
+        const { orderId } = req.params;
 
-		// Check if file was uploaded
-		if (!req.file) {
-			return res.status(400).json({ message: 'Payment proof image is required' });
-		}
+        // Check if file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: 'Payment proof image is required' });
+        }
 
-		// Update order with payment proof
-		const order = await Order.findByIdAndUpdate(
-			orderId,
-			{
-				paymentProof: req.file.path,
-				paymentStatus: 'paid',
-				orderStatus: 'processing'
-			},
-			{ new: true }
-		);
+        // Update order with payment proof
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                paymentProof: req.file.path,
+                paymentStatus: 'paid',
+                orderStatus: 'processing'
+            },
+            { new: true }
+        );
 
-		if (!order) {
-			return res.status(404).json({ message: 'Order not found' });
-		}
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
 
-		res.status(200).json(order);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
-};
-
-exports.getOrders = async (req, res) => {
-	try {
-		const { userId, retailerId } = req.query;
-		let orders;
-
-		if (userId) {
-			// Fetch orders by userId for customer-specific views
-			orders = await Order.find({ 'buyer.userId': userId }).sort({ createdAt: -1 });
-		} else if (retailerId) {
-			// Fetch orders containing items from the specific retailer
-			orders = await Order.find({
-				'items.retailerId': retailerId
-			}).sort({ createdAt: -1 });
-		} else {
-			// Fetch all orders for admin or general views
-			orders = await Order.find().sort({ createdAt: -1 });
-		}
-
-		res.status(200).json(orders);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 exports.getOrderById = async (req, res) => {
-	try {
-		const order = await Order.findById(req.params.id);
-		if (!order) {
-			return res.status(404).json({ message: 'Order not found' });
-		}
-		res.status(200).json(order);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 exports.updateRetailerStatus = async (req, res) => {
-	try {
-		const { orderId, status } = req.body;
-		const order = await Order.findByIdAndUpdate(
-			orderId,
-			{ retailerStatus: status },
-			{ new: true }
-		);
+    try {
+        const { orderId, status } = req.body;
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { retailerStatus: status },
+            { new: true }
+        );
 
-		if (!order) {
-			return res.status(404).json({ message: 'Order not found' });
-		}
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
 
-		res.status(200).json(order);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 exports.updateOrderStatus = async (req, res) => {
-	try {
-		const { orderId, status } = req.body;
-		const order = await Order.findByIdAndUpdate(
-			orderId,
-			{ orderStatus: status },
-			{ new: true }
-		);
+    try {
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> update order status called");
+        const { orderId, status } = req.body;
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { orderStatus: status },
+            { new: true }
+        );
 
-		if (!order) {
-			return res.status(404).json({ message: 'Order not found' });
-		}
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
 
-		res.status(200).json(order);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 exports.getOrders = async (req, res) => {
-  try {
-	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get all orders by a given retialer id called")
-    const { retailerId } = req.query;
-    let orders;
+    try {
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get all orders by a given retailer id called");
+        const { retailerId } = req.query;
+        let orders;
 
-    if (retailerId) {
-      orders = await Order.find()
-        .populate({
-          path: 'items.medicineId',
-          model: 'Medicine',
-          select: 'name retailerId price',
-        })
-        .sort({ createdAt: -1 });
+        if (retailerId) {
+            orders = await Order.find()
+                .populate({
+                    path: 'items.medicineId',
+                    model: 'Medicine',
+                    select: 'name retailerId price',
+                    populate: {
+                        path: 'retailerId',
+                        model: 'Retailer',
+                        select: 'firstName lastName BusinessName'
+                    }
+                })
+                .sort({ createdAt: -1 });
 
-      // Filter orders to include only those that contain at least one medicine with this retailerId
-      orders = orders.filter(order =>
-        order.items.some(item =>
-          item.medicineId?.retailerId?.toString() === retailerId
-        )
-      );
-    } else {
-      orders = await Order.find()
-        .populate('items.medicineId', 'name retailerId price')
-        .sort({ createdAt: -1 });
+            // Filter orders to include only those that contain at least one medicine with this retailerId
+            orders = orders.filter(order =>
+                order.items.some(item =>
+                    item.medicineId?.retailerId?._id?.toString() === retailerId
+                )
+            );
+        } else {
+            orders = await Order.find()
+                .populate({
+                    path: 'items.medicineId',
+                    model: 'Medicine',
+                    select: 'name retailerId price',
+                    populate: {
+                        path: 'retailerId',
+                        model: 'Retailer',
+                        select: 'firstName lastName BusinessName'
+                    }
+                })
+                .sort({ createdAt: -1 });
+        }
+
+        // 🔥 Add retailer + review in response (without removing anything else)
+        const formattedOrders = orders.map(order => {
+            const retailer =
+                order.items.length > 0 && order.items[0].medicineId?.retailerId
+                    ? order.items[0].medicineId.retailerId
+                    : null;
+
+            return {
+                ...order.toObject(),
+                retailer: retailer
+                    ? {
+                          firstName: retailer.firstName,
+                          lastName: retailer.lastName,
+                          BusinessName: retailer.BusinessName
+                      }
+                    : null,
+                review: order.review // full review (rating, comment, createdAt, deliveredAt)
+            };
+        });
+
+        res.status(200).json(formattedOrders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
+
 
 // ✅ Get reviewed orders by buyerId (with retailer BusinessNames)
 exports.getReviewedOrdersByBuyerId = async (req, res) => {
-	const { buyerId } = req.params;
+    const { buyerId } = req.params;
 
-	if (!buyerId) {
-		return res.status(400).json({ error: "Buyer ID is required" });
-	}
+    if (!buyerId) {
+        return res.status(400).json({ error: "Buyer ID is required" });
+    }
 
-	try {
-		const orders = await Order.find({
-			"buyer.buyerId": buyerId,
-			"review.comment": { $exists: true, $ne: null, $ne: "" }
-		})
-			.sort({ createdAt: -1 })
-			.populate({
-				path: "items.medicineId",
-				populate: {
-					path: "retailerId",
-					select: "BusinessName",
-				},
-			})
-			.populate("buyer.buyerId");
+    try {
+        const orders = await Order.find({
+            "buyer.buyerId": buyerId,
+            "review.comment": { $exists: true, $ne: null, $ne: "" }
+        })
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "items.medicineId",
+                populate: {
+                    path: "retailerId",
+                    select: "BusinessName",
+                },
+            })
+            .populate("buyer.buyerId");
 
-		if (!orders || orders.length === 0) {
-			return res.status(404).json({
-				message: "No reviewed orders found for this buyer",
-			});
-		}
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({
+                message: "No reviewed orders found for this buyer",
+            });
+        }
 
-		// 🔥 Add retailer BusinessNames just like getOrdersByBuyerId
-		const enrichedOrders = orders.map(order => ({
-			...order.toObject(),
-			retailers: [
-				...new Set(
-					order.items
-						.map(item => item.medicineId?.retailerId?.BusinessName)
-						.filter(Boolean) // strip null/undefined
-				),
-			],
-		}));
+        // 🔥 Add retailer BusinessNames just like getOrdersByBuyerId
+        const enrichedOrders = orders.map(order => ({
+            ...order.toObject(),
+            retailers: [
+                ...new Set(
+                    order.items
+                        .map(item => item.medicineId?.retailerId?.BusinessName)
+                        .filter(Boolean) // strip null/undefined
+                ),
+            ],
+        }));
 
-		return res.status(200).json({
-			message: "Reviewed orders retrieved successfully for buyer",
-			orders: enrichedOrders,
-		});
+        return res.status(200).json({
+            message: "Reviewed orders retrieved successfully for buyer",
+            orders: enrichedOrders,
+        });
 
-	} catch (error) {
-		console.error("❌ Error fetching reviewed orders by buyer ID:", error);
-		return res.status(500).json({ error: "Server error" });
-	}
+    } catch (error) {
+        console.error("❌ Error fetching reviewed orders by buyer ID:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
 };
 
 // ✅ Get orders by buyerId (with retailer BusinessNames)
 exports.getOrdersByBuyerId = async (req, res) => {
-	const { buyerId } = req.params;
+    const { buyerId } = req.params;
 
-	if (!buyerId) {
-		return res.status(400).json({ error: "Buyer ID is required" });
-	}
+    if (!buyerId) {
+        return res.status(400).json({ error: "Buyer ID is required" });
+    }
 
-	try {
-		const orders = await Order.find({
-			"buyer.buyerId": buyerId
-		})
-			.sort({ createdAt: -1 })
-			.populate({
-				path: "items.medicineId",
-				populate: {
-					path: "retailerId",
-					select: "BusinessName",
-				},
-			})
-			.populate("buyer.buyerId");
+    try {
+        const orders = await Order.find({
+            "buyer.buyerId": buyerId
+        })
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "items.medicineId",
+                populate: {
+                    path: "retailerId",
+                    select: "BusinessName",
+                },
+            })
+            .populate("buyer.buyerId");
 
-		if (!orders || orders.length === 0) {
-			return res.status(404).json({
-				message: "No orders found for this buyer",
-			});
-		}
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({
+                message: "No orders found for this buyer",
+            });
+        }
 
-		// 🔥 Add retailer BusinessNames just like getOrdersByBuyerId
-		const enrichedOrders = orders.map(order => ({
-			...order.toObject(),
-			retailers: [
-				...new Set(
-					order.items
-						.map(item => item.medicineId?.retailerId?.BusinessName)
-						.filter(Boolean) // strip null/undefined
-				),
-			],
-		}));
+        // 🔥 Add retailer BusinessNames just like getOrdersByBuyerId
+        const enrichedOrders = orders.map(order => ({
+            ...order.toObject(),
+            retailers: [
+                ...new Set(
+                    order.items
+                        .map(item => item.medicineId?.retailerId?.BusinessName)
+                        .filter(Boolean) // strip null/undefined
+                ),
+            ],
+        }));
 
-		return res.status(200).json({
-			message: "Orders retrieved successfully for buyer",
-			orders: enrichedOrders,
-		});
+        return res.status(200).json({
+            message: "Orders retrieved successfully for buyer",
+            orders: enrichedOrders,
+        });
 
-	} catch (error) {
-		console.error("❌ Error fetching orders by buyer ID:", error);
-		return res.status(500).json({ error: "Server error" });
-	}
+    } catch (error) {
+        console.error("❌ Error fetching orders by buyer ID:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
 };
 
-// ✅ Get all orders for a specific retailer (by retailerId)
+// get orders by retailerID
 exports.getOrdersByRetailerId = async (req, res) => {
     const { retailerId } = req.params;
 
@@ -287,8 +359,9 @@ exports.getOrdersByRetailerId = async (req, res) => {
     }
 
     try {
-        const medicines = await Medicine.find({ retailerId }).select('_id');
-        const medicineIds = medicines.map(med => med._id);
+        // get all medicine ids for this retailer
+        const medicines = await Medicine.find({ retailerId }).select('_id').lean();
+        const medicineIds = medicines.map(m => m._id);
 
         if (medicineIds.length === 0) {
             return res.status(404).json({
@@ -308,7 +381,8 @@ exports.getOrdersByRetailerId = async (req, res) => {
             .populate({
                 path: 'buyer.buyerId',
                 select: 'firstName lastName email',
-            });
+            })
+            .lean();
 
         if (!orders || orders.length === 0) {
             return res.status(404).json({
@@ -316,33 +390,61 @@ exports.getOrdersByRetailerId = async (req, res) => {
             });
         }
 
-        const flattenedOrders = [];
+        const ordersForRetailer = orders.reduce((acc, order) => {
+            const retailerItems = (order.items || []).filter(item =>
+                item.medicineId &&
+                item.medicineId.retailerId &&
+                item.medicineId.retailerId.toString() === retailerId
+            );
 
-        orders.forEach(order => {
-            order.items.forEach(item => {
-                if (item.medicineId?.retailerId.toString() === retailerId) {
-                    flattenedOrders.push({
-                        _id: order._id,
-                        customerName: `${order.buyer.firstName} ${order.buyer.lastName}`,
-                        medicineName: item.medicineId?.name,
-                        quantity: item.quantity,
-                        date: new Date(order.createdAt).toLocaleDateString(),
-                        status: order.orderStatus, 
-                        total: item.subTotal, 
-                    });
-                }
+            if (retailerItems.length === 0) return acc;
+
+            const items = retailerItems.map(item => ({
+                medicineId: item.medicineId._id,
+                medicineName: item.medicineId.name,
+                unitPrice: item.medicineId.price,
+                quantity: item.quantity,
+                subTotal: item.subTotal
+            }));
+
+            const retailerTotal = items.reduce((sum, it) => sum + (it.subTotal || 0), 0);
+
+            const customerName = order.buyer?.firstName
+                ? `${order.buyer.firstName} ${order.buyer.lastName || ''}`.trim()
+                : (order.buyer?.buyerId?.firstName
+                    ? `${order.buyer.buyerId.firstName} ${order.buyer.buyerId.lastName || ''}`.trim()
+                    : 'Unknown Customer');
+
+            acc.push({
+                _id: order._id,
+                customerName,
+                items,
+                retailerTotal,
+                orderTotal: order.totalPrice,
+                date: new Date(order.createdAt).toISOString(),
+                status: order.orderStatus,
+                shippingAddress: order.shippingAddress || null
             });
-        });
+
+            return acc;
+        }, []);
+
+        if (ordersForRetailer.length === 0) {
+            return res.status(404).json({
+                message: "No orders found for this retailer.",
+            });
+        }
 
         return res.status(200).json({
             message: "Orders retrieved successfully for retailer",
-            orders: flattenedOrders, 
+            orders: ordersForRetailer,
         });
     } catch (error) {
         console.error("❌ Error fetching orders by retailer ID:", error);
         return res.status(500).json({ error: "Server error" });
     }
 };
+
 
 
 // ✅ Get feedback for a specific retailer (by retailerId)

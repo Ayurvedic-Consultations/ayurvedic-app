@@ -10,12 +10,10 @@ exports.updateRatingAndReview = async (req, res) => {
 	const { rating, review } = req.body;
 
 	try {
-		// Validate input
 		if (rating && (rating < 1 || rating > 5)) {
 			return res.status(400).json({ error: "Rating must be between 1 and 5" });
 		}
 
-		// Find the booking by ID and update the rating and review
 		const updatedBooking = await Booking.findByIdAndUpdate(
 			id,
 			{ rating, review },

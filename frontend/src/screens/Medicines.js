@@ -4,66 +4,69 @@ import MedicineCard from './MedicineCard';
 import './Medicines.css';
 
 const Medicines = () => {
-  const [medicines, setMedicines] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+	const [medicines, setMedicines] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	const [cart, setCart] = useState(() => {
+		const savedCart = localStorage.getItem('cart');
+		return savedCart ? JSON.parse(savedCart) : [];
+	});
 
-  useEffect(() => {
-    const fetchMedicines = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/medicines`);
-        setMedicines(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+	// fetch medicines on mount
+	useEffect(() => {
+		const fetchMedicines = async () => {
+			try {
+				const response = await axios.get(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/medicines`);
+				setMedicines(response.data);
+				console.log(response.data);
+				setLoading(false);
+			} catch (err) {
+				setError(err.message);
+				setLoading(false);
+			}
+		};
 
-    fetchMedicines();
-  }, []);
+		fetchMedicines();
+	}, []);
 
-  const addToCart = (medicine) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item._id === medicine._id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item._id === medicine._id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prevCart, { ...medicine, quantity: 1 }];
-    });
-  };
+	const addToCart = (medicine) => {
+		setCart((prevCart) => {
+			const existingItem = prevCart.find((item) => item._id === medicine._id);
+			if (existingItem) {
+				return prevCart.map((item) =>
+					item._id === medicine._id ? { ...item, quantity: item.quantity + 1 } : item
+				);
+			}
+			return [...prevCart, { ...medicine, quantity: 1 }];
+		});
+	};
 
-  const handleQuantityChange = (id, delta) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item._id === id ? { ...item, quantity: Math.max(item.quantity + delta, 0) } : item
-      );
-      return updatedCart.filter((item) => item.quantity > 0);
-    });
-  };
+	const handleQuantityChange = (id, delta) => {
+		setCart((prevCart) => {
+			const updatedCart = prevCart.map((item) =>
+				item._id === id ? { ...item, quantity: Math.max(item.quantity + delta, 0) } : item
+			);
+			return updatedCart.filter((item) => item.quantity > 0);
+		});
+	};
 
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+	useEffect(() => {
+		localStorage.setItem('cart', JSON.stringify(cart));
+		console.log("Cart updated:", cart);
+	}, [cart]);
 
-  if (loading) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Loading...</p>;
-  if (error) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Error: {error}</p>;
+	if (loading) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Loading...</p>;
+	if (error) return <p style={{ marginTop: "150px", padding: "15px", background: "white", width: "max-content", borderRadius: "15px", marginLeft: "50px" }}>Error: {error}</p>;
 
-  return (
-    <div className="medicines-page">
-      <div className="medicine-list">
-        {medicines.map((medicine) => (
-          <MedicineCard key={medicine._id} medicine={medicine} cart={cart} addToCart={addToCart} handleQuantityChange={handleQuantityChange} />
-        ))}
-      </div>
-    </div>
-  );
+	return (
+		<div className="medicines-page">
+			<div className="medicine-list">
+				{medicines.map((medicine) => (
+					<MedicineCard key={medicine._id} medicine={medicine} cart={cart} addToCart={addToCart} handleQuantityChange={handleQuantityChange} />
+				))}
+			</div>
+		</div>
+	);
 };
 
 export default Medicines;

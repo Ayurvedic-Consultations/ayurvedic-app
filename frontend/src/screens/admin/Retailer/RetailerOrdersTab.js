@@ -31,6 +31,7 @@ const fetchRetailerOrders = async (retailerId, setOrders, setLoading, setError) 
 
 		const data = await response.json();
 		setOrders(data.orders);
+		console.log(data.orders);
 	} catch (error) {
 		console.error("❌ Error fetching retailer's orders:", error);
 		setError(error.message);
@@ -85,7 +86,7 @@ const RetailerOrdersTab = ({ retailerId }) => {
 							<th>Order ID</th>
 							<th>Customer Name</th>
 							<th>Medicine</th>
-							<th>Quantity</th>
+							{/* <th>Quantity</th> */}
 							<th>Order Date</th>
 							<th>Status</th>
 							<th>Amount</th>
@@ -95,14 +96,19 @@ const RetailerOrdersTab = ({ retailerId }) => {
 						{orders.map((order) => {
 							const { className, Icon } = getStatusBadge(order.status);
 							return (
-								<tr key={order._id}>
+								<tr key={`${order._id}`}>
 									<td data-label="Order ID">
 										<span className="order-id">{order._id}</span>
 									</td>
 									<td data-label="Customer Name">{order.customerName}</td>
-									<td data-label="Medicine">{order.medicineName || 'N/A'}</td>
-									<td data-label="Quantity">{order.quantity || 'N/A'}</td>
-									<td data-label="Order Date">{order.date}</td>
+									<td data-label="Medicine">
+										{order.items.map(item => `${item.medicineName} X ${item.quantity}`).join(', ')}
+									</td>
+
+									{/* <td data-label="Quantity">{item.quantity}</td> */}
+									<td data-label="Order Date">
+										{new Date(order.date).toLocaleDateString('en-GB')}
+									</td>
 									<td data-label="Status">
 										<span className={`status-badge ${className}`}>
 											<Icon size={14} />
@@ -110,12 +116,15 @@ const RetailerOrdersTab = ({ retailerId }) => {
 										</span>
 									</td>
 									<td data-label="Amount">
-										<span className="order-total">₹{order.total.toLocaleString('en-IN')}</span>
+										<span className="order-total">
+											₹{order.orderTotal.toLocaleString('en-IN')}
+										</span>
 									</td>
 								</tr>
 							);
 						})}
 					</tbody>
+
 				</table>
 			</div>
 		</div>

@@ -43,7 +43,8 @@ const orderSchema = new mongoose.Schema({
   review: {
     rating: { type: Number, min: 1, max: 5 },
     comment: { type: String, trim: true },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    deliveredAt: { type: Date }
   },
   orderStatus: {
     type: String,

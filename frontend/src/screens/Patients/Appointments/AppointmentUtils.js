@@ -1,33 +1,62 @@
 // Utility functions for AppointedDoctor component
+import { jwtDecode } from 'jwt-decode';
 
 // Fetch all booking data
 export const fetchDoctorData = async () => {
-  const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/bookings`);
-  
-  if (!response.ok) {
-    throw new Error("Failed to fetch doctor data");
-  }
-  
-  return await response.json();
+	const token = localStorage.getItem('token');
+	if (!token) {
+		throw new Error("No token found in localStorage");
+	}
+
+	let userId;
+	try {
+		const decoded = jwtDecode(token);
+		const { id, role } = decoded;
+
+		if (role !== "patient") {
+			throw new Error("Invalid role for this request");
+		}
+
+		userId = id;
+	} catch (error) {
+		console.error("❌ Failed to decode token:", error);
+		throw error;
+	}
+
+	const response = await fetch(
+		`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/patient/${userId}`,
+		{
+			headers: {
+				Authorization: `Bearer ${token}`, 
+			},
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error("Failed to fetch doctor data");
+	}
+
+	console.log("✅ Fetched doctor data successfully");
+	return await response.json();
 };
 
 // Fetch supplements for a specific appointment
 export const fetchSupplements = async (appointmentId) => {
-  try {
-    const response = await fetch(
-      `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/supplements/${appointmentId}`
-    );
-    
-    if (!response.ok) {
-      throw new Error("Failed to fetch supplements");
-    }
-    
-    const data = await response.json();
-    return data.supplements || [];
-  } catch (error) {
-    console.error("Error fetching supplements:", error);
-    return [];
-  }
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/supplements/${appointmentId}`
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch supplements");
+		}
+
+		const data = await response.json();
+		return data.supplements || [];
+	} catch (error) {
+		console.error("Error fetching supplements:", error);
+		return [];
+	}
 };
 
 // Delete a booking request

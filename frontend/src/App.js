@@ -143,8 +143,8 @@ function App() {
           {/* <Route path ="/patient-header" element={<PatientHeader/>} />
           <Route path="/doctor-prescribe" element={<DoctorPrescribe/>} /> */}
           <Route path="/doctorsprescribe" element={<PrescribeIndex />}/>
-          <Route path ="/PatientFeedback" element={<PatientFeedback/>} />
-          <Route path ="/BuyerFeedback" element={<BuyerFeedback/>} />
+          <Route path ="/PatientFeedback/:id" element={<PatientFeedback/>} />
+          <Route path ="/BuyerFeedback/:id" element={<BuyerFeedback/>} />
 
 
 

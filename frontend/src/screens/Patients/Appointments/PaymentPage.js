@@ -43,7 +43,7 @@ function PaymentPage() {
             return;
         }
 
-        console.log(paymentScreenshot);  // Add this to debug
+        console.log(paymentScreenshot); 
 
         const formData = new FormData();
         formData.append("paymentScreenshot", paymentScreenshot);

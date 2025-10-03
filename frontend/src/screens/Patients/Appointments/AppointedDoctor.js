@@ -74,11 +74,9 @@ function AppointedDoctor() {
 		const loadData = async () => {
 			try {
 				const data = await fetchDoctorData();
-
 				// Filter bookings for the logged-in patient
-				const patientBookings = data.bookings.filter(
-					(booking) => booking.patientEmail === email
-				);
+				const patientBookings = data.bookings;
+				console.log("Patient Bookings:", patientBookings);
 
 				const currentDate = new Date();
 
@@ -87,40 +85,52 @@ function AppointedDoctor() {
 					(acc, booking) => {
 						const appointmentDate = new Date(booking.dateOfAppointment);
 						const isPastAppointment = appointmentDate < currentDate;
-						const isWithinOneDayAfterAppointment =
-							appointmentDate < currentDate &&
-							currentDate - appointmentDate <= 24 * 60 * 60 * 1000; // 1 day in milliseconds
+						// const isWithinOneDayAfterAppointment =
+						// 	appointmentDate < currentDate &&
+						// 	currentDate - appointmentDate <= 24 * 60 * 60 * 1000;
 
-						// For past appointments, add to previousAppointments with source info
-						if (isPastAppointment && !isWithinOneDayAfterAppointment) {
+						const status = booking.requestAccept?.toLowerCase();
+						// values like "accepted" | "pending" | "denied"
+
+						// Past appointments (but not within 1 day after)
+						// if (isPastAppointment && !isWithinOneDayAfterAppointment) {
+						if (isPastAppointment) {
+
 							let appointmentWithSource = { ...booking };
 
-							if (booking.requestAccept === "y") {
+							if (status === "accepted") {
 								appointmentWithSource.source = "Completed";
 								acc.previous.push(appointmentWithSource);
-							} else if (booking.requestAccept === "n") {
+							} else if (status === "denied") {
 								appointmentWithSource.source = "Denied";
-								acc.previous.push(appointmentWithSource);
-							} else if (booking.requestAccept === "o") {
+								acc.denied.push(appointmentWithSource);
+							} else if (status === "pending") {
 								appointmentWithSource.source = "Pending";
-								acc.previous.push(appointmentWithSource);
+								acc.pending.push(appointmentWithSource);
 							}
 						}
-						// For non-past appointments or appointments within 1 day after
-						else if (!isPastAppointment || isWithinOneDayAfterAppointment) {
-							if (booking.requestAccept === "o") {
-								acc.pending.push(booking);
-							} else if (booking.requestAccept === "y") {
-								acc.upcoming.push(booking);
-							} else if (booking.requestAccept === "n") {
-								acc.denied.push(booking);
+						// Upcoming / Pending / Denied
+						// else if (!isPastAppointment || isWithinOneDayAfterAppointment) {
+						else if (!isPastAppointment) {
+							let appointmentWithSource = { ...booking };
+							if (status === "pending") {
+								appointmentWithSource.source = "Pending";
+								acc.pending.push(appointmentWithSource);
+							} else if (status === "accepted") {
+								appointmentWithSource.source = "Upcoming";
+								acc.upcoming.push(appointmentWithSource);
+							} else if (status === "denied") {
+								appointmentWithSource.source = "Denied";
+								acc.denied.push(appointmentWithSource);
 							}
 						}
+
 
 						return acc;
 					},
 					{ pending: [], upcoming: [], denied: [], previous: [] }
 				);
+
 
 				setPendingDoctors(sortedBookings.pending);
 				setUpcomingAppointments(sortedBookings.upcoming);
@@ -133,7 +143,7 @@ function AppointedDoctor() {
 					(appointment) => {
 						if (
 							appointment.source === "Completed" ||
-							appointment.requestAccept === "y"
+							appointment.requestAccept === "accepted"
 						) {
 							fetchSupplementsForAppointment(appointment._id);
 						}
@@ -220,14 +230,6 @@ function AppointedDoctor() {
 					>
 						Previous Appointments
 					</button>
-
-					<button onClick={() => navigate('/PatientFeedback')} >
-						Patient Feedback
-					</button>
-					<button onClick={() => navigate('/BuyerFeedback')} >
-						Buyer Feedback
-					</button>
-		
 				</div>
 
 				<AppointmentTab
