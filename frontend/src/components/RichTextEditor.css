@@ -1,0 +1,103 @@
+/* Keep the container and toolbar dark */
+.rte-container {
+    background: #121212;
+    color: #fff; /* Default text color for the container/toolbar */
+    border-radius: 8px;
+    padding: 10px;
+    align-self: center;
+    width: 120%;
+}
+
+.rte-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background-color: #1e1e1e;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+/* Toolbar button styles remain the same (dark theme) */
+.rte-toolbar button {
+    background: transparent;
+    border: none;
+    color: #ddd;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.rte-toolbar button:hover {
+    background: #333;
+    color: #fff;
+}
+
+.rte-toolbar button.is-active {
+    background: #555;
+    color: #fff;
+}
+
+.rte-heading-select {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rte-heading-select select {
+    background: #1e1e1e;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 4px 6px;
+}
+
+/* >>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<< */
+.rte-editor {
+    background: #ffffff;
+    color: #000000;
+    min-height: 300px;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Arial', sans-serif; /* optional */
+}
+
+/* Heading styles updated for a dark color */
+.rte-editor h1,
+.rte-editor h2,
+.rte-editor h3,
+.rte-editor h4,
+.rte-editor h5,
+.rte-editor h6 {
+    color: #000000;
+}
+
+.rte-editor mark {
+    background-color: yellow;
+    color: #000;
+}
+
+.rte-editor .ProseMirror.is-editor-empty::before {
+    color: #6b7280; 
+}
+
+.rte-editor p { margin: 0.5em 0; }
+
+/* Lists */
+.rte-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.rte-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.rte-editor .ProseMirror p.is-editor-empty::before {
+    color: #6b7280; /* gray placeholder */
+}

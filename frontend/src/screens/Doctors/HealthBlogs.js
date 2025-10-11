@@ -3,6 +3,7 @@ import axios from "axios";
 import "./HealthBlogs.css";
 import { AuthContext } from "../../context/AuthContext";
 import downArrow from "../../media/downArrow.png";
+import RichTextEditor from "../../components/RichTextEditor";
 
 function HealthBlogs() {
 	const { auth } = useContext(AuthContext);
@@ -191,7 +192,7 @@ function HealthBlogs() {
 								required
 							/>
 						</div>
-						<div className="form-group">
+						{/* <div className="form-group">
 							<label>
 								Description: <span className="required">*</span>
 							</label>
@@ -202,7 +203,19 @@ function HealthBlogs() {
 								onChange={handleInputChange}
 								required
 							></textarea>
-						</div>
+						</div> */}
+						<div className="form-group">
+  <label>
+    Description: <span className="required">*</span>
+  </label>
+  <RichTextEditor
+    content={formData.description}
+    onChange={(html) =>
+      setFormData((prev) => ({ ...prev, description: html }))
+    }
+  />
+</div>
+
 						<div className="form-group">
 							<label>Category:</label>
 							<input

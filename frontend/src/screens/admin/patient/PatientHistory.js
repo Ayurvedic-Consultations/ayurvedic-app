@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './PatientHistory.css'; // Make sure you create this new CSS file
 import { History as HistoryIcon, CalendarClock, FileText } from 'lucide-react';
 
- 
+
 const History = ({ bookings }) => {
 	const [upcomingAppointments, setUpcomingAppointments] = useState([]);
 	const [pastAppointments, setPastAppointments] = useState([]);
@@ -44,8 +44,8 @@ const History = ({ bookings }) => {
 				<HistoryIcon size={20} /> Medical History & Appointments
 			</h3>
 
-			<div className="history-section">
-				<h4>
+			<div className="history-section" style={{ padding: "25px" }}>
+				<h4 style={{ display: "flex", padding: "25px" }}>
 					<CalendarClock size={18} /> Upcoming Schedule
 				</h4>
 				<div className="upcoming-list">
@@ -63,8 +63,8 @@ const History = ({ bookings }) => {
 								<div className="upcoming-details">
 									<p className="doctor-name">{appt.doctor}</p>
 									<strong>LINK : </strong>
-									<a href={appt.reason} className="appointment-reason"  target="_blank" 
-    rel="noopener noreferrer">
+									<a href={appt.reason} className="appointment-reason" target="_blank"
+										rel="noopener noreferrer">
 										{appt.reason}
 									</a>
 								</div>
@@ -78,7 +78,7 @@ const History = ({ bookings }) => {
 			</div>
 
 			{/* Past Visits Section - Timeline */}
-			<div className="history-section">
+			<div className="history-section" style={{ padding: "25px"}}>
 				<h4>
 					<HistoryIcon size={18} /> Past Visits
 				</h4>
