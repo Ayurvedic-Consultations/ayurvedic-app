@@ -12,6 +12,7 @@ import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import Heading from "@tiptap/extension-heading";
+import YouTube from '@tiptap/extension-youtube';
 
 import {
     Bold,
@@ -26,6 +27,7 @@ import {
     Link as LinkIcon,
     Highlighter,
     Heading1,
+    Film,
 } from "lucide-react";
 
 import "./RichTextEditor.css";
@@ -48,6 +50,12 @@ const RichTextEditor = ({ content, onChange }) => {
             Highlight,
             Link.configure({ openOnClick: false }),
             Image,
+            YouTube.configure({
+                nocookie: true, 
+                controls: true, 
+                width: '100%',
+                allowFullscreen: true,
+            }),
             TextAlign.configure({
                 types: ["heading", "paragraph"],
             }),
@@ -185,13 +193,39 @@ const RichTextEditor = ({ content, onChange }) => {
                     <ImageIcon size={18} />
                 </button>
 
+                {/* Video/YouTube Button */}
+                 <button
+                    onClick={() => {
+                        const url = window.prompt("Enter YouTube URL or Video ID:");
+                        if (url) {
+                            editor.chain().focus().setYoutubeVideo({ 
+                                src: url,
+                                width: 640,
+                                height: 480,
+                            }).run();
+                        }
+                    }}
+                >
+                    <Film size={18} /> 
+                </button>
+
+                {/* Hyperlink */}
                 <button
                     onClick={() => {
-                        const url = window.prompt("Enter link URL:");
-                        if (url) editor.chain().focus().setLink({ href: url }).run();
-                        else editor.chain().focus().unsetLink().run(); // Optional: remove link if prompt is empty/cancelled
+                        const url = window.prompt("Enter link URL (e.g., https://www.google.com):");
+
+                        if (url) {
+                            let fullUrl = url.trim();
+
+                            if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://') && !fullUrl.startsWith('mailto:') && !fullUrl.startsWith('tel:')) {
+                                fullUrl = `https://${fullUrl}`;
+                            }
+
+                            editor.chain().focus().setLink({ href: fullUrl }).run();
+                        } else {
+                            editor.chain().focus().unsetLink().run();
+                        }
                     }}
-                    // Conditionally highlight if a link is active
                     className={editor.isActive("link") ? "is-active" : ""}
                 >
                     <LinkIcon size={18} />

@@ -2669,6 +2669,11 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-underline/-/extension-underline-3.6.6.tgz"
   integrity sha512-PXhWYTZHM9IvGr3ElJl25qsyvKUejlul9TpFeBHv2awTY+0xoUL9FeEwOWOGx3sk8XTrz15b0/gjsgOV6U6Hiw==
 
+"@tiptap/extension-youtube@^3.6.6":
+  version "3.6.6"
+  resolved "https://registry.npmjs.org/@tiptap/extension-youtube/-/extension-youtube-3.6.6.tgz"
+  integrity sha512-YpZyyE9TyboLG5vlOFIVoXZHtXWwvWhLBRS4mSTpdWPv7FeirukkDOxjFKFHJbaSWqO3reSnmdFYrGioL8fNWw==
+
 "@tiptap/extensions@^3.6.6":
   version "3.6.6"
   resolved "https://registry.npmjs.org/@tiptap/extensions/-/extensions-3.6.6.tgz"

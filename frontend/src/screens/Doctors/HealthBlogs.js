@@ -24,6 +24,7 @@ function HealthBlogs() {
 		image: "",
 	});
 
+
 	// Fetch blogs that belong to the specific doctor
 	useEffect(() => {
 		if (doctorId) {
@@ -67,6 +68,8 @@ function HealthBlogs() {
 			date: new Date(), // Use current date
 		};
 
+		console.log("Submitting blog data:", formData);
+
 		setIsLoading(true);
 		try {
 			const response = await axios.post(
@@ -105,9 +108,8 @@ function HealthBlogs() {
 						Write a Blog
 					</button>
 					<button
-						className={`action-button ${
-							activeTab === "recent" ? "active" : ""
-						}`}
+						className={`action-button ${activeTab === "recent" ? "active" : ""
+							}`}
 						onClick={() => setActiveTab("recent")}
 					>
 						Recent Blogs
@@ -157,7 +159,10 @@ function HealthBlogs() {
 							/>
 							{showBlog && (
 								<div className="blog-card-hidden">
-									<p className="blog-description">{blog.description}</p>
+									<div
+										className="blog-description"
+										dangerouslySetInnerHTML={{ __html: blog.description }}
+									/>
 									{blog.image && (
 										<div className="blog-image">
 											<img src={blog.image} alt={blog.title} />
@@ -192,29 +197,18 @@ function HealthBlogs() {
 								required
 							/>
 						</div>
-						{/* <div className="form-group">
+
+						<div className="form-group">
 							<label>
 								Description: <span className="required">*</span>
 							</label>
-							<textarea
-								name="description"
-								placeholder="Enter blog content"
-								value={formData.description}
-								onChange={handleInputChange}
-								required
-							></textarea>
-						</div> */}
-						<div className="form-group">
-  <label>
-    Description: <span className="required">*</span>
-  </label>
-  <RichTextEditor
-    content={formData.description}
-    onChange={(html) =>
-      setFormData((prev) => ({ ...prev, description: html }))
-    }
-  />
-</div>
+							<RichTextEditor
+								content={formData.description}
+								onChange={(html) =>
+									setFormData((prev) => ({ ...prev, description: html }))
+								}
+							/>
+						</div>
 
 						<div className="form-group">
 							<label>Category:</label>
@@ -224,6 +218,7 @@ function HealthBlogs() {
 								placeholder="E.g., Nutrition, Mental Health, Fitness"
 								value={formData.category}
 								onChange={handleInputChange}
+								required
 							/>
 						</div>
 						<div className="form-group">

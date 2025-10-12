@@ -1,0 +1,71 @@
+/* Add/Confirm these styles in your global CSS or styles loaded by Blog.jsx */
+
+/* --- LIST STYLES (for visibility of numbers/bullets) --- */
+
+.blog-page-container ol,
+.blog-content-wrapper ol {
+    /* 1. Ensure a decimal style is set */
+    list-style-type: decimal; 
+    
+    /* 2. Add padding to make space for the numbers */
+    padding-left: 20px; 
+    
+    /* 3. Add margin for vertical spacing */
+    margin: 1em 0; 
+}
+
+.blog-page-container ul,
+.blog-content-wrapper ul {
+    /* Also include styles for unordered lists */
+    list-style-type: disc; 
+    padding-left: 20px;
+    margin: 1em 0;
+}
+
+.blog-page-container li,
+.blog-content-wrapper li {
+    /* Ensure the list item text is dark on your light background */
+    color: #000000; 
+    /* This ensures the list marker is outside the text block */
+    list-style-position: outside; 
+    /* Remove any strange default margins */
+    margin-left: 0; 
+}
+
+/* Tiptap/ProseMirror often wraps the list content in a paragraph. */
+.blog-page-container li p,
+.blog-content-wrapper li p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+/* --- HYPERLINK STYLES (Blue and Underlined) --- */
+
+.blog-page-container a,
+.blog-content-wrapper a {
+    /* Primary link color (a distinct blue) */
+    color: #007bff; 
+    /* Ensure the link is underlined */
+    text-decoration: underline; 
+    cursor: pointer;
+}
+
+.blog-page-container a:hover,
+.blog-content-wrapper a:hover {
+    /* Darker color on hover for feedback */
+    color: #0056b3; 
+    text-decoration: none; /* Optional: remove underline on hover for a modern look */
+}
+
+.blog-page-container a:visited,
+.blog-content-wrapper a:visited {
+    /* Optional: make visited links slightly different */
+    color: #6610f2;
+}
+
+/* Ensure the text inside the full blog description is black by default */
+.blog-page-container .full-blog-description,
+.blog-content-wrapper .full-blog-description {
+    color: #000000;
+}

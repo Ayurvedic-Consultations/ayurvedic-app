@@ -28,7 +28,7 @@ const blogSchema = new mongoose.Schema({
         lowercase: true
     },
     content: {
-        text: { type: String, required: true },
+        html: { type: String, required: true },
         images: [mediaSchema],
         videos: [mediaSchema],
         links: [linkSchema],
