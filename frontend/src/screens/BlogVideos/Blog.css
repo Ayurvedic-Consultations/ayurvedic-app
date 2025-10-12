@@ -64,7 +64,6 @@
     color: #6610f2;
 }
 
-/* Ensure the text inside the full blog description is black by default */
 .blog-page-container .full-blog-description,
 .blog-content-wrapper .full-blog-description {
     color: #000000;

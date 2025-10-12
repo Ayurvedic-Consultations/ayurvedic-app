@@ -32,9 +32,15 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+const allowedOrigins = [
+  "http://localhost:3000", // For local development
+  "https://ayurvedic-app-frontend.onrender.com",
+  // Add other necessary frontend origins here if applicable
+];
+
 // Middleware
 app.use(cors({
-  origin: "*", // or ["https://your-ai-generator-site.com"]
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
