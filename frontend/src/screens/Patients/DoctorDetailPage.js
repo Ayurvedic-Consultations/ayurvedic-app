@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./DoctorDetailPage.css"; // Ensure this path matches the location of your CSS file
 import { AuthContext } from "../../context/AuthContext";
 import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 function DoctorDetail() {
 	const location = useLocation();
@@ -13,8 +14,6 @@ function DoctorDetail() {
 	const patientLastName = auth.user?.lastName || "";
 	const patientGender = auth.user?.gender;
 	const patientAge = auth.user?.age;
-	const requestAccept = "o";
-	const doctorsMessage = "";
 
 	const patientName = patientFirstName + " " + patientLastName;
 
@@ -22,6 +21,25 @@ function DoctorDetail() {
 	const [patientIllness, setPatientIllness] = useState(""); // Track patient illness
 	const [dateOfAppointment, setDateOfAppointment] = useState(""); // Track the date of appointment
 	const [reviews, setReviews] = useState([]);
+	const [statusMessage, setStatusMessage] = useState({ message: '', type: '' });
+
+	// Helper function to decode and extract patient ID from JWT token
+	const getPatientIdFromToken = () => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			try {
+				const decoded = jwtDecode(token);
+				// Assuming your token payload includes the MongoDB user ID field, often named 'id' or 'userId'
+				return decoded.id || decoded.userId || null;
+			} catch (e) {
+				console.error("Failed to decode token:", e);
+				return null;
+			}
+		}
+		return null;
+	};
+
+	const patientId = getPatientIdFromToken();
 
 	const handleTimeSlotClick = (time) => {
 		setSelectedTime(time); // Set the selected time slot
@@ -37,19 +55,34 @@ function DoctorDetail() {
 			console.log(`User Email: ${email}`);
 			console.log(`User Role: ${role}`);
 
+			// Ensure patientId is available
+			if (!patientId) {
+				setStatusMessage({ message: "Authentication failed. Please log in again.", type: 'error' });
+				return;
+			}
+
+			if (role !== "patient") {
+				setStatusMessage({ message: "Only patients can book appointments.", type: 'error' });
+				return;
+			}
+
+			const patientEmail = localStorage.getItem("email");
+
 			// Data to be sent to the backend
 			let bookingData = {
+				doctorId: doctor._id,
 				doctorName: doctor.name,
 				doctorEmail: doctor.email,
 				timeSlot: selectedTime,
 				dateOfAppointment: dateOfAppointment,
+				patientId: patientId,
+				patientEmail: patientEmail,
 				email: email,
 				patientName: patientName,
 				patientGender: patientGender,
 				patientAge: patientAge,
 				patientIllness: patientIllness,
-				requestAccept: requestAccept,
-				doctorsMessage: doctorsMessage,
+				amountPaid: 0,
 				meetLink: "no",
 			};
 

@@ -55,11 +55,14 @@ exports.getRatingAndReview = async (req, res) => {
 		return res.status(500).json({ error: "Server error" });
 	}
 };
+
 // Controller function to handle booking creation
 exports.createBooking = async (req, res) => {
 	const {
 		doctorName,
+		doctorId,
 		doctorEmail,
+		patientId,
 		timeSlot,
 		dateOfAppointment,
 		email,
@@ -67,8 +70,6 @@ exports.createBooking = async (req, res) => {
 		patientGender,
 		patientAge,
 		patientIllness,
-		requestAccept,
-		doctorsMessage,
 		meetLink,
 	} = req.body; // Destructure the request body
 
@@ -104,14 +105,13 @@ exports.createBooking = async (req, res) => {
 			doctorName,
 			doctorEmail,
 			timeSlot,
+			patientId,
 			dateOfAppointment,
 			patientEmail: email,
 			patientName,
 			patientGender,
 			patientAge,
 			patientIllness,
-			requestAccept,
-			doctorsMessage,
 			meetLink,
 			amountPaid: doctor.price,
 		});
