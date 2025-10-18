@@ -1,15 +1,376 @@
-.medicines-page {
-    display: flex;
-    margin-top:140px;
-    justify-content: center;
+/* =========================================================
+   Medicines.css
+   - Responsive Ayurvedic Medicines listing page
+   - 1→2→3→4→5 responsive card grid
+   - Responsive search & filter controls
+   ========================================================= */
+
+/* Theme tokens */
+:root {
+    
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f9fafb;
+  --border: #e5e7eb;
+  --text: #111827;
+  --muted: #6b7280;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --ring: 0 0 0 4px rgba(37, 99, 235, 0.15);
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.medicine-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f16;
+    --surface: #0f1622;
+    --surface-2: #0b1220;
+    --border: #1f2a37;
+    --text: #e5e7eb;
+    --muted: #94a3b8;
+
+    --primary: #60a5fa;
+    --primary-hover: #3b82f6;
+    --ring: 0 0 0 4px rgba(96, 165, 250, 0.18);
+
+    --shadow: 0 10px 30px rgba(2, 6, 23, 0.5), 0 2px 8px rgba(2, 6, 23, 0.35);
+  }
+}
+
+/* Page + container */
+.ay-meds-page {
+   
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.ay-meds-container {
+     padding-top: 120px;
+  width: min(100% - 2rem, 1280px);
+  margin-inline: auto;
+}
+
+/* Header */
+.ay-meds-header {
+  text-align: center;
+  margin: 8px 0 18px;
+}
+
+.ay-meds-title {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.ay-meds-subtitle {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* Filters block */
+.ay-meds-filters {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .ay-meds-filters {
+    padding: 16px 18px;
+    gap: 14px;
+  }
+}
+
+/* Search */
+.ay-meds-search {
+  position: relative;
+}
+
+.ay-meds-search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.ay-meds-search__input {
+  width: 100%;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 40px 10px 40px; /* room for both icons */
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.ay-meds-search__input::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+.ay-meds-search__input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+  background: var(--surface);
+}
+
+.ay-meds-search__clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.ay-meds-search__clear:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+/* Controls row (category, price, sort, reset) */
+.ay-meds-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ay-meds-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  flex: 1 1 180px;
+}
+
+.ay-meds-control label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ay-meds-select {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  color-scheme: light dark;
+}
+.ay-meds-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+}
+
+/* Buttons */
+.ay-meds-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+.ay-meds-btn:hover {
+  background: var(--primary-hover);
+}
+.ay-meds-btn:active {
+  transform: translateY(1px);
+}
+
+.ay-meds-btn--subtle {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.ay-meds-btn--subtle:hover {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+.ay-meds-btn--lg {
+  padding: 12px 18px;
+  font-size: 1rem;
+  border-radius: 12px;
+}
+
+/* Loading state */
+.ay-meds-loading {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  color: var(--muted);
+}
+.ay-meds-spinner {
+  color: var(--primary);
+  animation: ay-spin 1s linear infinite;
+}
+
+@keyframes ay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state */
+.ay-meds-error {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+.ay-meds-error__icon {
+  color: var(--danger);
+}
+
+/* Results row */
+.ay-meds-results {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 8px 0 14px;
+  color: var(--muted);
+}
+.ay-meds-results strong {
+  color: var(--text);
+}
+
+.ay-meds-cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+}
+
+/* Empty state */
+.ay-meds-empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+}
+.ay-meds-empty h3 {
+  margin: 6px 0 4px;
+  color: var(--text);
+}
+.ay-meds-empty__icon {
+  color: var(--muted);
+}
+
+/* Medicine Grid
+   Mobile-first: 1 column
+   ≥480px: 2 columns
+   ≥768px: 3 columns
+   ≥1024px: 4 columns
+   ≥1280px: 5 columns
+*/
+.ay-meds-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 480px) {
+  .ay-meds-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 768px) {
+  .ay-meds-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+@media (min-width: 1024px) {
+  .ay-meds-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
-    padding: 20px;
+  }
+}
+@media (min-width: 1280px) {
+  .ay-meds-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 22px;
+  }
 }
 
- 
+/* Accessibility + reduced motion */
+.ay-meds-select,
+.ay-meds-search__input,
+.ay-meds-btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ay-meds-btn,
+  .ay-meds-search__input,
+  .ay-meds-select,
+  .ay-meds-search__clear {
+    transition: none !important;
+  }
+  .ay-meds-spinner {
+    animation: none;
+  }
+}
+
+/* Optional: improve touch targets on very small screens */
+@media (max-width: 360px) {
+  .ay-meds-btn,
+  .ay-meds-select,
+  .ay-meds-search__input {
+    padding: 12px 14px;
+  }
+}

@@ -134,18 +134,20 @@ function App() {
         <Route path="/profile/patient/:id" element={<Patientprofile />} />
 
 
+
+          
+
         <Route element={<ProtectedRoute />}>
-          <Route path="/doctor-home" element={<DoctorHomeScreen />} />
           <Route path="/current-requests" element={<CurrentRequests />} />
-          <Route path="/appointment-slots" element={<AppointmentSlots />} />
           {/* my changes */}
 
           {/* <Route path ="/patient-header" element={<PatientHeader/>} />
           <Route path="/doctor-prescribe" element={<DoctorPrescribe/>} /> */}
-          <Route path="/doctorsprescribe" element={<PrescribeIndex />}/>
           <Route path ="/PatientFeedback/:id" element={<PatientFeedback/>} />
           <Route path ="/BuyerFeedback/:id" element={<BuyerFeedback/>} />
-
+          <Route path="/doctorsprescribe" element={<PrescribeIndex />}/>
+          <Route path="/doctor-home" element={<DoctorHomeScreen />} />
+          <Route path="/appointment-slots" element={<AppointmentSlots />} />
           <Route path="/doctor-analytics" element={<DoctorAnalytics />} />
           <Route path="/patient-list" element={<PatientList />} />
           <Route path="/health-blogs" element={<HealthBlogs />} />

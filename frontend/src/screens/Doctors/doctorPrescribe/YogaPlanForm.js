@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// 1. Corrected icon import: 'yoga' to 'Yoga'
-import { HeartPulse, Sun, Moon, yoga, Plus, X, ListTodo, Send } from 'lucide-react';
+// Removed the invalid `yoga` icon and added link helpers
+import { HeartPulse, Sun, Moon, Plus, X, ListTodo, Send, ExternalLink, Link as LinkIcon } from 'lucide-react';
 import './YogaPlanForm.css';
 
 const COMMON_ASANAS = [
@@ -13,12 +13,33 @@ const COMMON_ASANAS = [
 
 const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana, removeAsana }) => {
   const [input, setInput] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const isYouTubeUrl = (url) => {
+    if (!url) return true; // optional
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace(/^www\./, '');
+      return host === 'youtube.com' || host === 'youtu.be' || host === 'm.youtube.com';
+    } catch {
+      return false;
+    }
+  };
 
   const handleAdd = () => {
-    if (input.trim()) {
-      addAsana(planType, input);
-      setInput("");
+    const name = input.trim();
+    const link = youtubeUrl.trim();
+
+    if (!name) return;
+
+    if (link && !isYouTubeUrl(link)) {
+      alert('Please enter a valid YouTube URL (youtube.com or youtu.be), or leave it blank.');
+      return;
     }
+
+    addAsana(planType, { name, link });
+    setInput("");
+    setYoutubeUrl("");
   };
 
   const handleKeyPress = (e) => {
@@ -33,6 +54,7 @@ const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana
       <div className="asana-plan-header">
         <h4 className="asana-plan-title"><Icon className="plan-icon" size={20} />{title}</h4>
       </div>
+
       <div className="asana-plan-content">
         <div className="asana-input-group">
           <input
@@ -40,10 +62,20 @@ const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana
             className="asana-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter custom asana..."
+            placeholder="Enter asana name..."
             onKeyPress={handleKeyPress}
           />
-          <button type="button" onClick={handleAdd} className="add-asana-btn"><Plus size={20} /></button>
+          <input
+            type="url"
+            className="asana-input asana-link-input"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="YouTube link (optional)"
+            onKeyPress={handleKeyPress}
+          />
+          <button type="button" onClick={handleAdd} className="add-asana-btn">
+            <Plus size={20} />
+          </button>
         </div>
 
         <div className="common-asanas-container">
@@ -56,7 +88,7 @@ const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana
                   type="button"
                   className="common-asana-tag"
                   onClick={() => addAsana(planType, asana)}
-                  disabled={planData.includes(asana)}
+                  disabled={planData.some(item => item.name === asana)}
                 >
                   {asana}
                 </button>
@@ -70,11 +102,28 @@ const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana
           <div className="selected-asanas-scroll">
             {planData.length > 0 ? (
               <div className="selected-asanas-list">
-                {planData.map((asana) => (
-                  <div key={asana} className="selected-asana-item">
-                    {/* Corrected component usage: <yoga> to <Yoga> */}
-                    <span className="selected-asana-text"><yoga size={16} />{asana}</span>
-                    <button type="button" onClick={() => removeAsana(planType, asana)} className="remove-asana-btn"><X size={14} /></button>
+                {planData.map(({ name, link }) => (
+                  <div key={name} className="selected-asana-item">
+                    {link ? (
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="selected-asana-text asana-link"
+                        title="Open video"
+                      >
+                        {name} <ExternalLink size={14} style={{ marginLeft: 6 }} />
+                      </a>
+                    ) : (
+                      <span className="selected-asana-text">{name}</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeAsana(planType, name)}
+                      className="remove-asana-btn"
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -88,27 +137,40 @@ const AsanaPlanCard = ({ title, Icon, planType, planData, commonAsanas, addAsana
   );
 };
 
-
 export function YogaPlanForm() {
   const [yogaPlan, setYogaPlan] = useState({
-    morning: ["Surya Namaskara (Sun Salutation)", "Pranayama (Breathing Exercise)"],
-    evening: ["Balasana (Child's Pose)", "Shavasana (Corpse Pose)"]
+    morning: [
+      { name: "Surya Namaskara (Sun Salutation)", link: "" },
+      { name: "Pranayama (Breathing Exercise)", link: "" }
+    ],
+    evening: [
+      { name: "Balasana (Child's Pose)", link: "" },
+      { name: "Shavasana (Corpse Pose)", link: "" }
+    ]
   });
 
   const addAsana = (planType, asana) => {
-    const trimmedAsana = asana.trim();
-    if (trimmedAsana && !yogaPlan[planType].includes(trimmedAsana)) {
-      setYogaPlan(prev => ({
+    const item = typeof asana === 'string'
+      ? { name: asana.trim(), link: "" }
+      : { name: (asana.name || '').trim(), link: (asana.link || '').trim() };
+
+    if (!item.name) return;
+
+    setYogaPlan(prev => {
+      if (prev[planType].some(a => a.name.toLowerCase() === item.name.toLowerCase())) {
+        return prev; // prevent duplicates by name
+      }
+      return {
         ...prev,
-        [planType]: [...prev[planType], trimmedAsana]
-      }));
-    }
+        [planType]: [...prev[planType], item]
+      };
+    });
   };
 
-  const removeAsana = (planType, asanaToRemove) => {
+  const removeAsana = (planType, asanaName) => {
     setYogaPlan(prev => ({
       ...prev,
-      [planType]: prev[planType].filter(asana => asana !== asanaToRemove)
+      [planType]: prev[planType].filter(a => a.name !== asanaName)
     }));
   };
 
@@ -123,8 +185,8 @@ export function YogaPlanForm() {
   };
 
   const planDetails = [
-      { id: 'morning', title: 'Morning Plan', Icon: Sun },
-      { id: 'evening', title: 'Evening Plan', Icon: Moon }
+    { id: 'morning', title: 'Morning Plan', Icon: Sun },
+    { id: 'evening', title: 'Evening Plan', Icon: Moon }
   ];
 
   return (
@@ -139,16 +201,16 @@ export function YogaPlanForm() {
         <form onSubmit={handleSubmit} className="yoga-form">
           <div className="yoga-plan-grid">
             {planDetails.map(plan => (
-                 <AsanaPlanCard
-                    key={plan.id}
-                    title={plan.title}
-                    Icon={plan.Icon}
-                    planType={plan.id}
-                    planData={yogaPlan[plan.id]}
-                    commonAsanas={COMMON_ASANAS}
-                    addAsana={addAsana}
-                    removeAsana={removeAsana}
-                />
+              <AsanaPlanCard
+                key={plan.id}
+                title={plan.title}
+                Icon={plan.Icon}
+                planType={plan.id}
+                planData={yogaPlan[plan.id]}
+                commonAsanas={COMMON_ASANAS}
+                addAsana={addAsana}
+                removeAsana={removeAsana}
+              />
             ))}
           </div>
 
