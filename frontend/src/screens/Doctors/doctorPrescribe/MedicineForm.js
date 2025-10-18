@@ -22,21 +22,18 @@ const INITIAL_FORM_STATE = {
 
 export function MedicineForm() {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
-  const [showExternalLink, setShowExternalLink] = useState(false);
 
   // 3. Create a single, generic handler for most form inputs
-  // This reduces repetitive code and is more maintainable.
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  // Special handler for medicine select to toggle the external link field
-  const handleMedicineChange = (e) => {
-    const { value } = e.target;
-    setFormData(prev => ({ ...prev, medicineName: value }));
-    setShowExternalLink(value === 'other');
-  };
+  // Determine if the medicine is custom (not in the predefined list)
+  const isCustomMedicine = (
+    formData.medicineName.trim() !== "" &&
+    !AVAILABLE_MEDICINES.some(m => m.toLowerCase() === formData.medicineName.trim().toLowerCase())
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,17 +48,15 @@ export function MedicineForm() {
 
     console.log("Medicine prescription submitted:", formData);
     alert(`${formData.medicineName} has been prescribed successfully.`);
-    
+
     // 4. Reset form using the initial state constant
     setFormData(INITIAL_FORM_STATE);
-    setShowExternalLink(false);
   };
 
   return (
     <div className="form-card">
       <div className="form-header">
         <h3 className="form-title">
-          {/* 5. Replaced emoji with a professional Lucide icon */}
           <ClipboardPlus className="form-icon" size={24} />
           Prescribe Medicine
         </h3>
@@ -70,27 +65,29 @@ export function MedicineForm() {
       <div className="form-content">
         <form onSubmit={handleSubmit} className="medicine-form">
           <div className="form-grid">
-            {/* --- Medicine Name --- */}
+            {/* --- Medicine Name (type or choose) --- */}
             <div className="form-group">
               <label className="form-label" htmlFor="medicineName">Medicine Name *</label>
-              <select
+              <input
                 id="medicineName"
-                name="medicineName" // 6. Added 'name' attribute for the generic handler
-                className="form-select"
+                name="medicineName"
+                className="form-input"
+                list="medicineOptions"
+                placeholder="Type or choose a medicine"
                 value={formData.medicineName}
-                onChange={handleMedicineChange}
+                onChange={handleChange}
                 required
-              >
-                <option value="">Select medicine...</option>
+              />
+              <datalist id="medicineOptions">
                 {AVAILABLE_MEDICINES.map((medicine) => (
-                  <option key={medicine} value={medicine}>{medicine}</option>
+                  <option key={medicine} value={medicine} />
                 ))}
-                <option value="other">Other (specify with link)</option>
-              </select>
+              </datalist>
+              <small className="form-hint">Start typing and pick from suggestions, or enter a custom name.</small>
             </div>
 
-            {/* --- External Link (Conditional) --- */}
-            {showExternalLink && (
+            {/* --- External Link (shows for custom medicines) --- */}
+            {isCustomMedicine && (
               <div className="form-group">
                 <label className="form-label" htmlFor="externalLink">External Medicine Link</label>
                 <div className="input-with-icon">
@@ -136,7 +133,7 @@ export function MedicineForm() {
                 required
               />
             </div>
-            
+
             {/* --- Dosage --- */}
             <div className="form-group">
               <label className="form-label" htmlFor="dosage">Dosage *</label>
@@ -151,7 +148,7 @@ export function MedicineForm() {
                 required
               />
             </div>
-            
+
             {/* --- Reason --- */}
             <div className="form-group">
               <label className="form-label" htmlFor="reason">Reason for Prescription *</label>

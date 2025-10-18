@@ -4,7 +4,8 @@ import "./PatientPage.css"; // Import the CSS file for styling
 import { AuthContext } from "../../context/AuthContext";
 
 // Import images for each service category
-import doctorImage from "../../media/doctor.png";
+import appointmentImage from "../../media/doctor.png";
+import  doctorImage  from "../../media/appoint1.jpg";
 import treatmentImage from "../../media/treatment.png";
 import yogaImage from "../../media/yoga.jpeg";
 import medicineImage from "../../media/medicine.png";
@@ -105,14 +106,16 @@ function PatientPage() {
 					{isPrakritiFilled ? (
 						<>
 							<p>
-								Thank you filling the prakriti determination form.
+								Thank you filling the prakriti determination  form.
 								Now Let us find the perfect Ayurvedic doctor for you based on your needs.
 							</p>
 						</>
 					) : (
 						<>
 							<button className="match-btn" onClick={handleOpenPrakritiForm}>
-								Prakriti Determination
+								
+								{/* Prakriti Determination */}
+								Find Your Body Nature
 							</button>
 							<p>
 								Kindly complete the Prakriti Determination Form. This will enable
@@ -140,11 +143,11 @@ function PatientPage() {
 						</div>
 						<div className="service-card" onClick={goToAppointedDoctor}>
 							<img
-								src={doctorImage}
+								src={appointmentImage}
 								alt="Appointed Doctor"
 								className="service-image"
 							/>
-							<h3>Your Appointed Doctor</h3>
+							<h3>Appointments</h3>
 							<p>
 								View the details of your currently assigned Ayurvedic doctor.
 							</p>

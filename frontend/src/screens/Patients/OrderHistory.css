@@ -1,182 +1,359 @@
+/* OrderHistory.css */
+
+/* ------------------------------
+   Design Tokens
+------------------------------ */
+:root {
+  --bg: #f7f8fc;
+  --card: #ffffff;
+  --text: #111827;     /* gray-900 */
+  --muted: #6b7280;    /* gray-500 */
+  --border: #e5e7eb;   /* gray-200 */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --radius: 14px;
+
+  --primary: #0ea5e9;  /* sky-500 */
+  --primary-hover: #0284c7;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f14;
+    --card: #0f172a;    /* slate-900 */
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: #1f2937;  /* gray-800 */
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+    --primary: #38bdf8; /* sky-400 */
+    --primary-hover: #0ea5e9;
+  }
+}
+
+/* ------------------------------
+   Page Shell
+------------------------------ */
 .order-history {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px 60px;
+  color: var(--text);
 }
 
 .order-history h1 {
-  margin-bottom: 30px;
-  color: #333;
-  font-size: 28px;
+  font-size: clamp(1.4rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 18px;
+}
+
+.order-history > p {
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ------------------------------
+   States
+------------------------------ */
+.error-message {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--danger);
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin: 10px 0 20px;
 }
 
 .empty-state {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
   text-align: center;
-  padding: 40px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+
+.empty-state p {
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ------------------------------
+   Buttons
+------------------------------ */
+.shop-now-btn,
+.bf-btn-primary {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.22);
+  will-change: transform;
 }
 
 .shop-now-btn {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  margin-top: 15px;
+  background: #111827;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.18);
 }
 
+.shop-now-btn:hover {
+  transform: translateY(-1px);
+  background: #000;
+}
+
+.bf-btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.bf-btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.bf-btn-primary:active,
+.shop-now-btn:active {
+  transform: translateY(0);
+}
+
+.bf-btn-primary:focus-visible,
+.shop-now-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ------------------------------
+   Orders Grid
+------------------------------ */
 .orders-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 900px) {
+  .orders-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------
+   Order Card
+------------------------------ */
+.order-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.order-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  background-color: white;
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+  border-color: rgba(2, 132, 199, 0.35);
 }
 
 .order-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-  background-color: #f9f9f9;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px dashed var(--border);
 }
 
 .order-header h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 1rem;
+  margin: 0 0 4px;
+  letter-spacing: 0.2px;
 }
 
 .order-date {
-  color: #757575;
-  margin: 4px 0 0 0;
-  font-size: 14px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff; /* Works well for most statuses; small shadow helps on yellow */
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
 }
 
+/* ------------------------------
+   Order Items
+------------------------------ */
 .order-items {
-  padding: 20px;
+  padding: 14px 18px 0;
 }
 
-.order-items h4 {
-  margin: 0 0 15px 0;
-  font-size: 16px;
-  color: #555;
+.order-items > h3 {
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+}
+
+.order-items > h4 {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.92rem;
 }
 
 .order-item {
-  display: flex;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .order-item:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
   border-bottom: none;
+  padding-bottom: 0;
 }
 
 .item-image {
-  width: 70px;
-  height: 70px;
-  margin-right: 15px;
-  border-radius: 4px;
+  width: 76px;
+  height: 76px;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid var(--border);
+  background: #f3f4f6;
 }
 
 .item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.no-image {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f1f1f1;
-  color: #999;
-  font-size: 12px;
+  display: block;
 }
 
 .item-details {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .item-name {
-  margin: 0 0 5px 0;
-  font-weight: 500;
-  color: #333;
+  margin: 2px 0 0;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
-.item-price, .item-subtotal {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #757575;
+.item-price {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
+.item-subtotal {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ------------------------------
+   Footer / Summary
+------------------------------ */
 .order-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 20px;
-  background-color: #f9f9f9;
-  border-top: 1px solid #eee;
+  padding: 12px 18px 18px;
+  border-top: 1px dashed var(--border);
+  gap: 12px;
 }
 
-.payment-info p, .order-total p {
-  margin: 5px 0;
-  font-size: 14px;
+.payment-info {
+  width: 100%;
+}
+
+.payment-info p {
+  margin: 4px 0;
+  color: var(--text);
+}
+
+.payment-info strong {
+  color: var(--muted);
+  font-weight: 700;
 }
 
 .order-total {
-  text-align: right;
+  width: 100%;
+  margin-top: 6px;
 }
 
-.order-total p strong {
-  font-size: 16px;
+.order-total p {
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
-.payment-actions {
-  padding: 15px 20px;
-  border-top: 1px solid #eee;
-  text-align: right;
+/* Buttons area in footer */
+.order-footer .bf-btn-primary {
+  margin-top: 10px;
+  width: 100%;
 }
 
-.pay-now-btn {
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
+@media (min-width: 520px) {
+  .order-footer .bf-btn-primary {
+    width: auto;
+  }
 }
 
-.error-message {
-  color: #f44336;
-  text-align: center;
-  padding: 20px;
-  background: #ffebee;
-  border-radius: 8px;
+/* ------------------------------
+   Feedback Section
+------------------------------ */
+.order-feedback {
+  background: rgba(2, 132, 199, 0.04);
+  border-radius: 12px;
+  border: 1px dashed rgba(2, 132, 199, 0.25);
+}
+
+.order-feedback h4 {
+  margin: 0 0 6px;
+}
+
+.order-feedback p {
+  margin: 2px 0;
+  color: var(--muted);
+}
+
+/* Try to ensure lucide star visibility in dark mode */
+.order-feedback svg {
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.1));
+}
+
+/* ------------------------------
+   Utilities
+------------------------------ */
+@media (max-width: 520px) {
+  .order-header {
+    align-items: flex-start;
+  }
+  .status-badge {
+    align-self: flex-start;
+  }
+}
+
+/* Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .order-card,
+  .bf-btn-primary,
+  .shop-now-btn {
+    transition: none;
+  }
 }
