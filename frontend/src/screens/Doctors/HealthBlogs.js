@@ -168,13 +168,13 @@ function HealthBlogs() {
 											<img src={blog.image} alt={blog.title} />
 										</div>
 									)}
-									<p className="blog-date">
-										<strong>
-											Published: {new Date(blog.date).toLocaleDateString()}
-										</strong>
-									</p>
 								</div>
 							)}
+							<p className="blog-date">
+								<strong>
+									Published: {new Date(blog.date).toLocaleDateString()}
+								</strong>
+							</p>
 						</div>
 					))}
 				</div>

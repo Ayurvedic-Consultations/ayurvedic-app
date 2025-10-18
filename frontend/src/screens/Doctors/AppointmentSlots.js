@@ -228,7 +228,6 @@ function AppointmentSlots() {
 									</p>
 									<button
 										className="prescribe-button"
-										// Use an anonymous arrow function to call navigate with the state object
 										onClick={() => {
 											navigate("/doctorsprescribe", {
 												state: {
@@ -239,7 +238,7 @@ function AppointmentSlots() {
 											});
 										}}
 									>
-										Go to Prescribe Supplements
+										Prescribe Medicine & Diet - Yoga Plan
 									</button>
 								</div>
 								<div className="appointment-details">

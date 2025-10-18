@@ -146,8 +146,6 @@ function App() {
           <Route path ="/PatientFeedback/:id" element={<PatientFeedback/>} />
           <Route path ="/BuyerFeedback/:id" element={<BuyerFeedback/>} />
 
-
-
           <Route path="/doctor-analytics" element={<DoctorAnalytics />} />
           <Route path="/patient-list" element={<PatientList />} />
           <Route path="/health-blogs" element={<HealthBlogs />} />
