@@ -22,7 +22,7 @@
 }
 
 /* --- Section Styling (Active & Past) --- */
-.history-section {
+.history-section- {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;

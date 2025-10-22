@@ -211,7 +211,7 @@ function BlogsVideosScreen() {
 									) : (
 										<img src="/images/blog_img.jpg" alt={item.title} />
 									)}
-									<span className="card-type">{item.type || "Blog"}</span>
+									{(item.type === "ai") ? <span className="card-type">AI</span> : null}
 								</div>
 
 								<div className="card-body">

@@ -1,21 +1,18 @@
 /* AdminBlogUpdate.css */
 
-.blog-container {
+.blog-containerr {
   min-height: 100vh;
   background-color: #f3f4f6;
-  padding: 2rem;
   margin-top:180px;
-  width: 100%;
+  width: 100vw;
+  padding: 0 50px;
 }
 
 .blog-card {
-  max-width: 56rem; /* 4xl equivalent */
-  margin-left: auto;
-  margin-right: auto;
   background-color: #ffffff;
-  border-radius: 0.75rem; /* rounded-xl equivalent */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg equivalent */
-  padding: 1.5rem; 
+  border-radius: 0.75rem; 
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+  padding: 1rem; 
   width: 100%;
   display: flex;
   flex-direction: column;

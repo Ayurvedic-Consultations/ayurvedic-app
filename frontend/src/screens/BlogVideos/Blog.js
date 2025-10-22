@@ -42,7 +42,7 @@ export default function Blog() {
                 )}
 
                 {/* Title and Metadata */}
-                <h1 style={{ marginBottom: '0.5rem' }}>{blog.title}</h1>
+                {/* <h1 style={{ marginBottom: '0.5rem' }}>{blog.title}</h1> */}
                 <small style={{ display: 'block', marginBottom: '1rem', color: '#666' }}>
                     By: {blog.authorName || 'Unknown Author'} | Published: {displayDate}
                 </small>

@@ -132,15 +132,45 @@ exports.getAllBlogs = async (req, res) => {
 
 // DELETE a blog by ID
 exports.deleteBlog = async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const result = await AIBlog.findByIdAndDelete(req.params.id);
-        if (!result) {
-            return res.status(404).json({ message: "Blog not found" });
+        let result = null;
+        let modelName = null;
+
+        // 1. Try deleting from the AIBlog model (using the one you had)
+        result = await AIBlog.findByIdAndDelete(id);
+        if (result) {
+            modelName = 'AIBlog';
         }
-        res.status(200).json({ message: "Blog deleted successfully" });
+
+        // 2. If not found in AIBlog, try deleting from the Blog model
+        if (!result) {
+            result = await Blogs.findByIdAndDelete(id);
+            if (result) {
+                modelName = 'Blog';
+            }
+        }
+
+        // 3. Check final result and respond
+        if (!result) {
+            return res.status(404).json({ message: "Blog not found in either collection." });
+        }
+
+        res.status(200).json({ 
+            message: `Blog deleted successfully from the ${modelName} collection.`,
+            deletedId: id
+        });
+        
     } catch (error) {
-        console.error("Error deleting AI Blog:", error);
-        res.status(500).json({ error: "Server error while deleting blog" });
+        // Log the error for debugging purposes
+        console.error("Error deleting Blog from both collections:", error);
+        
+        // Respond with a 500 status
+        res.status(500).json({ 
+            error: "Server error while attempting to delete blog.",
+            details: error.message 
+        });
     }
 };
 

@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PatientHeader } from './PatientHeader';
 import { PrescriptionHistory } from './PrescriptionHistory';
 import { PrescriptionTabs } from './PrescriptionTabs';
 import { useLocation } from 'react-router-dom';
 import './PrescribeIndex.css';
 
-
-// Sample data for demonstration
 const samplePatient = {
 	id: "PT-2024-001",
 	name: "Sarah Johnson",
@@ -73,19 +71,85 @@ const samplePrescriptions = [
 const PrescribeIndex = () => {
 	const location = useLocation();
 	const { patientId, doctorId, bookingId } = location.state || {};
-	console.log("PrescribeIndex Props:", { patientId, doctorId, bookingId });
+	const [patientData, setPatientData] = useState(samplePatient);
+	const [loading, setLoading] = useState(true);
 
-	
+	const [prescriptions, setPrescriptions] = useState(samplePrescriptions);
+	const [loadingPrescriptions, setLoadingPrescriptions] = useState(true);
+
+	// Fetch patient details
+	useEffect(() => {
+		const fetchPatientDetails = async () => {
+			if (!patientId) {
+				setLoading(false);
+				console.error("Patient ID is missing from navigation state.");
+				return;
+			}
+
+			setLoading(true);
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/getPatient/${patientId}`
+				);
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch patient details.");
+				}
+
+				const data = await response.json();
+				setPatientData(data);
+			} catch (error) {
+				console.error("Error fetching patient data:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchPatientDetails();
+	}, [patientId]);
+
+	// Fetch booking details
+	useEffect(() => {
+		const fetchPrescriptions = async () => {
+			if (!patientId) {
+				setLoadingPrescriptions(false);
+				console.error("Patient ID is missing from navigation state.");
+				return;
+			}
+
+			setLoadingPrescriptions(true);
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/patient/${patientId}`
+				);
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch prescriptions.");
+				}
+
+				const data = await response.json();
+				setPrescriptions(data.bookings);
+			}
+			catch (error) {
+				console.error("Error fetching prescriptions:", error);
+			} finally {
+				setLoadingPrescriptions(false);
+			}
+		};
+
+		fetchPrescriptions();
+
+	}, [bookingId, patientId])
+
 	return (
 		<div className="container">
 			<main className="main">
 				{/* Patient Information */}
-				<PatientHeader patient={samplePatient} />
-				<PrescriptionHistory records={samplePrescriptions} />
+				<PatientHeader patient={patientData} loading={loading} />
+				<PrescriptionHistory prescriptions={prescriptions} loading={loadingPrescriptions} />
 				<PrescriptionTabs />
 				{/* Two Column Layout */}
 				<div className="grid-container">
-
 				</div>
 			</main>
 		</div>

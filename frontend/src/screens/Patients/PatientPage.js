@@ -113,9 +113,7 @@ function PatientPage() {
 					) : (
 						<>
 							<button className="match-btn" onClick={handleOpenPrakritiForm}>
-								
-								{/* Prakriti Determination */}
-								Find Your Body Nature
+								Prakriti Determination
 							</button>
 							<p>
 								Kindly complete the Prakriti Determination Form. This will enable

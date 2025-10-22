@@ -123,8 +123,7 @@ function PrakritiDetermination() {
 
   return (
     <div className="signup-container">
-      {/* <h1>Prakriti Determination Form</h1> */}
-      <h1>Find Your Body Nature</h1>
+      <h1>Prakriti Determination Form</h1>
       <p>Unlock personalized care! Complete our Prakriti determination to find the perfect doctor for you based on your needs.</p>
       <form className="signup-form">
         {/* Physical Traits */}

@@ -1,34 +1,50 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './AdminBlogsUpdate.css';
+import RichTextEditor from '../../components/RichTextEditor';
 
 export default function AdminBlogUpdate() {
     const location = useLocation();
     const navigate = useNavigate();
+    // Assuming initialBlog.content.text is the HTML string content.
     const { initialBlog } = location.state;
-    console.log("Received Initial Blog Data:", initialBlog);
+
     const [blog, setBlog] = useState({
         _id: initialBlog._id || '',
         title: initialBlog.title || '',
         url: initialBlog.url || '',
         tags: initialBlog.tags?.join(', ') || '',
-        content: initialBlog.content?.text || '',
+        content: initialBlog.description || '',
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setBlog({
-            ...blog,
-            [name]: value,
-        });
+    // FIX: Update handleChange to handle both standard inputs (e.target.value) 
+    // AND the RichTextEditor's direct HTML string output.
+    const handleChange = (eOrHtmlString) => {
+        // Check if the argument is a standard synthetic event (from input fields)
+        if (eOrHtmlString && eOrHtmlString.target) {
+            const { name, value } = eOrHtmlString.target;
+            setBlog({
+                ...blog,
+                [name]: value,
+            });
+        }
+        // Otherwise, assume it's the HTML string from the RichTextEditor
+        else {
+            setBlog((prevBlog) => ({
+                ...prevBlog,
+                content: eOrHtmlString,
+            }));
+        }
     };
 
     const handleUpdate = async () => {
         const updatedData = {
             ...blog,
-            tags: blog.tags.split(',').map(tag => tag.trim()),
+            // Tags conversion is correct
+            tags: blog.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+            // Content wrapping is correct
             content: {
-                text: blog.content,
+                html: blog.content,
             }
         };
 
@@ -41,13 +57,12 @@ export default function AdminBlogUpdate() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    // You might need an Authorization header for an admin endpoint
                     // 'Authorization': `Bearer YOUR_AUTH_TOKEN`,
                 },
                 body: JSON.stringify(updatedData),
             });
 
-       
+
             if (response.ok) {
                 const result = await response.json();
                 console.log("Blog updated successfully:", result);
@@ -63,7 +78,7 @@ export default function AdminBlogUpdate() {
 
 
     return (
-        <div className="blog-container">
+        <div className="blog-containerr">
             <div className="blog-card">
                 <h1 className="title-heading">Edit Blog Post</h1>
 
@@ -115,16 +130,10 @@ export default function AdminBlogUpdate() {
                         <label htmlFor="content" className="label">
                             Content
                         </label>
-                        <label htmlFor="content" className="label">
-                            <strong>**Please use Markdown syntax for formatting.** </strong>
-                        </label>
-                        <textarea
-                            name="content"
-                            id="content"
-                            rows="15"
-                            value={blog.content}
-                            onChange={handleChange}
-                            className="textarea"
+                        {/* FIX: Simplified props for RichTextEditor */}
+                        <RichTextEditor
+                            content={blog.content} // Passes the HTML content for initialization
+                            onChange={handleChange} // Passes the unified handler
                         />
                     </div>
                 </div>

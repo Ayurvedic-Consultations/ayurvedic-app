@@ -24,7 +24,6 @@ const blogSchema = new mongoose.Schema({
     url: {
         type: String,
         unique: true,
-        required: true,
         lowercase: true
     },
     content: {
@@ -39,8 +38,8 @@ const blogSchema = new mongoose.Schema({
         default: []
     },
     user: {
-        userId: { type: "String", required: true },
-        name: { type: String, required: true }
+        userId: { type: "String"},
+        name: { type: String , default: 'Admin'}
     },
     timestamp: {
         type: Date,
