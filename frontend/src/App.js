@@ -74,6 +74,7 @@ import DoctorPrescribe from './screens/Doctors/doctorPrescribe/Doctor-Prescribe'
 import PrescribeIndex from './screens/Doctors/doctorPrescribe/PrescribeIndex';
 import PatientFeedback from './screens/Patients/PatientFeedback';
 import BuyerFeedback from './screens/Patients/BuyerFeedback';
+import MedicineIdDetails from './screens/MedicineIdDetails';
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -153,6 +154,13 @@ function App() {
           <Route path="/health-blogs" element={<HealthBlogs />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/medicines" element={<MedicinesScreen />} />
+
+          {/* make chane */}
+       <Route
+  path="/medicines/:id"
+  element={<MedicineIdDetails/>}
+/>
+          
           <Route path="/retailer-home" element={<RetailerDashboard />} />
           <Route path="/doctor-notifications" element={<DoctorNotification />} />
           <Route path="/manage-products" element={<ManageProducts />} />

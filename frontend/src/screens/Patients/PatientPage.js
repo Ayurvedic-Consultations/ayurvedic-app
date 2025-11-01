@@ -4,11 +4,15 @@ import "./PatientPage.css"; // Import the CSS file for styling
 import { AuthContext } from "../../context/AuthContext";
 
 // Import images for each service category
-import appointmentImage from "../../media/doctor.png";
+// import appointmentImage from "../../media/doctor.png";
+import appointmentImage from "../../media/appoint3.jpg";
 import  doctorImage  from "../../media/appoint1.jpg";
-import treatmentImage from "../../media/treatment.png";
-import yogaImage from "../../media/yoga.jpeg";
-import medicineImage from "../../media/medicine.png";
+import treatmentImage from "../../media/tre-plan.jpg";
+// import yogaImage from "../../media/yoga.jpeg";
+// import medicineImage from "../../media/remedies.jpg";
+import medicineImage from "../../media/capsule.jpg";
+// import medicineImage from "../../media/medicine.png";
+import yogaImage from "../../media/yoga-diet.jpg";
 import { jwtDecode } from 'jwt-decode';
 
 //import step1Icon from "../../media/step1.png"; // Import icons for steps
@@ -130,10 +134,11 @@ function PatientPage() {
 					<div className="services-cards">
 						<div className="service-card" onClick={goToProfile}>
 							<img
-								src={doctorImage}
-								alt="Appointed Doctor"
-								className="service-image"
-							/>
+                                src={doctorImage}
+                                 alt="Appointed Doctor"
+                                  className="service-image"
+                            //   style={{ width: '280px', height: '180px' }}
+                                          />
 							<h3>Your Profile</h3>
 							<p>
 								View and update your details.
@@ -167,6 +172,7 @@ function PatientPage() {
 								src={yogaImage}
 								alt="Yoga & Diet"
 								className="service-image"
+								style={{ width: '380px', height: '200px' }}
 							/>
 							<h3>Yoga & Diet</h3>
 							<p>
