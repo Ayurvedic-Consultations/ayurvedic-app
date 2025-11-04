@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../NavBar.css";
 import "./PatientNavBar.css";
-import logo from "../../media/logo.png";
+import logo from "../../media/logo2.png";
 import locationIcon from "../../media/location.png";
 import defaultProfilePic from "../../media/default-profile.png";
 import notificationIcon from "../../media/notifications.png";
@@ -123,12 +123,14 @@ function PatientNavBar() {
 					<img src={logo} alt="Ayurvedic Logo" className="nav-logo" />
 					<div className="text-container">
 						<div className="logo-text">AYURVEDIC</div>
-						<div className="consultations-text">Consultations</div>
+						<div className="consultations-text">eHub</div>
 					</div>
 				</div>
 
-				<div className="search-signin">
-					<div className="search-bar">
+				<div className="search-signin"
+					style={{ padding: "0px 65px" }}>
+					<div className="search-bar"
+						style={{ height: "45px" }}>
 						<div className="dropdown">
 							<select>
 								<option value="doctor">Doctor</option>
@@ -280,11 +282,11 @@ function PatientNavBar() {
 								Home
 							</NavLink>
 						</li>
-            <li>
-              <NavLink to="/appointed-doctor" activeClassName="active">
-                Appointed Doctor
-              </NavLink>
-            </li>
+						<li>
+							<NavLink to="/appointed-doctor" activeClassName="active">
+								Appointed Doctor
+							</NavLink>
+						</li>
 						<li>
 							<NavLink to="/treatments" activeClassName="active">
 								Treatments

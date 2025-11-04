@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../NavBar.css"; // Ensure styles from NavBar are included
-import logo from "../../media/logo.png"; // Adjust the path if needed
+import logo from "../../media/logo2.png";
 import locationIcon from "../../media/location.png"; // Adjust the path if needed
 import defaultProfilePic from "../../media/default-profile.png"; // Default profile picture
 import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
@@ -108,11 +108,13 @@ function RetailerNavBar() {
 					<img src={logo} alt="Retailer Logo" className="nav-logo" />
 					<div className="text-container">
 						<div className="logo-text">AYURVEDIC</div>
-						<div className="consultations-text">Consultations</div>
+						<div className="consultations-text">eHub</div>
 					</div>
 				</div>
-				<div className="search-signin">
-					<div className="search-bar">
+				<div className="search-signin"
+					style={{ padding: "0px 65px" }}>
+					<div className="search-bar"
+						style={{ height: "45px" }}>
 						<div className="dropdown">
 							<select>
 								<option value="doctor">Doctor</option>
@@ -243,11 +245,11 @@ function RetailerNavBar() {
 								Analytics
 							</NavLink>
 						</li>
-            <li>
-              <NavLink to="/customer-support" activeClassName="active">
-                Customer Support
-              </NavLink>
-            </li>
+						<li>
+							<NavLink to="/customer-support" activeClassName="active">
+								Customer Support
+							</NavLink>
+						</li>
 					</ul>
 				</div>
 			</nav>

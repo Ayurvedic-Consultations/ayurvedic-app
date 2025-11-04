@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
-import logo from "../media/logo.png";
+import logo from "../media/logo2.png";
 import menu_close from "../media/menu-close.svg";
 import menu from "../media/menu.svg";
 import locationIcon from "../media/location.png";
@@ -69,12 +69,14 @@ function NavBar() {
 					<img src={logo} alt="Ayurvedic Logo" className="nav-logo" />
 					<div className="text-container">
 						<div className="logo-text">AYURVEDIC</div>
-						<div className="consultations-text">Consultations</div>
+						<div className="consultations-text">eHub</div>
 					</div>
 				</NavLink>
 
-				<div className="search-signin">
-					<div className="search-bar">
+				<div className="search-signin"
+					style={{ padding: "0px 65px" }}>
+					<div className="search-bar"
+						style={{ height: "45px" }}>
 						<div className="dropdown">
 							<select>
 								<option value="doctor">Doctor</option>

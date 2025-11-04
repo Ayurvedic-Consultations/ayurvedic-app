@@ -108,7 +108,6 @@ const formatDate = (dateString) => {
 };
 
 // --- Component: PatientHeader ---
-
 const PatientHeader = ({ patient }) => {
   return (
     <div className="patient-header-card">
@@ -119,7 +118,7 @@ const PatientHeader = ({ patient }) => {
               <img src={patient.avatar} alt={patient.name} className="patient-avatar-image" />
             ) : (
               <div className="patient-avatar-fallback">
-                {getInitials(patient.name)}
+                {getInitials(patient.firstname)}
               </div>
             )}
           </div>
@@ -169,7 +168,6 @@ const PatientHeader = ({ patient }) => {
 
 
 // --- Component: PrescriptionHistory ---
-
 const PrescriptionHistory = ({ records }) => {
   const activeRecords = records.filter(record => record.isActive);
   const pastRecords = records.filter(record => !record.isActive);
@@ -248,7 +246,6 @@ const PrescriptionHistory = ({ records }) => {
 
 
 // --- Component: MedicineForm ---
-
 const MedicineForm = () => {
   const [formData, setFormData] = useState({
     medicineName: "",
@@ -399,7 +396,6 @@ const MedicineForm = () => {
 
 
 // --- Component: DietPlanForm ---
-
 const DietPlanForm = () => {
   const [dietPlan, setDietPlan] = useState({
     daily: { ...DEFAULT_DAILY_DIET },
@@ -537,7 +533,6 @@ const DietPlanForm = () => {
 
 
 // --- Component: YogaPlanForm ---
-
 const YogaPlanForm = () => {
   const [morningInput, setMorningInput] = useState("");
   const [eveningInput, setEveningInput] = useState("");
@@ -708,7 +703,6 @@ const YogaPlanForm = () => {
 
 
 // --- Component: PrescriptionTabs ---
-
 const PrescriptionTabs = () => {
   const [activeTab, setActiveTab] = useState('medicine');
 
@@ -760,11 +754,10 @@ const PrescriptionTabs = () => {
 
 
 // --- Main Exported Component ---
-
 const DoctorPrescribe = () => {
   return (
     <div className="app-container">
-      <header className="app-header">
+      <header className="app-header" style={{border:"solid red 2px"}}>
         <div className="header-content">
           <h1 className="app-title">MedCare Prescriber Platform</h1>
           <p className="app-subtitle">Doctor-Patient Consultation System</p>

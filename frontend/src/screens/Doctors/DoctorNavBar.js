@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../NavBar.css"; // Ensure styles from NavBar are included
 import "./DoctorNavbar.css";
-import logo from "../../media/logo.png"; // Adjust the path if needed
+import logo from "../../media/logo2.png"; // Adjust the path if needed
 import locationIcon from "../../media/location.png"; // Adjust the path if needed
 import defaultProfilePic from "../../media/default-profile.png"; // Default profile picture
 import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
@@ -109,11 +109,13 @@ function DoctorNavBar() {
 					<img src={logo} alt="Doctor Logo" className="nav-logo" />
 					<div className="text-container">
 						<div className="logo-text">AYURVEDIC</div>
-						<div className="consultations-text">Consultations</div>
+						<div className="consultations-text">eHub</div>
 					</div>
 				</div>
-				<div className="search-signin">
-					<div className="search-bar">
+				<div className="search-signin"
+					style={{ padding: "0px 65px" }}>
+					<div className="search-bar"
+						style={{ height: "45px" }}>
 						<div className="dropdown">
 							<select>
 								<option value="doctor">Doctor</option>
@@ -179,58 +181,58 @@ function DoctorNavBar() {
 				</div>
 			)}
 
-      <nav className="navbar">
-        <div className="left-item">
-          <img
-            src={locationIcon}
-            alt="Location Icon"
-            className="location-icon"
-          />
-          <span className="location-text">{userLocation}</span>{" "}
-          {/* Display user location */}
-        </div>
-        <div className="center-items">
-          <ul>
-            <li>
-              <NavLink to="/doctor-home" activeClassName="active">
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/current-requests" activeClassName="active">
-                Current Requests
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/appointment-slots" activeClassName="active">
-                Appointment Slots
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/patient-list" activeClassName="active">
-                Patient List
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/doctor-reviews" activeClassName="active">
-                Patient's Reviews
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/doctor-analytics" activeClassName="active">
-                Analytics
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/health-blogs" activeClassName="active">
-                My Health Blogs
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
-  );
+			<nav className="navbar">
+				<div className="left-item">
+					<img
+						src={locationIcon}
+						alt="Location Icon"
+						className="location-icon"
+					/>
+					<span className="location-text">{userLocation}</span>{" "}
+					{/* Display user location */}
+				</div>
+				<div className="center-items">
+					<ul>
+						<li>
+							<NavLink to="/doctor-home" activeClassName="active">
+								Home
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/current-requests" activeClassName="active">
+								Current Requests
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/appointment-slots" activeClassName="active">
+								Appointment Slots
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/patient-list" activeClassName="active">
+								Patient List
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/doctor-reviews" activeClassName="active">
+								Patient's Reviews
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/doctor-analytics" activeClassName="active">
+								Analytics
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/health-blogs" activeClassName="active">
+								My Health Blogs
+							</NavLink>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+	);
 }
 
 export default DoctorNavBar;

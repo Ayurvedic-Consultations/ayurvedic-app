@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../NavBar.css";
 import "./AdminNavbar.css";
-import logo from "../../media/logo.png";
+import logo from "../../media/logo2.png";
 import locationIcon from "../../media/location.png";
 import defaultProfilePic from "../../media/default-profile.png";
 import notificationIcon from "../../media/notifications.png";
@@ -121,16 +121,18 @@ function AdminNavBar() {
 
 	return (
 		<header className="navbar-header">
-			<div className="top-navbar"> 
+			<div className="top-navbar">
 				<div className="logo-container">
 					<img src={logo} alt="Ayurvedic Logo" className="nav-logo" />
 					<div className="text-container">
 						<div className="logo-text">AYURVEDIC</div>
-						<div className="consultations-text">Consultations</div>
+						<div className="consultations-text">eHub</div>
 					</div>
 				</div>
-				<div className="search-signin">
-					<div className="search-bar">
+				<div className="search-signin"
+					style={{ padding: "0px 65px" }}>
+					<div className="search-bar"
+						style={{ height: "45px" }}>
 						<div className="dropdown">
 							<select>
 								<option value="doctor">Doctor</option>
