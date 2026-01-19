@@ -17,6 +17,34 @@ exports.getAllPatients = async (req, res) => {
 	}
 };
 
+// Update Patient Details (Admin or authorized user)
+exports.updatePatient = async (req, res) =>{
+	const {id} = req.params;
+	const updates = req.body;
+
+	try{
+		let patient = await Patient.findById(id);
+
+		if(patient){
+			if(updates.firstName) patient.firstName = updates.firstName;
+			if(updates.lastName) patient.lastName = updates.lastName;
+			if(updates.email) patient.email = updates.email;
+			if(updates.dateOfBirth) patient.dob = updates.dateOfBirth;
+			if(updates.gender) patient.gender = updates.gender;
+			if(updates.pincode) patient.zipCode = updates.pincode;
+			if(updates.address) patient.address = updates.address;
+
+			await patient.save();
+			console.log("Updated Patient:", patient);
+			return res.status(200).json({success:true, message:"Patient updated successfully", data: patient});
+		}
+		return res.status(404).json({message: "Patient not found"});
+	}catch(error){
+		console.error("Error updating patient:", error);
+		res.status(500).json({message: "Failed to update patient", error: error.message});
+	}
+}
+
 // Delete a Patient (Admin or authorized user)
 exports.deletePatient = async (req, res) => {
 	const { id } = req.params;

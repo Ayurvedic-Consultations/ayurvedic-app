@@ -182,3 +182,58 @@ exports.getDoctorById = async (req, res) => {
 		});
 	}
 };
+
+exports.updateDoctor = async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body; 
+
+    try {
+        // --- ATTEMPT 1: Check if ID belongs to Doctor (Schema 1) ---
+        let doctor = await Doctor.findById(id);
+
+        if (doctor) {
+            if (updates.firstName) doctor.firstName = updates.firstName;
+            if (updates.lastName) doctor.lastName = updates.lastName;
+            if (updates.email) doctor.email = updates.email;
+            if (updates.yearsOfExperience) doctor.experience = updates.yearsOfExperience;
+            if (updates.specialization) doctor.specialization = updates.specialization; 
+            if (updates.gender) doctor.gender = updates.gender;
+            if (updates.pincode) doctor.zipCode = updates.pincode; 
+            if (updates.address) doctor.address = updates.address;
+            // if (updates.profileImage) doctor.profileImage = updates.profileImage;
+
+            await doctor.save();
+			console.log("Updated Doctor:", doctor);
+            return res.status(200).json({ success: true, message: "Updated in Doctor Schema", data: doctor });
+        }
+
+        // --- ATTEMPT 2: Check if ID belongs to DoctorData (Schema 2) ---
+        doctor = await DoctorData.findById(id);
+
+        if (doctor) {
+            if (updates.firstName) doctor.firstname = updates.firstName;
+            if (updates.lastName) doctor.lastname = updates.lastName;
+            if (updates.email) doctor.email = updates.email;
+            if (updates.yearsOfExperience) doctor.experience = updates.yearsOfExperience;
+            if (updates.specialization) doctor.specialization = updates.specialization;
+            if (updates.gender) doctor.gender = updates.gender;
+            if (updates.profileImage) doctor.imageLink = updates.profileImage;
+            if (updates.pincode || updates.address) {
+                if (!doctor.location) doctor.location = {};
+                if (updates.pincode) doctor.location.pincode = updates.pincode;
+                if (updates.address) doctor.location.specific = updates.address;
+            }
+
+            await doctor.save();
+			console.log("Updated DoctorData:", doctor);
+            return res.status(200).json({ success: true, message: "Updated in DoctorData Schema", data: doctor });
+        }
+
+        // --- If ID is not found in either ---
+        return res.status(404).json({ success: false, message: "Doctor not found in either database" });
+
+    } catch (error) {
+        console.error("Update Error:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+};

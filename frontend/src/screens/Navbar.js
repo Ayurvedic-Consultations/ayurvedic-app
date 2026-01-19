@@ -82,7 +82,7 @@ function NavBar() {
 								<option value="doctor">Doctor</option>
 								<option value="disease">Diseases</option>
 								<option value="medicine">Medicines</option>
-								<option value="diet-yoga">Diet And Yoga</option>
+								{/* <option value="diet-yoga">Diet And Yoga</option> */}
 								<option value="blogs-videos">Blogs</option>
 							</select>
 						</div>
@@ -143,11 +143,11 @@ function NavBar() {
 										Medicines
 									</NavLink>
 								</li>
-								<li>
+								{/* <li>
 									<NavLink to="/diet-yoga" activeClassName="active">
 										Diet And Yoga
 									</NavLink>
-								</li>
+								</li> */}
 								<li>
 									<NavLink to="/blogs-videos" activeClassName="active">
 										Blogs and Videos
@@ -180,11 +180,11 @@ function NavBar() {
 								Medicines
 							</NavLink>
 						</li>
-						<li>
+						{/* <li>
 							<NavLink to="/diet-yoga" activeClassName="active">
 								Diet And Yoga
 							</NavLink>
-						</li>
+						</li> */}
 						<li>
 							<NavLink to="/blogs-videos" activeClassName="active">
 								Blogs and Videos
