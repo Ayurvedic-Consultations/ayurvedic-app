@@ -329,7 +329,7 @@ function DoctorsScreen() {
 						<div className="doctor-info">
 							<div className="doctor-name">
 								Dr. {doctor.name}{" "}
-								<span className="doctor-rating">{doctor.rating}⭐</span>
+								{/* <span className="doctor-rating">{doctor.rating}⭐</span> */}
 							</div>
 							<div className="doctor-specialization">
 								{doctor.specialization}

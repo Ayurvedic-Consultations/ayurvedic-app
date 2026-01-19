@@ -1,39 +1,42 @@
 /* Importing the 'Inter' font */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-/* ==============================================
-  CSS Variables for Theming and Consistency
-  ==============================================
-*/
 :root {
-  /* Color Palette */
-  --color-primary-text: #1f2937;
-  --color-secondary-text: #4b5563;
-  --color-tertiary-text: #6b7280;
-  --color-muted-text: #9ca3af;
+  /* ===== Text Colors ===== */
+  --color-primary-text: #2F3E2E;     /* Deep olive text */
+  --color-secondary-text: #4B5D4A;
+  --color-tertiary-text: #6B7C6A;
+  --color-muted-text: #9AA59A;
 
-  --color-background: #f3f4f6;
-  --color-surface: #ffffff;
-  --color-surface-alt: #f9fafb;
-  --color-border: #e5e7eb;
+  /* ===== Backgrounds ===== */
+  --color-background: #F6F5F1;       /* Warm beige (matches header) */
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F0F4EC;      /* Sage tone like navbar */
 
-  --color-success-bg: #d1fae5;
-  --color-success-text: #065f46;
+  /* ===== Borders ===== */
+  --color-border: #D6DDCF;
 
-  /* Spacing Scale */
-  --space-xs: 0.25rem; /* 4px */
-  --space-sm: 0.5rem; /* 8px */
-  --space-md: 1rem; /* 16px */
-  --space-lg: 1.5rem; /* 24px */
-  --space-xl: 2rem; /* 32px */
+  /* ===== Success ===== */
+  --color-success-bg: #E6F4EA;
+  --color-success-text: #2F6B3F;
 
-  /* Font & Border Radius */
+  /* ===== Spacing (UNCHANGED) ===== */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* ===== Font & Radius (UNCHANGED) ===== */
   --font-family-main: "Inter", sans-serif;
   --border-radius-sm: 0.5rem;
   --border-radius-md: 0.75rem;
   --border-radius-lg: 1rem;
-  --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* ===== Shadow (softer, professional) ===== */
+  --shadow-main: 0 8px 20px rgba(47, 62, 46, 0.08);
 }
+
 
 /* ==============================================
   Base & Page Layout
@@ -671,3 +674,184 @@ h1 {
     width: 100%;
   }
 }
+/* ==============================================
+   DietPlan Component Premium Styles
+   ============================================== */
+
+.full-width {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.animate-in {
+  animation: fadeInSlide 0.4s ease-out;
+}
+
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ingredients Section (Screenshot Match) */
+.ing-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.ing-pill {
+  background-color: #F0FFFA; /* Mint/Teal background */
+  color: #115E59;            /* Dark teal text */
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.ing-pill .qty {
+  font-weight: 700;
+  color: #0D9488;
+}
+
+/* Preparation Timeline (Screenshot Match) */
+.prep-stats-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.time-badge {
+  background: #F8FAFC;
+  padding: 12px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.time-badge b {
+  font-size: 16px;
+  color: #1E293B;
+  display: block;
+}
+
+.steps-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.step-item:last-child { border: none; }
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  background-color: #0D9488; /* Teal circle */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-item p {
+  margin: 0;
+  line-height: 1.6;
+  color: #475569;
+}
+
+/* Calendar & Meal Grids */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.day-square {
+  border: 1px solid var(--color-border);
+  padding: 15px 5px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.day-square:hover {
+  border-color: #0D9488;
+  background: #F0FDF4;
+}
+
+.meal-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.meal-option-card {
+  background: var(--color-surface-alt);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.meal-option-card:hover {
+  border-color: #0D9488;
+  background: white;
+  box-shadow: var(--shadow-main);
+}
+
+.meal-icon {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  color: #0D9488;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.yoga-preview-box {
+  background: #FFFBEB;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #FEF3C7;
+  margin-top: 30px;
+}
+
+.yoga-bit h5 { color: #92400E; margin-bottom: 5px; }
+
+/* FIX: Ensure right content always fills panel */
+.tab-content {
+  width: 100%;
+}
+
+.right-panel {
+  width: 100%;
+}
+

@@ -1,0 +1,508 @@
+/* =========================================
+   DIET PLAN - PREMIUM THEME (Updated with Your Colors)
+   ========================================= */
+
+:root {
+  /* ===== Text Colors ===== */
+  --color-primary-text: #2F3E2E;     /* Deep olive text */
+  --color-secondary-text: #4B5D4A;
+  --color-tertiary-text: #6B7C6A;
+  --color-muted-text: #9AA59A;
+
+  /* ===== Backgrounds ===== */
+  --color-background: #F6F5F1;       /* Warm beige (matches header) */
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F0F4EC;      /* Sage tone like navbar */
+
+  /* ===== Borders ===== */
+  --color-border: #D6DDCF;
+
+  /* ===== Success ===== */
+  --color-success-bg: #E6F4EA;
+  --color-success-text: #2F6B3F;
+
+  /* ===== Spacing (UNCHANGED) ===== */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* ===== Font & Radius (UNCHANGED) ===== */
+  --font-family-main: "Inter", sans-serif;
+  --border-radius-sm: 0.5rem;
+  --border-radius-md: 0.75rem;
+  --border-radius-lg: 1rem;
+
+  /* ===== Shadow (softer, professional) ===== */
+  --shadow-main: 0 8px 20px rgba(47, 62, 46, 0.08);
+}
+
+/* --- Base Container --- */
+.diet-card {
+  background: var(--color-surface);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: var(--shadow-main);
+  border: 1px solid var(--color-border);
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-family-main);
+  animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.full-width {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* --- Headers --- */
+.diet-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 15px;
+}
+
+.diet-header-row h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  letter-spacing: -0.4px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-badge {
+  width: 40px;
+  height: 40px;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.status-pill.active {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* =========================================
+   VIEW 1: WEEKLY CALENDAR GRID
+   ========================================= */
+.weekly-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.calendar-day-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 22px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.calendar-day-card:hover,
+.calendar-day-card.active {
+  border-color: var(--color-success-text);
+  background: var(--color-success-bg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-main);
+}
+
+.calendar-day-card:hover .day-name,
+.calendar-day-card:hover .day-label,
+.calendar-day-card.active .day-name,
+.calendar-day-card.active .day-label {
+  color: var(--color-success-text);
+}
+
+.day-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+}
+
+.day-label {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Yoga Section */
+.yoga-highlight-section {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 25px;
+}
+
+.yoga-title {
+  margin: 0 0 15px 0;
+  color: var(--color-success-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.yoga-cards-row {
+  display: flex;
+  gap: 20px;
+}
+
+.yoga-routine-card {
+  flex: 1;
+  background: var(--color-surface);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.yoga-routine-card h5 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: var(--color-success-text);
+}
+
+.yoga-routine-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-secondary-text);
+  line-height: 1.5;
+}
+
+/* =========================================
+   VIEW 2: MEAL CATEGORY CARDS
+   ========================================= */
+.meals-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.meal-category-card {
+  background: var(--color-surface-alt);
+  padding: 25px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid var(--color-border);
+}
+
+.meal-category-card:hover {
+  background: var(--color-surface);
+  border-color: var(--color-success-text);
+  box-shadow: var(--shadow-main);
+  transform: translateY(-2px);
+}
+
+.meal-icon-circle {
+  width: 64px;
+  height: 64px;
+  background: var(--color-surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-success-text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  font-size: 1.6rem;
+}
+
+.meal-info { flex: 1; }
+.meal-info h5 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: var(--color-primary-text);
+}
+
+.meal-info span {
+  font-size: 13px;
+  color: var(--color-muted-text);
+  font-weight: 500;
+}
+
+.meal-arrow {
+  color: var(--color-border);
+  transition: all 0.25s;
+}
+
+.meal-category-card:hover .meal-arrow {
+  color: var(--color-success-text);
+  transform: translateX(6px);
+}
+
+/* =========================================
+   VIEW 3: RECIPE DETAILS
+   ========================================= */
+.diet-header-nav {
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 20px;
+}
+
+.btn-back-pill {
+  background: var(--color-surface-alt);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: var(--color-secondary-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-back-pill:hover {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.recipe-hero h2 {
+  margin: 0;
+  color: var(--color-success-text);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.recipe-hero .subtitle {
+  margin: 5px 0 0;
+  color: var(--color-muted-text);
+  font-size: 16px;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 12px;
+  color: var(--color-muted-text);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ingredients */
+.recipe-section { margin-bottom: 40px; }
+.ingredients-wrapper { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.ingredient-pill {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.ingredient-pill .qty {
+  font-weight: 700;
+  color: var(--color-success-text);
+}
+
+/* Prep Time Cards */
+.time-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.time-card {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  padding: 14px 22px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 140px;
+}
+
+.time-card svg { color: var(--color-secondary-text); }
+
+.time-card .label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--color-muted-text);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.time-card .value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary-text);
+}
+
+/* Steps Timeline */
+.steps-timeline { display: flex; flex-direction: column; gap: 0; }
+
+.step-row {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.step-row:last-child { border-bottom: none; }
+
+.step-marker {
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-success-text);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  box-shadow: 0 4px 10px rgba(47, 107, 63, 0.15);
+}
+
+.step-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-primary-text);
+  padding-top: 4px;
+}
+
+/* Back Button Simple */
+.btn-back-simple {
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.btn-back-simple:hover { color: var(--color-success-text); }
+
+/* Loading State */
+.diet-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 10px;
+  color: var(--color-muted-text);
+  font-weight: 500;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-success-text);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1024px) {
+  .weekly-calendar-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .meals-grid-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .yoga-cards-row {
+    flex-direction: column;
+  }
+  
+  .diet-card {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .weekly-calendar-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .time-stats {
+    flex-direction: column;
+  }
+  
+  .diet-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .diet-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .weekly-calendar-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .calendar-day-card {
+    padding: 18px 8px;
+  }
+  
+  .diet-header-row h3 {
+    font-size: 18px;
+  }
+}

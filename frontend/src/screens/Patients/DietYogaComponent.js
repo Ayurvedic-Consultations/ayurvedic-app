@@ -1,155 +1,263 @@
-import React, { useState, useEffect } from 'react';
-import './DietYogaComponent.css';  // Ensure this CSS file is linked in your project
+import React, { useState, useEffect, useContext } from 'react';
+import { 
+  Leaf, 
+  Activity, 
+  ShieldAlert, 
+  CheckCircle2, 
+  ClipboardEdit, 
+  Save, 
+  User, 
+  Clock,
+  ArrowRightCircle
+} from 'lucide-react';
+import { AuthContext } from '../../context/AuthContext';
+import './DietYogaComponent.css';
 
-function DietYogaComponent() {
-  const [activeTab, setActiveTab] = useState('Diet');
-  const [activeFrequency, setActiveFrequency] = useState('Daily');
-  const [diet, setDiet] = useState({
-    daily: { breakfast: '', lunch: '', dinner: '', juices: '' },
-    weekly: {
-      monday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      tuesday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      wednesday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      thursday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      friday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      saturday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-      sunday: { breakfast: '', lunch: '', dinner: '', juices: '' },
-    },
-    herbs: [],
-  });
-  const [yoga, setYoga] = useState({
-    morningPlan: '',
-    eveningPlan: '',
+const DietYogaComponent = ({ patientId }) => {
+  const { auth } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState('general'); // 'general' or 'custom'
+  const [isEditing, setIsEditing] = useState(false);
+  const [prakriti, setPrakriti] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // State for Custom Prescription (Card 2)
+  const [customPlan, setCustomPlan] = useState({
+    dietaryNotes: '',
+    yogaRoutine: '',
+    herbalSupport: '',
+    safetyRestrictions: '',
+    lastUpdated: null
   });
 
-  // Fetch the diet and yoga plan for the patient
+  const isDoctor = auth.user?.role === 'doctor' || auth.user?.role === 'Doctor';
+
   useEffect(() => {
-    const fetchDietYogaPlan = async () => {
-      try {
-        const patientEmail = localStorage.getItem('email'); // Assuming the patient's email is stored in localStorage
-        const token = localStorage.getItem('token'); // Retrieve the authentication token
+    fetchPrakritiData();
+    fetchCustomPlan();
+  }, [patientId]);
 
-        if (!token) {
-          throw new Error('Authentication token is missing.');
-        }
+  const fetchPrakritiData = async () => {
+    try {
+      // In a real scenario, the backend calculates the dominant Dosha from the traits
+      const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${patientId}`);
+      const data = await response.json();
+      // Assuming backend returns dominant type; if not, logic to calculate it would go here
+      setPrakriti(data.dominantType || 'Vata'); 
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching Prakriti:", err);
+      setLoading(false);
+    }
+  };
 
-        const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/diet-yoga/patient/${patientEmail}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the headers
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch diet and yoga plan');
-        }
-
+  const fetchCustomPlan = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/diet-plan/${patientId}`);
+      if (response.ok) {
         const data = await response.json();
-        if (data.diet) setDiet(data.diet);
-        if (data.yoga) setYoga(data.yoga);
-      } catch (error) {
-        console.error('Error fetching diet and yoga plan:', error);
+        setCustomPlan(data);
+      }
+    } catch (err) {
+      console.error("Error fetching custom plan:", err);
+    }
+  };
+
+  const handleSync = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/diet-plan/${patientId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...customPlan, lastUpdated: new Date() })
+      });
+      if (response.ok) {
+        setIsEditing(false);
+        alert("Clinical Prescription Synchronized.");
+      }
+    } catch (err) {
+      alert("Failed to sync plan.");
+    }
+  };
+
+  // Automated Constitutional Logic
+  const getGeneralPlanByPrakriti = (type) => {
+    const plans = {
+      Vata: {
+        favor: ["Cooked Grains", "Root Vegetables", "Warm Milk", "Ghee", "Sweet Fruits"],
+        avoid: ["Raw Salads", "Iced Drinks", "Dried Fruits", "Beans", "Caffeine"],
+        description: "Focus on grounding, warming, and nourishing foods to balance airy qualities.",
+        yoga: "Slow Hatha, Sun Salutations (Slow), Grounding Poses."
+      },
+      Pitta: {
+        favor: ["Cucumber", "Leafy Greens", "Coconut Oil", "Melons", "Basmati Rice"],
+        avoid: ["Hot Chili", "Garlic", "Fermented Foods", "Red Meat", "Alcohol"],
+        description: "Focus on cooling, refreshing, and moderately heavy foods to balance heat.",
+        yoga: "Moon Salutations, Cooling Pranayama, Relaxed Effort."
+      },
+      Kapha: {
+        favor: ["Ginger Tea", "Spiced Lentils", "Light Fruits (Apples)", "Leafy Greens", "Bitter Veggies"],
+        avoid: ["Dairy", "Iced Sweets", "Heavy Fried Foods", "Excess Salt", "Wheat"],
+        description: "Focus on light, dry, and stimulating foods to balance heavy qualities.",
+        yoga: "Vigorous Flow, Power Yoga, Chest Opening Poses."
       }
     };
+    return plans[type] || plans.Vata;
+  };
 
-    fetchDietYogaPlan();
-  }, []);
+  const activePlan = getGeneralPlanByPrakriti(prakriti);
 
   return (
-    <div className="container">
-      <h1>Your Diet and Yoga Plan</h1>
-      <div className="tabs">
-        <button
-          onClick={() => setActiveTab('Diet')}
-          className={`tab ${activeTab === 'Diet' ? 'active' : ''}`}
+    <div className="clinical-dashboard-wrapper">
+      {/* 1. INTERACTIVE SELECTION CARDS */}
+      <div className="selection-card-row">
+        <div 
+          className={`nav-card ${activeTab === 'general' ? 'active' : ''}`}
+          onClick={() => setActiveTab('general')}
         >
-          Diet
-        </button>
-        <button
-          onClick={() => setActiveTab('Yoga')}
-          className={`tab ${activeTab === 'Yoga' ? 'active' : ''}`}
+          <div className="card-icon-hex"><Activity size={24} /></div>
+          <div className="card-text">
+            <h3>General Protocol</h3>
+            <p>Automated Prakriti Guidelines</p>
+          </div>
+          {activeTab === 'general' && <div className="active-indicator" />}
+        </div>
+
+        <div 
+          className={`nav-card ${activeTab === 'custom' ? 'active' : ''}`}
+          onClick={() => setActiveTab('custom')}
         >
-          Yoga
-        </button>
+          <div className="card-icon-hex"><ClipboardEdit size={24} /></div>
+          <div className="card-text">
+            <h3>Clinical Prescription</h3>
+            <p>Personalized Doctor’s Plan</p>
+          </div>
+          {activeTab === 'custom' && <div className="active-indicator" />}
+        </div>
       </div>
 
-      {activeTab === 'Diet' && (
-        <>
-          <div className="frequency-tabs">
-            <button
-              onClick={() => setActiveFrequency('Daily')}
-              className={`tab ${activeFrequency === 'Daily' ? 'active' : ''}`}
-            >
-              Daily
-            </button>
-            <button
-              onClick={() => setActiveFrequency('Weekly')}
-              className={`tab ${activeFrequency === 'Weekly' ? 'active' : ''}`}
-            >
-              Weekly
-            </button>
+      {/* 2. TAB CONTENT: GENERAL PROTOCOL */}
+      {activeTab === 'general' && (
+        <div className="dashboard-view-animate">
+          <div className="status-banner">
+            <span className="badge-pill">Patient Type: <strong>{prakriti}</strong></span>
+            <span className="timestamp"><Clock size={14} /> System Generated</span>
           </div>
 
-          {activeFrequency === 'Daily' ? (
-            <>
-              <h2>Recommended Diet Plan</h2>
-              <div className="meal-grid">
-                {['Breakfast', 'Lunch', 'Dinner', 'Juices'].map((meal) => (
-                  <div key={meal} className="meal">
-                    <h3>{meal}</h3>
-                    <p>{diet.daily[meal.toLowerCase()] || 'No recommendation available.'}</p>
-                  </div>
-                ))}
+          <div className="clinical-grid">
+            <div className="grid-card favor">
+              <div className="grid-header">
+                <CheckCircle2 className="text-teal" />
+                <h4>Dietary Recommendations (Favor)</h4>
               </div>
-            </>
-          ) : (
-            <>
-              <h2>Weekly Diet Plan</h2>
-              {Object.entries(diet.weekly).map(([day, plan]) => (
-                <div key={day}>
-                  <h3>{day.charAt(0).toUpperCase() + day.slice(1)}</h3>
-                  <div className="meal-grid">
-                    {['Breakfast', 'Lunch', 'Dinner', 'Juices'].map((meal) => (
-                      <div key={meal} className="meal">
-                        <h4>{meal}</h4>
-                        <p>{plan[meal.toLowerCase()] || 'No recommendation available.'}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
+              <div className="pill-container">
+                {activePlan.favor.map(item => <span key={item} className="pill-item">{item}</span>)}
+              </div>
+            </div>
 
-          <h2>Ayurvedic Herb Recommendations:</h2>
-          <div className="herbs">
-            {diet.herbs.length > 0 ? (
-              diet.herbs.map((herb, index) => (
-                <p key={index}>{herb}</p>
-              ))
-            ) : (
-              <p>No herb recommendations available.</p>
-            )}
+            <div className="grid-card avoid">
+              <div className="grid-header">
+                <ShieldAlert className="text-red" />
+                <h4>Restricted Items (Avoid)</h4>
+              </div>
+              <div className="pill-container">
+                {activePlan.avoid.map(item => <span key={item} className="pill-item-red">{item}</span>)}
+              </div>
+            </div>
+
+            <div className="grid-card full-width">
+              <div className="grid-header">
+                <Leaf className="text-teal" />
+                <h4>Lifestyle & Yoga Protocol</h4>
+              </div>
+              <p className="description-text">{activePlan.description}</p>
+              <div className="yoga-highlight">
+                <strong>Recommended Flow:</strong> {activePlan.yoga}
+              </div>
+            </div>
           </div>
-        </>
+        </div>
       )}
 
-      {activeTab === 'Yoga' && (
-        <>
-          <h2>Yoga Plans</h2>
-          <div className="yoga-plans">
-            <div className="yoga-session">
-              <h3>Morning Yoga Plan</h3>
-              <p>{yoga.morningPlan || 'No morning yoga plan available.'}</p>
+      {/* 3. TAB CONTENT: CLINICAL EDITOR */}
+      {activeTab === 'custom' && (
+        <div className="dashboard-view-animate">
+          <div className="editor-controls">
+            <div className="doc-info">
+              <User size={18} />
+              <span>Dr. Managed Personalized Plan</span>
             </div>
-            <div className="yoga-session">
-              <h3>Evening Yoga Plan</h3>
-              <p>{yoga.eveningPlan || 'No evening yoga plan available.'}</p>
+            {isDoctor && !isEditing && (
+              <button className="edit-action-btn" onClick={() => setIsEditing(true)}>Edit Clinical Plan</button>
+            )}
+            {isEditing && (
+              <button className="sync-action-btn" onClick={handleSync}>
+                <Save size={16} /> Sync with Patient
+              </button>
+            )}
+          </div>
+
+          <div className="prescription-layout">
+            <div className="clinical-input-group">
+              <label><Leaf size={16} /> Dietary Adjustments</label>
+              {isEditing ? (
+                <textarea 
+                  value={customPlan.dietaryNotes} 
+                  onChange={(e) => setCustomPlan({...customPlan, dietaryNotes: e.target.value})}
+                  placeholder="e.g. 1 tsp Ghee with warm water at night..."
+                />
+              ) : (
+                <div className="read-only-box">{customPlan.dietaryNotes || "No specific dietary notes provided."}</div>
+              )}
+            </div>
+
+            <div className="clinical-input-group">
+              <label><Activity size={16} /> Specialized Yoga Routine</label>
+              {isEditing ? (
+                <textarea 
+                  value={customPlan.yogaRoutine} 
+                  onChange={(e) => setCustomPlan({...customPlan, yogaRoutine: e.target.value})}
+                  placeholder="e.g. Specific Pranayama for 10 mins..."
+                />
+              ) : (
+                <div className="read-only-box">{customPlan.yogaRoutine || "Standard protocol applies."}</div>
+              )}
+            </div>
+
+            <div className="clinical-input-group">
+              <label><CheckCircle2 size={16} /> Herbal Support</label>
+              {isEditing ? (
+                <textarea 
+                  value={customPlan.herbalSupport} 
+                  onChange={(e) => setCustomPlan({...customPlan, herbalSupport: e.target.value})}
+                  placeholder="Enter formulations..."
+                />
+              ) : (
+                <div className="read-only-box">{customPlan.herbalSupport || "Consult doctor for herbs."}</div>
+              )}
+            </div>
+
+            <div className="clinical-input-group">
+              <label className="text-red"><ShieldAlert size={16} /> Safety Restrictions</label>
+              {isEditing ? (
+                <textarea 
+                  value={customPlan.safetyRestrictions} 
+                  onChange={(e) => setCustomPlan({...customPlan, safetyRestrictions: e.target.value})}
+                  placeholder="Critical 'No-Go' items..."
+                />
+              ) : (
+                <div className="read-only-box red-border">{customPlan.safetyRestrictions || "None specified."}</div>
+              )}
             </div>
           </div>
-        </>
+          {customPlan.lastUpdated && (
+            <div className="last-sync">
+              Last Updated: {new Date(customPlan.lastUpdated).toLocaleString()}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
-}
+  
+};
 
 export default DietYogaComponent;
