@@ -337,7 +337,7 @@ function DoctorsScreen() {
 							<div className="doctor-experience">
 								{doctor.experience} of experience
 							</div>
-							<div className="doctor-priceRange">{doctor.priceRange} Price</div>
+							{/* <div className="doctor-priceRange">{doctor.priceRange} Price</div> */}
 							<div className="doctor-location">Zip Code: {doctor.location}</div>
 							<div className="doctor-language">
 								Languages: {doctor.language}

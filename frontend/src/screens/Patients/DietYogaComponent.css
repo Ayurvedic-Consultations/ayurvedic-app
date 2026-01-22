@@ -335,6 +335,7 @@ textarea:focus {
   .selection-card-row,
   .clinical-grid,
   .prescription-layout {
+    padding-top: 50px;
     grid-template-columns: 1fr;
     flex-direction: column;
   }

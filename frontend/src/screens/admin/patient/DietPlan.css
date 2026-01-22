@@ -213,7 +213,7 @@
   background: var(--color-surface-alt);
   padding: 25px;
   border-radius: 16px;
-  display: flex;
+  display: flex-wrap;
   align-items: center;
   gap: 20px;
   cursor: pointer;

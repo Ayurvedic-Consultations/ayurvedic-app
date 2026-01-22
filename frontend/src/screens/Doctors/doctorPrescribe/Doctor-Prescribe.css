@@ -191,7 +191,7 @@ button {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  overflow-y:scroll ;
   border: 1px solid var(--card-border);
 }
 

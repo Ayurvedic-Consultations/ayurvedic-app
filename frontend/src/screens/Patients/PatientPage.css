@@ -234,7 +234,7 @@
   .services-cards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 }
 @media (max-width: 768px) {
-  .content { padding: 2.2rem 1rem; }
+  .content { padding: 7rem 1rem; }
   .match-section { padding: 1.9rem; }
 }
 @media (max-width: 480px) {
