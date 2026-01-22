@@ -37,7 +37,6 @@ export function MedicineForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // A more robust way to check for required fields
     const requiredFields = ['medicineName', 'startDate', 'endDate', 'reason', 'dosage'];
     const isFormValid = requiredFields.every(field => formData[field].trim() !== "");
 
@@ -48,30 +47,30 @@ export function MedicineForm() {
 
     console.log("Medicine prescription submitted:", formData);
     alert(`${formData.medicineName} has been prescribed successfully.`);
-
-    // 4. Reset form using the initial state constant
     setFormData(INITIAL_FORM_STATE);
   };
 
   return (
-    <div className="form-card">
-      <div className="form-header">
-        <h3 className="form-title">
-          <ClipboardPlus className="form-icon" size={24} />
+    <div className="mf-form-card">
+      <div className="mf-form-header">
+        <h3 className="mf-form-title">
+          <ClipboardPlus className="mf-form-icon" size={24} />
           Prescribe Medicine
         </h3>
       </div>
 
-      <div className="form-content">
-        <form onSubmit={handleSubmit} className="medicine-form">
-          <div className="form-grid">
-            {/* --- Medicine Name (type or choose) --- */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="medicineName">Medicine Name *</label>
+      <div className="mf-form-content">
+        <form onSubmit={handleSubmit} className="mf-medicine-form">
+          <div className="mf-form-grid">
+
+            <div className="mf-form-group">
+              <label className="mf-form-label" htmlFor="medicineName">
+                Medicine Name *
+              </label>
               <input
                 id="medicineName"
                 name="medicineName"
-                className="form-input"
+                className="mf-form-input"
                 list="medicineOptions"
                 placeholder="Type or choose a medicine"
                 value={formData.medicineName}
@@ -83,20 +82,23 @@ export function MedicineForm() {
                   <option key={medicine} value={medicine} />
                 ))}
               </datalist>
-              <small className="form-hint">Start typing and pick from suggestions, or enter a custom name.</small>
+              <small className="mf-form-hint">
+                Start typing and pick from suggestions, or enter a custom name.
+              </small>
             </div>
 
-            {/* --- External Link (shows for custom medicines) --- */}
             {isCustomMedicine && (
-              <div className="form-group">
-                <label className="form-label" htmlFor="externalLink">External Medicine Link</label>
-                <div className="input-with-icon">
-                  <LinkIcon className="input-icon" size={16} />
+              <div className="mf-form-group">
+                <label className="mf-form-label" htmlFor="externalLink">
+                  External Medicine Link
+                </label>
+                <div className="mf-input-with-icon">
+                  <LinkIcon className="mf-input-icon" size={16} />
                   <input
                     id="externalLink"
                     name="externalLink"
                     type="url"
-                    className="form-input"
+                    className="mf-form-input"
                     placeholder="https://example.com/medicine"
                     value={formData.externalLink}
                     onChange={handleChange}
@@ -105,28 +107,30 @@ export function MedicineForm() {
               </div>
             )}
 
-            {/* --- Start Date --- */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="startDate">Start Date *</label>
+            <div className="mf-form-group">
+              <label className="mf-form-label" htmlFor="startDate">
+                Start Date *
+              </label>
               <input
                 id="startDate"
                 name="startDate"
                 type="date"
-                className="form-input"
+                className="mf-form-input"
                 value={formData.startDate}
                 onChange={handleChange}
                 required
               />
             </div>
 
-            {/* --- End Date --- */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="endDate">End Date *</label>
+            <div className="mf-form-group">
+              <label className="mf-form-label" htmlFor="endDate">
+                End Date *
+              </label>
               <input
                 id="endDate"
                 name="endDate"
                 type="date"
-                className="form-input"
+                className="mf-form-input"
                 value={formData.endDate}
                 onChange={handleChange}
                 min={formData.startDate}
@@ -134,14 +138,15 @@ export function MedicineForm() {
               />
             </div>
 
-            {/* --- Dosage --- */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="dosage">Dosage *</label>
+            <div className="mf-form-group">
+              <label className="mf-form-label" htmlFor="dosage">
+                Dosage *
+              </label>
               <input
                 id="dosage"
                 name="dosage"
                 type="text"
-                className="form-input"
+                className="mf-form-input"
                 placeholder="e.g., 500mg, twice daily"
                 value={formData.dosage}
                 onChange={handleChange}
@@ -149,14 +154,15 @@ export function MedicineForm() {
               />
             </div>
 
-            {/* --- Reason --- */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="reason">Reason for Prescription *</label>
+            <div className="mf-form-group">
+              <label className="mf-form-label" htmlFor="reason">
+                Reason for Prescription *
+              </label>
               <input
                 id="reason"
                 name="reason"
                 type="text"
-                className="form-input"
+                className="mf-form-input"
                 placeholder="e.g., Bacterial infection"
                 value={formData.reason}
                 onChange={handleChange}
@@ -165,13 +171,14 @@ export function MedicineForm() {
             </div>
           </div>
 
-          {/* --- Instructions --- */}
-          <div className="form-group full-width">
-            <label className="form-label" htmlFor="instructions">Instructions</label>
+          <div className="mf-form-group mf-full-width">
+            <label className="mf-form-label" htmlFor="instructions">
+              Instructions
+            </label>
             <textarea
               id="instructions"
               name="instructions"
-              className="form-textarea"
+              className="mf-form-textarea"
               placeholder="e.g., Take with food. Complete the full course."
               value={formData.instructions}
               onChange={handleChange}
@@ -179,7 +186,7 @@ export function MedicineForm() {
             ></textarea>
           </div>
 
-          <button type="submit" className="submit-button">
+          <button type="submit" className="mf-submit-button">
             <PlusCircle size={18} />
             Add Prescription
           </button>

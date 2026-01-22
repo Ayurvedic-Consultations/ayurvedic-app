@@ -1,89 +1,90 @@
 /* --- CSS Variables for Theming --- */
 :root {
-  --primary-color: #007bff;
-  --primary-hover: #0056b3;
-  --text-dark: #343a40;
-  --text-muted: #6c757d;
-  --card-bg: #ffffff;
-  --border-color: #dee2e6;
-  --input-bg: #f8f9fa;
+  --primary-color: #2F7D6D;       /* Primary Action */
+  --primary-hover: #2F7D6D;       /* Hover (same as primary as requested) */
+  --text-dark: #1F2937;           /* Main Text */
+  --text-muted: #6B7280;          /* Muted Text */
+  --card-bg: #FFFFFF;             /* Card BG */
+  --border-color: #E5E7EB;
+  --input-bg: #E6F4F1;             /* Soft Accent BG */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* --- Main Form Card --- */
-.form-card {
+.mf-form-card {
   background-color: var(--card-bg);
   border-radius: 8px;
-  /* Using a subtle border instead of shadow for a cleaner look within the tab */
   border: 1px solid var(--border-color);
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* --- Form Header --- */
-.form-header {
+.mf-form-header {
   background-color: var(--input-bg);
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.form-title {
+.mf-form-title {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-dark);
   margin: 0;
 }
 
-.form-icon {
+.mf-form-icon {
   color: var(--primary-color);
 }
 
 /* --- Form Content & Layout --- */
-.form-content {
+.mf-form-content {
   padding: 24px;
 }
 
-.medicine-form {
+.mf-medicine-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-grid {
+.mf-form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two-column layout */
-  gap: 20px; /* Space between columns and rows */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 /* --- Form Elements Styling --- */
-.form-group {
+.mf-form-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.form-label {
-  font-size: 0.875rem; /* 14px */
+.mf-form-label {
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-muted);
 }
-.form-label:after {
-    content: " *";
-    color: #dc3545;
+
+.mf-form-label:after {
+  content: " *";
+  color: #DC2626;
 }
+
 /* Remove asterisk for optional fields */
 label[for="externalLink"]:after,
 label[for="instructions"]:after {
-    content: "";
+  content: "";
 }
 
-
-.form-input,
-.form-select,
-.form-textarea {
+.mf-form-input,
+.mf-form-select,
+.mf-form-textarea {
   width: 100%;
   padding: 10px 12px;
   font-size: 0.95rem;
@@ -93,37 +94,26 @@ label[for="instructions"]:after {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
+.mf-form-input:focus,
+.mf-form-select:focus,
+.mf-form-textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(47, 125, 109, 0.25);
 }
 
-/* Specific styling for the select dropdown arrow */
-.form-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 8px 8px;
-  padding-right: 32px;
-}
-
-.form-textarea {
+/* --- Textarea --- */
+.mf-form-textarea {
   resize: vertical;
   min-height: 50px;
 }
 
-/* --- Input with Icon (for External Link) --- */
-.input-with-icon {
+/* --- Input with Icon --- */
+.mf-input-with-icon {
   position: relative;
 }
 
-.input-icon {
+.mf-input-icon {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -132,17 +122,17 @@ label[for="instructions"]:after {
   pointer-events: none;
 }
 
-.input-with-icon .form-input {
+.mf-input-with-icon .mf-form-input {
   padding-left: 36px;
 }
 
-/* --- Spanning Full Width --- */
-.full-width {
-  grid-column: 1 / -1; /* Makes the element span all columns in the grid */
+/* --- Full Width --- */
+.mf-full-width {
+  grid-column: 1 / -1;
 }
 
 /* --- Submit Button --- */
-.submit-button {
+.mf-submit-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -150,34 +140,121 @@ label[for="instructions"]:after {
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: 500;
-  color: #fff;
+  color: #FFFFFF;
   background-color: var(--primary-color);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  align-self: flex-end; /* Aligns button to the right */
+  align-self: flex-end;
 }
 
-.submit-button:hover {
+.mf-submit-button:hover {
   background-color: var(--primary-hover);
 }
 
-.submit-button:active {
+.mf-submit-button:active {
   transform: scale(0.98);
 }
 
-/* --- Responsive Design for Mobile --- */
+/* --- Responsive Design --- */
 @media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr; /* Stack to a single column */
+  .mf-form-grid {
+    grid-template-columns: 1fr;
   }
 
-  .form-content {
+  .mf-form-content {
     padding: 16px;
   }
-  
-  .submit-button {
-      width: 100%; /* Make button full-width on mobile */
+
+  .mf-submit-button {
+    width: 100%;
+  }
+}
+
+/* ===============================
+   Responsive Enhancements
+================================ */
+
+/* Tablets & small laptops */
+@media (max-width: 1024px) {
+  .mf-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mf-form-content {
+    padding: 20px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .mf-form-card {
+    border-radius: 0;
+  }
+
+  .mf-form-header {
+    padding: 14px 16px;
+  }
+
+  .mf-form-title {
+    font-size: 1rem;
+    gap: 8px;
+  }
+
+  .mf-form-content {
+    padding: 16px;
+  }
+
+  .mf-form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .mf-form-input,
+  .mf-form-textarea {
+    font-size: 0.95rem;
+  }
+
+  .mf-submit-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .mf-form-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mf-form-icon {
+    font-size: 20px;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .pt-tabs-containers {
+    max-width: 100%;
+    padding: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .pt-tabs-containers {
+    padding-right: 120px;
+    border-radius: 10px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .pt-tabs-containers {
+    /* padding: 14px; */
+      padding-right: 100px;
+    border-radius: 8px;
   }
 }

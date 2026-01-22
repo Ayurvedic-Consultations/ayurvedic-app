@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pill, Salad, HeartPulse } from 'lucide-react'; // 1. Import icons
+import { Pill, Salad, HeartPulse } from 'lucide-react';
 import './PrescriptionTabs.css';
 import { MedicineForm } from './MedicineForm';
 import { DietPlanForm } from './DietPlanForm';
@@ -29,22 +29,22 @@ export function PrescriptionTabs() {
   };
 
   return (
-    <div className="tabs-containers">
-      <div className="tab-list">
+    <div className="pt-tabs-containers">
+      <div className="pt-tab-list">
         {/* 3. Map over the tabs array to render buttons dynamically */}
         {tabs.map(({ id, label, Icon }) => (
           <button
             key={id}
-            className={`tab-trigger ${activeTab === id ? 'active' : ''}`}
+            className={`pt-tab-trigger ${activeTab === id ? 'pt-active' : ''}`}
             onClick={() => setActiveTab(id)}
           >
-            <Icon className="tab-icon" size={18} />
+            <Icon className="pt-tab-icon" size={18} />
             {label}
           </button>
         ))}
       </div>
 
-      <div className="tab-content">
+      <div className="pt-tab-content">
         {renderForm()}
       </div>
     </div>

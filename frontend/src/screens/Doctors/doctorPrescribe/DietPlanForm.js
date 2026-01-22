@@ -22,15 +22,15 @@ const dietSectionsData = [
 
 // --- Reusable Sub-component ---
 const DietSection = ({ id, title, Icon, value, onChange, placeholder }) => (
-  <div className="diet-section">
-    <label htmlFor={id} className="diet-label">
-      <Icon className="diet-icon" size={20} />
+  <div className="dp-diet-section">
+    <label htmlFor={id} className="dp-diet-label">
+      <Icon className="dp-diet-icon" size={20} />
       {title}
     </label>
     <textarea
       id={id}
       name={id}
-      className="diet-textarea"
+      className="dp-diet-textarea"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -41,11 +41,10 @@ const DietSection = ({ id, title, Icon, value, onChange, placeholder }) => (
 
 // --- Main Form Component ---
 export function DietPlanForm() {
-  const [activeTab, setActiveTab] = useState('daily'); // State to manage active tab
+  const [activeTab, setActiveTab] = useState('daily');
   const [herbInput, setHerbInput] = useState("");
   const [dietPlan, setDietPlan] = useState({
     daily: { ...DEFAULT_DAILY_DIET },
-    // Initialize weekly plan for all 7 days
     weekly: DAYS_OF_WEEK.reduce((acc, day) => {
       acc[day] = { ...DEFAULT_DAILY_DIET };
       return acc;
@@ -53,15 +52,14 @@ export function DietPlanForm() {
     herbs: ["Turmeric", "Ginger"]
   });
 
-  // --- Event Handlers ---
   const updateDailyDiet = (field, value) => {
     setDietPlan(prev => ({ ...prev, daily: { ...prev.daily, [field]: value } }));
   };
   
   const updateWeeklyDiet = (day, field, value) => {
     setDietPlan(prev => ({
-        ...prev,
-        weekly: { ...prev.weekly, [day]: { ...prev.weekly[day], [field]: value } }
+      ...prev,
+      weekly: { ...prev.weekly, [day]: { ...prev.weekly[day], [field]: value } }
     }));
   };
 
@@ -78,10 +76,10 @@ export function DietPlanForm() {
   };
   
   const handleHerbInputKeyPress = (e) => {
-      if (e.key === 'Enter') {
-          e.preventDefault();
-          addHerb();
-      }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addHerb();
+    }
   };
 
   const handleSubmit = (e) => {
@@ -91,30 +89,35 @@ export function DietPlanForm() {
   };
 
   return (
-    <div className="form-card">
-      <div className="form-header">
-        <h3 className="form-title">
-          <Salad className="form-icon" size={24} />
+    <div className="dp-form-card">
+      <div className="dp-form-header">
+        <h3 className="dp-form-title">
+          <Salad className="dp-form-icon" size={24} />
           Prescribe Diet Plan
         </h3>
       </div>
-      <div className="form-content">
-        <form onSubmit={handleSubmit} className="diet-form">
+
+      <div className="dp-form-content">
+        <form onSubmit={handleSubmit} className="dp-diet-form">
+
           {/* Tab Navigation */}
-          <div className="tabs-list">
-            <button type="button" className={`tab-trigger ${activeTab === 'daily' ? 'active' : ''}`} onClick={() => setActiveTab('daily')}>Daily Plan</button>
-            <button type="button" className={`tab-trigger ${activeTab === 'weekly' ? 'active' : ''}`} onClick={() => setActiveTab('weekly')}>Weekly Plan</button>
-            <button type="button" className={`tab-trigger ${activeTab === 'herbs' ? 'active' : ''}`} onClick={() => setActiveTab('herbs')}>Herbs & Supplements</button>
+          <div className="dp-tabs-list">
+            <button type="button" className={`dp-tab-trigger ${activeTab === 'daily' ? 'dp-active' : ''}`} onClick={() => setActiveTab('daily')}>Daily Plan</button>
+            <button type="button" className={`dp-tab-trigger ${activeTab === 'weekly' ? 'dp-active' : ''}`} onClick={() => setActiveTab('weekly')}>Weekly Plan</button>
+            <button type="button" className={`dp-tab-trigger ${activeTab === 'herbs' ? 'dp-active' : ''}`} onClick={() => setActiveTab('herbs')}>Herbs & Supplements</button>
           </div>
 
           {/* Tab Content */}
-          <div className="tab-content">
-            {/* Daily Plan View */}
+          <div className="dp-tab-content">
+
             {activeTab === 'daily' && (
-              <div className="diet-plan-grid">
+              <div className="dp-diet-plan-grid">
                 {dietSectionsData.map(({ id, title, Icon, placeholder }) => (
                   <DietSection
-                    key={id} id={id} title={title} Icon={Icon}
+                    key={id}
+                    id={id}
+                    title={title}
+                    Icon={Icon}
                     value={dietPlan.daily[id]}
                     onChange={(value) => updateDailyDiet(id, value)}
                     placeholder={placeholder}
@@ -123,18 +126,21 @@ export function DietPlanForm() {
               </div>
             )}
 
-            {/* Weekly Plan View */}
             {activeTab === 'weekly' && (
-              <div className="weekly-plan-container">
+              <div className="dp-weekly-plan-container">
                 {DAYS_OF_WEEK.map(day => (
-                  <div key={day} className="weekly-day-card">
-                    <h4 className="weekly-day-title">{day.charAt(0).toUpperCase() + day.slice(1)}</h4>
-                    <div className="weekly-day-grid">
+                  <div key={day} className="dp-weekly-day-card">
+                    <h4 className="dp-weekly-day-title">
+                      {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </h4>
+                    <div className="dp-weekly-day-grid">
                       {Object.keys(dietPlan.weekly[day]).map(meal => (
-                        <div key={meal} className="weekly-meal-section">
-                          <label className="weekly-meal-label">{meal.charAt(0).toUpperCase() + meal.slice(1)}</label>
+                        <div key={meal} className="dp-weekly-meal-section">
+                          <label className="dp-weekly-meal-label">
+                            {meal.charAt(0).toUpperCase() + meal.slice(1)}
+                          </label>
                           <textarea
-                            className="diet-textarea"
+                            className="dp-diet-textarea"
                             value={dietPlan.weekly[day][meal]}
                             onChange={(e) => updateWeeklyDiet(day, meal, e.target.value)}
                             rows="2"
@@ -147,27 +153,46 @@ export function DietPlanForm() {
               </div>
             )}
 
-            {/* Herbs & Supplements View */}
             {activeTab === 'herbs' && (
-              <div className="herbs-section">
-                <h4 className="herbs-title"><Sprout size={18} />Herbs & Supplements</h4>
-                <div className="herb-input-group">
-                  <input type="text" className="herb-input" value={herbInput} onChange={(e) => setHerbInput(e.target.value)} placeholder="Enter herb name and press Enter" onKeyPress={handleHerbInputKeyPress} />
-                  <button type="button" onClick={addHerb} className="add-herb-btn"><Plus size={20} /></button>
+              <div className="dp-herbs-section">
+                <h4 className="dp-herbs-title">
+                  <Sprout size={18} /> Herbs & Supplements
+                </h4>
+
+                <div className="dp-herb-input-group">
+                  <input
+                    type="text"
+                    className="dp-herb-input"
+                    value={herbInput}
+                    onChange={(e) => setHerbInput(e.target.value)}
+                    placeholder="Enter herb name and press Enter"
+                    onKeyPress={handleHerbInputKeyPress}
+                  />
+                  <button type="button" onClick={addHerb} className="dp-add-herb-btn">
+                    <Plus size={20} />
+                  </button>
                 </div>
-                <div className="herb-tags">
+
+                <div className="dp-herb-tags">
                   {dietPlan.herbs.map((herb, index) => (
-                    <div key={index} className="herb-tag">
-                      <Leaf size={14} />{herb}
-                      <button type="button" onClick={() => removeHerb(herb)} className="remove-herb-btn"><X size={14} /></button>
+                    <div key={index} className="dp-herb-tag">
+                      <Leaf size={14} /> {herb}
+                      <button
+                        type="button"
+                        onClick={() => removeHerb(herb)}
+                        className="dp-remove-herb-btn"
+                      >
+                        <X size={14} />
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
             )}
+
           </div>
-          
-          <button type="submit" className="submit-button">
+
+          <button type="submit" className="dp-submit-button">
             <Send size={18} />
             Prescribe Diet Plan
           </button>

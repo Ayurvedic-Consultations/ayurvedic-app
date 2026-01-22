@@ -1,15 +1,20 @@
 /* --- Global Styles & Variables --- */
 :root {
-  --primary-color: #007bff;
-  --primary-light: #e6f2ff;
-  --secondary-bg: #f8f9fa;
-  --text-dark: #343a40;
-  --text-muted: #6c757d;
-  --card-border: #e9ecef;
-  --success-color: #28a745;
-  --danger-color: #dc3545;
+  --primary-color: #8FA36A;      /* Primary Green */
+  --primary-light: #EAF4E6;      /* Soft Green BG */
+  --secondary-bg: #F7FAF9;       /* Page BG */
+
+  --text-dark: #2F3E2E;          /* Primary Text */
+  --text-muted: #5F6F5A;         /* Secondary Text */
+
+  --card-border: #D6E3CE;        /* Border Color */
+
+  --success-color: #8FA36A;      /* Success = Primary Green */
+  --danger-color: #C8A951;       /* Accent Gold */
+
   --shadow-color: rgba(0, 0, 0, 0.08);
 }
+
 
 * {
   box-sizing: border-box;
@@ -32,6 +37,7 @@ button {
 
 .app-container {
   min-height: 100vh;
+ 
 }
 
 .app-header {
@@ -41,6 +47,7 @@ button {
 }
 
 .header-content {
+
   max-width: 1280px;
   margin: 0 auto;
 }
@@ -185,6 +192,8 @@ button {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 1100px;
+   /* margin-right: 20px; */
 }
 
 .history-section {
@@ -193,6 +202,7 @@ button {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow-y:scroll ;
   border: 1px solid var(--card-border);
+   
 }
 
 .section-header {

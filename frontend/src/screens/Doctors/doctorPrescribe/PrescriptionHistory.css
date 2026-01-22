@@ -1,206 +1,186 @@
-/* --- CSS Variables for Theming --- */
-:root {
-  --primary-color: #007bff;
-  --primary-light: #e6f2ff;
-  --success-color: #28a745;
-  --success-light: #e9f7ec;
-  --muted-color: #6c757d;
-  --muted-light: #f8f9fa;
-  --text-dark: #343a40;
-  --border-color: #e9ecef;
-  --card-bg: #ffffff;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* --- Main Container --- */
 .prescription-history-container {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  font-family: -apple-system, BlinkMacOSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* --- Section Styling (Active & Past) --- */
+.history-section,
 .history-section- {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  margin-bottom: 3rem;
+  margin-left: 35px;
+  width: 1020;
+  max-width: 1200px;
+  border-radius: 20px;
+  overflow-y: scroll;
   overflow: hidden;
 }
 
 .section-header {
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border-color);
-  background-color: var(--muted-light);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.125rem; /* 18px */
-  font-weight: 600;
-  color: var(--text-dark);
+  gap: 0.625rem;
   margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #111827;
 }
 
 .section-icon {
-  stroke-width: 2.5px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-.section-icon.active-icon {
-  color: var(--success-color);
-}
+.active-icon   { color: #10b981; }
+.past-icon     { color: #6b7280; }
 
-.section-icon.past-icon {
-  color: var(--muted-color);
-}
-
-/* --- Record List & Scrollbar --- */
 .record-list {
-  padding: 8px 24px 24px 24px;
-  max-height: 350px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  gap: 1.25rem;
 }
 
-/* Custom Scrollbar for a cleaner look */
-.record-list::-webkit-scrollbar {
-  width: 6px;
-}
-.record-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-.record-list::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
-  border-radius: 20px;
-}
-
-/* --- Individual Prescription Card --- */
 .record-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-left: 5px solid var(--primary-color);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .record-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  border-color: #d1d5db;
 }
 
-/* Style for past records to de-emphasize them */
 .record-card.past-record {
-  border-left-color: var(--muted-color);
-  background-color: var(--muted-light);
-}
-.record-card.past-record .pill-icon {
-  color: var(--muted-color);
+  background: #f9fafb;
+  border-color: #e5e7eb;
 }
 
 .record-content {
-  padding: 16px;
+  padding: 1.5rem;
 }
 
-/* --- Card Header --- */
-.record-header {
+.record-prescribed-by {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  color: #4b5563;
+  font-size: 0.975rem;
+  font-weight: 500;
+}
+
+.record-prescribed-by strong {
+  color: #111827;
+}
+
+/* ── Supplement card ──────────────────────────────────────── */
+
+.record-header {
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 0.625rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.record-header:last-of-type {
+  margin-bottom: 0;
 }
 
 .record-title-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .pill-icon {
-  color: var(--primary-color);
-  flex-shrink: 0;
+  color: #3b82f6;
+  width: 1.4rem;
+  height: 1.4rem;
 }
 
 .record-title {
-  font-size: 1rem; /* 16px */
-  font-weight: 600;
-  color: var(--text-dark);
   margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  letter-spacing: -0.015em;
 }
 
-/* --- Status Badge (Active/Completed) --- */
-.record-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 0.75rem; /* 12px */
-  font-weight: 500;
-  white-space: nowrap;
-}
+/* Details layout */
 
-.record-badge.active {
-  background-color: var(--success-light);
-  color: var(--success-color);
-}
-
-.record-badge.completed {
-  background-color: #e5e7eb;
-  color: var(--muted-color);
-}
-
-/* --- Card Details --- */
 .record-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 0.875rem; /* 14px */
-  color: var(--muted-color);
-  padding-top: 12px;
-  border-top: 1px dashed var(--border-color);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.5rem;
 }
 
-.record-item, .record-item-block {
+.record-item {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  gap: 0.625rem;
+  font-size: 0.94rem;
+  color: #374151;
+  line-height: 1.45;
 }
 
 .record-item-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: #6b7280;
+  margin-top: 0.1875rem;
   flex-shrink: 0;
-  margin-top: 2px;
-  width: 14px;
-  height: 14px;
-  color: var(--muted-color);
 }
 
-.record-reason, .record-instructions {
-  color: var(--text-dark);
-  margin: 0;
-  line-height: 1.5;
+.record-item-block {
+  grid-column: 1 / -1;
 }
 
-.record-prescribed-by {
-  font-size: 0.8rem; /* 12.8px */
-  color: var(--muted-color);
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.record-reason strong,
+.record-instructions strong {
+  color: #111827;
+  font-weight: 600;
 }
 
-/* --- Empty State --- */
+/* Empty state */
+
 .empty-state {
+  padding: 3.5rem 1.5rem;
   text-align: center;
-  padding: 32px;
-  color: var(--muted-color);
-  font-style: italic;
+  color: #6b7280;
+  font-size: 0.975rem;
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.625rem;
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .record-details {
+    grid-template-columns: 1fr;
+    gap: 1.125rem;
+  }
+  
+  .record-content {
+    padding: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
 }
