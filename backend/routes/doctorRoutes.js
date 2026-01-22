@@ -9,6 +9,7 @@ const fs = require("fs");
 
 const { getAllDoctors, 
     getAllDoctorsData, 
+    updateDoctor,
     getDoctorById } = require("../controllers/doctorController");
 
 // Public Routes
@@ -126,5 +127,8 @@ router.get("/allDoctors", getAllDoctorsData);
 
 // New route to get doctor by ID from both collections
 router.get("/getDoctorById/:id", getDoctorById);
+
+// update doctor details
+router.put("/updateDoctor/:id", updateDoctor);
 
 module.exports = router;

@@ -28,7 +28,7 @@ const DoctorFullDetails = () => {
 	const [loadingDoctor, setLoadingDoctor] = useState(true);
 	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState("Details");
-	const [showEditModal, setShowEditModal] = useState(true);
+	const [showEditModal, setShowEditModal] = useState(false);
 
 	// Fetch doctor details by ID
 	useEffect(() => {
@@ -57,6 +57,39 @@ const DoctorFullDetails = () => {
 
 		fetchDoctorById();
 	}, [doctorId]);
+
+	// Function to handle the API call
+    const handleUpdateProfile = async (updatedData) => {
+        try {
+            const res = await fetch(
+                `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/updateDoctor/${doctorId}`,
+                {
+                    method: "PUT", // Assuming your route uses PUT for updates
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedData),
+                }
+            );
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                // 1. Update the local state so the UI reflects changes immediately
+                setDoctor(data.data);
+                
+                // 2. Return true to signal success to the modal
+                return true;
+            } else {
+                alert(data.message || "Failed to update profile");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error updating doctor:", error);
+            alert("An error occurred while updating.");
+            return false;
+        }
+    };
 
 	const tabs = [
 		{ name: "Details", icon: Briefcase },
@@ -121,11 +154,15 @@ const DoctorFullDetails = () => {
 			}
 		};
 
-		const handleSubmit = (e) => {
-			e.preventDefault();
-			onUpdate(formData);
-			onClose();
-		};
+		const handleSubmit = async (e) => {
+            e.preventDefault();
+            
+            const success = await onUpdate(formData);
+            
+            if (success) {
+                onClose();
+            }
+        };
 
 		return (
 			<div className="update_box_overlay" onClick={onClose}>
@@ -150,7 +187,6 @@ const DoctorFullDetails = () => {
 							<X size={24} color="black" />
 						</button>
 					</div>
-
 
 					<form onSubmit={handleSubmit} className="update_box_form">
 						<div className="update_box_image_section">
@@ -185,22 +221,41 @@ const DoctorFullDetails = () => {
 							/>
 						</div>
 
+						{/* firstname */}
 						<div className="update_box_form_grid">
 							<div className="update_box_form_group">
 								<label className="update_box_label" htmlFor="name">
-									Full Name *
+									First Name *
 								</label>
 								<input
 									type="text"
 									id="name"
-									name="name"
-									value={formData.name}
+									name="firstName"
+									value={formData.firstName}
 									onChange={handleInputChange}
 									className="update_box_input"
 									required
 								/>
 							</div>
 
+
+							{/* last name */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="name">
+									Last Name *
+								</label>
+								<input
+									type="text"
+									id="name"
+									name="lastName"
+									value={formData.lastName}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
+
+							{/* email */}
 							<div className="update_box_form_group">
 								<label className="update_box_label" htmlFor="email">
 									Email *
@@ -216,6 +271,7 @@ const DoctorFullDetails = () => {
 								/>
 							</div>
 
+							{/* experience */}
 							<div className="update_box_form_group">
 								<label className="update_box_label" htmlFor="yearsOfExperience">
 									Years of Experience *
@@ -232,6 +288,23 @@ const DoctorFullDetails = () => {
 								/>
 							</div>
 
+							{/* specialization */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="yearsOfExperience">
+									Specialization *
+								</label>
+								<input
+									type="text"
+									id="specialization"
+									name="specialization"
+									value={formData.specialization}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
+
+							{/* gender */}
 							<div className="update_box_form_group">
 								<label className="update_box_label" htmlFor="gender">
 									Gender *
@@ -252,6 +325,7 @@ const DoctorFullDetails = () => {
 								</select>
 							</div>
 
+							{/* address */}
 							<div className="update_box_form_group update_box_full_width">
 								<label className="update_box_label" htmlFor="address">
 									Address *
@@ -314,14 +388,17 @@ const DoctorFullDetails = () => {
 				<EditModal
 					isOpen={showEditModal}
 					onClose={() => setShowEditModal(false)}
-					onUpdate={(updated) => console.log("Updated profile:", updated)}
+					onUpdate={handleUpdateProfile}
 					currentProfile={{
-						name: "Dr. Rahul Verma",
-						email: "rahul.verma@example.com",
-						dateOfBirth: "1990-06-15",
-						gender: "male",
-						address: "221B Baker Street, London",
-						pincode: "560001",
+						firstName: doctor.firstName,
+						lastName: doctor.lastName,
+						email: doctor.email,
+						dateOfBirth: doctor.dateOfBirth,
+						yearsOfExperience: doctor.experience,
+						gender: doctor.gender,
+						specialization: doctor.specialization,
+						address: doctor.address,
+						pincode: doctor.zipCode,
 						profileImage:
 							"https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=400&auto=format&fit=crop",
 					}}

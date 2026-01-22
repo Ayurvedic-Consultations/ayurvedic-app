@@ -5,10 +5,12 @@ const { getAllPatients,
     getPatientById,
     getPatientDietYoga,
     getOrdersByBuyerId,
+    updatePatient,
     createTempOrder,
     addDietYoga } = require('../controllers/patientController');
 
 router.get('/getAllPatients', getAllPatients);
+router.put('/updatePatient/:id', updatePatient);
 router.delete('/deletePatient/:id', deletePatient);
 router.get('/getPatient/:id', getPatientById);
 router.get('/dietYoga/:patientId', getPatientDietYoga);

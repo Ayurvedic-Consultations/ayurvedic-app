@@ -8,6 +8,7 @@ const doctorSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     gender: { type: String, required: true },
     zipCode: { type: Number, required: true },
+    address: { type: String, required: true },
     designation: { type: String, required: true },
     specialization: { type: [String], required: true },
     experience: { type: Number, required: true }, 

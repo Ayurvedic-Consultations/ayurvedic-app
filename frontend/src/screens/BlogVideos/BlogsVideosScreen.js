@@ -59,7 +59,7 @@ function BlogsVideosScreen() {
 
 		const matchesSearch =
 			item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			contentText?.toLowerCase().includes(searchQuery.toLowerCase()); // Use contentText
+			contentText?.toLowerCase().includes(searchQuery.toLowerCase()); 
 
 
 		return matchesTab && matchesCategory && matchesSearch;
@@ -181,11 +181,8 @@ function BlogsVideosScreen() {
 			<div className="card-grid">
 				{filteredData.length > 0 ? (
 					filteredData.map((item, index) => {
-						// --- DYNAMICALLY DETERMINE CONTENT FIELDS ---
 						const isNormalBlog = item.type === 'normal';
 
-						// Content (Tiptap HTML) for display in the card body (needs to be plain text preview)
-						// If it's Tiptap HTML, strip the tags for the preview.
 						const rawHtmlContent = item.description;
 						const previewText = rawHtmlContent
 							? rawHtmlContent.replace(/<[^>]*>/g, '').slice(0, 120) // Strip HTML for preview

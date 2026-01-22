@@ -9,6 +9,7 @@ const PatientSchema = new mongoose.Schema({
   age: { type: Number, required: true },
   gender: { type: String, required: true },
   zipCode: { type: String, required: true },
+  address: { type: String },
   password: { type: String, required: true },
   role: { type: String, default: 'patient' }
 });

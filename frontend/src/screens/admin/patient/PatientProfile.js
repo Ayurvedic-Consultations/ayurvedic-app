@@ -112,8 +112,39 @@ const PatientProfile = () => {
       }
     };
 
-    fetchDietYoga();
-  }, [patientId]);
+		fetchDietYoga();
+	}, [patientId]);
+
+	// Update profile info
+	const handleUpdateProfile = async (updatedData) => {
+		try{
+			const res = await fetch(
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/updatePatient/${patientId}`,
+				{
+					method : "PUT",
+					headers : {
+						"Content-Type" : "application/json"
+					},
+					body : JSON.stringify(updatedData),
+				}
+			);
+
+			const data = await res.json();
+
+			if(res.ok && data.success){
+				setPatientData(data.data);
+
+				return true;
+			}else{
+				alert("Failed to update profile. Please try again.");
+				return false;
+			}
+		}catch (error){
+			console.error("Error updating profile:", error);
+			alert("An error occurred while updating the profile. Please try again.");
+			return false;
+		}
+	}
 
   const EditModal = ({
     isOpen,
@@ -151,35 +182,39 @@ const PatientProfile = () => {
       }
     };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      onUpdate(formData);
-      onClose();
-    };
+		const handleSubmit = async (e) => {
+			e.preventDefault();
+			
+			const success = await onUpdate(formData);
 
-    return (
-      <div className="update_box_overlay" onClick={onClose}>
-        <div className="update_box_container" onClick={(e) => e.stopPropagation()}>
-          <div className="update_box_header">
-            <h2 className="update_box_title">Update Profile</h2>
-            <button
-              className="update_box_close_button"
-              onClick={onClose}
-              style={{
-                border: "1px solid black",
-                borderRadius: "6px",
-                backgroundColor: "transparent",
-                color: "black",
-                cursor: "pointer",
-                padding: "4px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <X size={24} color="black" />
-            </button>
-          </div>
+			if(success){
+				onClose();
+			}
+		};
+
+		return (
+			<div className="update_box_overlay" onClick={onClose}>
+				<div className="update_box_container" onClick={(e) => e.stopPropagation()}>
+					<div className="update_box_header">
+						<h2 className="update_box_title">Update Profile</h2>
+						<button
+							className="update_box_close_button"
+							onClick={onClose}
+							style={{
+								border: "1px solid black",
+								borderRadius: "6px",
+								backgroundColor: "transparent",
+								color: "black",
+								cursor: "pointer",
+								padding: "4px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<X size={24} color="black" />
+						</button>
+					</div>
 
           <form onSubmit={handleSubmit} className="update_box_form">
             <div className="update_box_image_section">
@@ -214,126 +249,146 @@ const PatientProfile = () => {
               />
             </div>
 
-            <div className="update_box_form_grid">
-              <div className="update_box_form_group">
-                <label className="update_box_label" htmlFor="name">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="update_box_input"
-                  required
-                />
-              </div>
+						<div className="update_box_form_grid">
+							{/* firstname */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="name">
+									First Name *
+								</label>
+								<input
+									type="text"
+									id="firstName"
+									name="firstName"
+									value={formData.firstName}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
 
-              <div className="update_box_form_group">
-                <label className="update_box_label" htmlFor="email">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="update_box_input"
-                  required
-                />
-              </div>
+							{/* lastname */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="name">
+									Last Name *
+								</label>
+								<input
+									type="text"
+									id="lastName"
+									name="lastName"
+									value={formData.lastName}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
 
-              <div className="update_box_form_group">
-                <label className="update_box_label" htmlFor="dateOfBirth">
-                  Date of Birth *
-                </label>
-                <input
-                  type="date"
-                  id="dateOfBirth"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleInputChange}
-                  className="update_box_input"
-                  required
-                />
-              </div>
+							{/* Email */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="email">
+									Email *
+								</label>
+								<input
+									type="email"
+									id="email"
+									name="email"
+									value={formData.email}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
 
-              <div className="update_box_form_group">
-                <label className="update_box_label" htmlFor="gender">
-                  Gender *
-                </label>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                  className="update_box_input"
-                  required
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="prefer-not-to-say">Prefer not to say</option>
-                </select>
-              </div>
+							{/* date of birth  */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="dateOfBirth">
+									Date of Birth *
+								</label>
+								<input
+									type="date"
+									id="dob"
+									name="dob"
+									value={formData.dob}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								/>
+							</div>
 
-              <div className="update_box_form_group update_box_full_width">
-                <label className="update_box_label" htmlFor="address">
-                  Address *
-                </label>
-                <textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="update_box_textarea"
-                  rows={3}
-                  required
-                />
-              </div>
+							{/* gender */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="gender">
+									Gender *
+								</label>
+								<select
+									id="gender"
+									name="gender"
+									value={formData.gender}
+									onChange={handleInputChange}
+									className="update_box_input"
+									required
+								>
+									<option value="">Select Gender</option>
+									<option value="male">Male</option>
+									<option value="female">Female</option>
+									<option value="other">Other</option>
+									<option value="prefer-not-to-say">Prefer not to say</option>
+								</select>
+							</div>
 
-              <div className="update_box_form_group">
-                <label className="update_box_label" htmlFor="pincode">
-                  Pincode *
-                </label>
-                <input
-                  type="text"
-                  id="pincode"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleInputChange}
-                  className="update_box_input"
-                  pattern="[0-9]{6}"
-                  maxLength={6}
-                  required
-                />
-              </div>
-            </div>
+							{/* address */}
+							<div className="update_box_form_group update_box_full_width">
+								<label className="update_box_label" htmlFor="address">
+									Address *
+								</label>
+								<textarea
+									id="address"
+									name="address"
+									value={formData.address}
+									onChange={handleInputChange}
+									className="update_box_textarea"
+									rows={3}
+									required
+								/>
+							</div>
 
-            <div className="update_box_form_actions">
-              <button
-                type="button"
-                className="update_box_cancel_button"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button 
-                type="submit" 
-                className="update_box_submit_button"
-                style={{ border: "1px solid black", color: "black" }}
-              >
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
+							{/* pincode */}
+							<div className="update_box_form_group">
+								<label className="update_box_label" htmlFor="pincode">
+									Pincode *
+								</label>
+								<input
+									type="text"
+									id="pincode"
+									name="pincode"
+									value={formData.pincode}
+									onChange={handleInputChange}
+									className="update_box_input"
+									pattern="[0-9]{6}"
+									maxLength={6}
+									required
+								/>
+							</div>
+						</div>
+
+						<div className="update_box_form_actions">
+							<button
+								type="button"
+								className="update_box_cancel_button"
+								onClick={onClose}
+							>
+								Cancel
+							</button>
+							<button type="submit" className="update_box_submit_button"
+								style={{ border: "1px solid black", color: "black" }}>
+								Save Changes
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		);
+	};
 
   const renderContent = () => {
     switch (activeTab) {
@@ -358,37 +413,46 @@ const PatientProfile = () => {
     }
   };
 
-  function formatDOB(dobString) {
-    const date = new Date(dobString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  }
+	function formatDOB(dobString) {
+		const date = new Date(dobString);
+		const day = date.getDate().toString().padStart(2, "0");
+		const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+		const year = date.getFullYear();
+		return `${day}-${month}-${year}`;
+	}
+
+	function formatDOB2(dobString) {
+		const date = new Date(dobString);
+		const day = date.getDate().toString().padStart(2, "0");
+		const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+		const year = date.getFullYear();
+		return `${year}-${month}-${day}`;
+	}
 
   if (loading) {
     return <p style={{ marginTop: "150px" }}>Loading patients...</p>;
   }
 
-  return (
-    <div className="profile-page">
-      {showEditModal && (
-        <EditModal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={(updated) => console.log("Updated profile:", updated)}
-          currentProfile={{
-            name: "Dr. Rahul Verma",
-            email: "rahul.verma@example.com",
-            dateOfBirth: "1990-06-15",
-            gender: "male",
-            address: "221B Baker Street, London",
-            pincode: "560001",
-            profileImage:
-              "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=400&auto=format&fit=crop",
-          }}
-        />
-      )}
+	return (
+		<div className="profile-page">
+			{showEditModal && (
+				<EditModal
+					isOpen={showEditModal}
+					onClose={() => setShowEditModal(false)}
+					onUpdate={handleUpdateProfile}
+					currentProfile={{
+						firstName: (patientData.firstName),
+						lastName: (patientData.lastName),
+						email: (patientData.email),
+						dateOfBirth: (formatDOB2(patientData.dob)),
+						gender: (patientData.gender),
+						address: (patientData.address) || "",
+						pincode: patientData.zipCode,
+						profileImage:
+							"https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=400&auto=format&fit=crop",
+					}}
+				/>
+			)}
 
       <button className="back-btn" onClick={() => navigate(-1)}>
         ← Back to Patients
