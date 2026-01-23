@@ -41,7 +41,6 @@
   color: var(--clr-text);
   position: relative;
   overflow: hidden;
- 
 }
 
 /* Animated background */
@@ -68,7 +67,7 @@
   padding: 3rem 1.5rem;
   position: relative;
   z-index: 1;
-   padding-top: 100px;
+  padding-top: 150px;
 }
 
 /* Greeting */

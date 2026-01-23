@@ -33,19 +33,7 @@ const auth = async (req, res, next) => {
 		const user = await Model.findById(id);
 
 		if (!user) return res.status(401).json({ message: 'User not found.' });
-		// const users = await Promise.allSettled([
-		// 			Admin.findById(decoded.id).then(user => user && { ...user.toObject(), role: 'admin' }),
-		// 			Doctor.findById(decoded.id).then(user => user && { ...user.toObject(), role: 'doctor' }),
-		// 			Retailer.findById(decoded.id).then(user => user && { ...user.toObject(), role: 'retailer' }),
-		// 			Patient.findById(decoded.id).then(user => user && { ...user.toObject(), role: 'patient' }),
-		// 		]);
 
-		// 		// Extract the first valid user
-		// 		const user = users.find(result => result.status === 'fulfilled' && result.value)?.value;
-
-		// 		if (!user) {
-		// 			return res.status(401).json({ message: 'User not found.' });
-		// 		}
 		req.user = { ...user.toObject(), role };
 		next();
 	} catch (error) {

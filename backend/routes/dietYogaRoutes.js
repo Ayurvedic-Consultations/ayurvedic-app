@@ -2,17 +2,21 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createDietYoga,
   getDietYogaByBooking,
   updateDiet,
   updateYoga,
   getDietYogaByPatientEmail,
-  deleteDietYoga
+  deleteDietYoga,
+  prescribeDiet,
+  prescribeYoga
 } = require("../controllers/dietYogaController");
 const auth = require("../middleware/auth");
 
-// Create or update diet and yoga recommendation
-router.post("/", auth, createDietYoga);
+// Create or update diet recommendation
+router.post("/", auth, prescribeDiet);
+
+// Create or update yoga recommendation
+router.post("/yoga", auth, prescribeYoga);
 
 // Get diet and yoga recommendation by booking ID
 router.get("/booking/:bookingId", auth, getDietYogaByBooking);

@@ -322,35 +322,66 @@ exports.deleteBooking = async (req, res) => {
 };
 
 // Add or update recommended supplements
-exports.updateRecommendedSupplements = async (req, res) => {
-	const { id } = req.params;
-	const { supplements } = req.body;
+exports.prescribeMedicine = async (req, res) => {
+    // 1. Get the data exactly as sent by your frontend handleSubmit
+    const { 
+        bookingId, 
+        medicineData // Contains: { medicineName, reason, dosage, startDate, endDate, instructions, externalLink }
+    } = req.body;
 
-	try {
-		// Validate input
-		if (!supplements || !Array.isArray(supplements)) {
-			return res.status(400).json({ error: "Valid supplements array is required" });
-		}
+    try {
+        // 2. Validate Input
+        if (!bookingId || !medicineData) {
+            return res.status(400).json({ error: "Booking ID and Medicine Data are required." });
+        }
 
-		// Find the booking by ID and update the supplements
-		const updatedBooking = await Booking.findByIdAndUpdate(
-			id,
-			{ recommendedSupplements: supplements },
-			{ new: true }
-		);
+        // 3. Create the Supplement Object
+        // We manually map the frontend fields to match your Mongoose Schema exactly
+        const newSupplement = {
+            medicineName: medicineData.medicineName,
+            
+            // FIX 1: Map 'reason' (Frontend) to 'forIllness' (Backend Schema)
+            reason: medicineData.reason, 
+            
+            dosage: medicineData.dosage,
+            instructions: medicineData.instructions,
+            
+            // FIX 2: Create the 'duration' string required by your schema
+            duration: `${medicineData.startDate} to ${medicineData.endDate}`,
+            
+            startDate: new Date(medicineData.startDate),
+            endDate: new Date(medicineData.endDate),
 
-		if (!updatedBooking) {
-			return res.status(404).json({ error: "Booking not found" });
-		}
+            // Optional: Only saves if you added 'externalLink' to your schema
+            externalLink: medicineData.externalLink || "" 
+        };
 
-		return res.status(200).json({
-			message: "Recommended supplements updated successfully",
-			booking: updatedBooking,
-		});
-	} catch (error) {
-		console.error("Error updating supplements:", error);
-		return res.status(500).json({ error: "Server error" });
-	}
+        // 4. Perform the Update
+        // $push: Appends 'newSupplement' to the 'recommendedSupplements' array
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            bookingId,
+            { 
+                $push: { recommendedSupplements: newSupplement } 
+            },
+            { 
+                new: true,          // Returns the updated document so you can see the change
+                runValidators: true // Ensures the new item follows schema rules (required fields, etc.)
+            }
+        );
+
+        if (!updatedBooking) {
+            return res.status(404).json({ error: "Booking not found." });
+        }
+
+        return res.status(200).json({
+            message: "New prescription added successfully",
+            currentPrescriptions: updatedBooking.recommendedSupplements
+        });
+
+    } catch (error) {
+        console.error("Error prescribing medicine:", error);
+        return res.status(500).json({ error: "Server error", details: error.message });
+    }
 };
 
 // Get all supplements for a booking

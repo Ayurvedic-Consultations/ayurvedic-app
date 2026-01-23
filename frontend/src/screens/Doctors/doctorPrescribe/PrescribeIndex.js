@@ -3,7 +3,7 @@ import { PatientHeader } from './PatientHeader';
 import { PrescriptionHistory } from './PrescriptionHistory';
 import { PrescriptionTabs } from './PrescriptionTabs';
 import { useLocation } from 'react-router-dom';
-import './PrescribeIndex.css';
+import './PrescribeIndex.css'; 
 
 const samplePatient = {
 	id: "PT-2024-001",
@@ -143,11 +143,11 @@ const PrescribeIndex = () => {
 
 	return (
 		<div className="container">
-			<main className="main">
+			<main className="main" style={{padding:"150px"}}>
 				{/* Patient Information */}
 				<PatientHeader patient={patientData} loading={loading} />
 				<PrescriptionHistory prescriptions={prescriptions} loading={loadingPrescriptions} />
-				<PrescriptionTabs />
+				<PrescriptionTabs bookingId={bookingId} patientId={patientId} doctorId={doctorId}/>
 				{/* Two Column Layout */}
 				<div className="grid-container">
 				</div>

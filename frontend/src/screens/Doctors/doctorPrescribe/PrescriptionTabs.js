@@ -1,52 +1,50 @@
 import React, { useState } from 'react';
-import { Pill, Salad, HeartPulse } from 'lucide-react'; // 1. Import icons
+import { Pill, Salad, HeartPulse } from 'lucide-react';
 import './PrescriptionTabs.css';
 import { MedicineForm } from './MedicineForm';
 import { DietPlanForm } from './DietPlanForm';
 import { YogaPlanForm } from './YogaPlanForm';
 
-// 2. Create an array for tab data to make the component scalable
 const tabs = [
-  { id: 'medicine', label: 'Medicine', Icon: Pill },
-  { id: 'diet', label: 'Diet Plan', Icon: Salad },
-  { id: 'yoga', label: 'Yoga / Wellness', Icon: HeartPulse },
+	{ id: 'medicine', label: 'Medicine', Icon: Pill },
+	{ id: 'diet', label: 'Diet Plan', Icon: Salad },
+	{ id: 'yoga', label: 'Yoga / Wellness', Icon: HeartPulse },
 ];
 
-export function PrescriptionTabs() {
-  const [activeTab, setActiveTab] = useState('medicine');
+export function PrescriptionTabs({ bookingId, patientId, doctorId }) {
+	const [activeTab, setActiveTab] = useState('medicine');
 
-  const renderForm = () => {
-    switch (activeTab) {
-      case 'medicine':
-        return <MedicineForm />;
-      case 'diet':
-        return <DietPlanForm />;
-      case 'yoga':
-        return <YogaPlanForm />;
-      default:
-        return null;
-    }
-  };
+	const renderForm = () => {
+		switch (activeTab) {
+			case 'medicine':
+				return <MedicineForm bookingId={bookingId} patientId={patientId} doctorId={doctorId} />;
+			case 'diet':
+				return <DietPlanForm bookingId={bookingId} patientId={patientId} doctorId={doctorId}/>;
+			case 'yoga':
+				return <YogaPlanForm bookingId={bookingId} patientId={patientId} doctorId={doctorId}/>;
+			default:
+				return null;
+		}
+	};
 
-  return (
-    <div className="tabs-containers">
-      <div className="tab-list">
-        {/* 3. Map over the tabs array to render buttons dynamically */}
-        {tabs.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            className={`tab-trigger ${activeTab === id ? 'active' : ''}`}
-            onClick={() => setActiveTab(id)}
-          >
-            <Icon className="tab-icon" size={18} />
-            {label}
-          </button>
-        ))}
-      </div>
+	return (
+		<div className="tabs-containers">
+			<div className="tab-list">
+				{tabs.map(({ id, label, Icon }) => (
+					<button
+						key={id}
+						className={`tab-trigger ${activeTab === id ? 'active' : ''}`}
+						onClick={() => setActiveTab(id)}
+					>
+						<Icon className="tab-icon" size={18} />
+						{label}
+					</button>
+				))}
+			</div>
 
-      <div className="tab-content">
-        {renderForm()}
-      </div>
-    </div>
-  );
+			<div className="tab-content">
+				{renderForm()}
+			</div>
+		</div>
+	);
 }

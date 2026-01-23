@@ -136,17 +136,15 @@ function App() {
 
 
 
-          
+
 
         <Route element={<ProtectedRoute />}>
           <Route path="/current-requests" element={<CurrentRequests />} />
           {/* my changes */}
 
-          {/* <Route path ="/patient-header" element={<PatientHeader/>} />
-          <Route path="/doctor-prescribe" element={<DoctorPrescribe/>} /> */}
-          <Route path ="/PatientFeedback/:id" element={<PatientFeedback/>} />
-          <Route path ="/BuyerFeedback/:id" element={<BuyerFeedback/>} />
-          <Route path="/doctorsprescribe" element={<PrescribeIndex />}/>
+          <Route path="/PatientFeedback/:id" element={<PatientFeedback />} />
+          <Route path="/BuyerFeedback/:id" element={<BuyerFeedback />} />
+          <Route path="/doctorsprescribe" element={<PrescribeIndex />} />
           <Route path="/doctor-home" element={<DoctorHomeScreen />} />
           <Route path="/appointment-slots" element={<AppointmentSlots />} />
           <Route path="/doctor-analytics" element={<DoctorAnalytics />} />
@@ -156,11 +154,11 @@ function App() {
           <Route path="/medicines" element={<MedicinesScreen />} />
 
           {/* make chane */}
-       <Route
-  path="/medicines/:id"
-  element={<MedicineIdDetails/>}
-/>
-          
+          <Route
+            path="/medicines/:id"
+            element={<MedicineIdDetails />}
+          />
+
           <Route path="/retailer-home" element={<RetailerDashboard />} />
           <Route path="/doctor-notifications" element={<DoctorNotification />} />
           <Route path="/manage-products" element={<ManageProducts />} />

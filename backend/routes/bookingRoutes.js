@@ -10,7 +10,7 @@ const {
   updateBookingStatus,
   updateMeetLink,
   deleteBooking,
-  updateRecommendedSupplements,
+  prescribeMedicine,
   getRecommendedSupplements,
   updateRatingAndReview,
   getRatingAndReview,
@@ -40,7 +40,7 @@ router.put("/update/meet-link/:id", updateMeetLink);
 router.delete("/delete/:id", deleteBooking);
 
 // Route to update recommended supplements
-router.put("/supplements/:id", updateRecommendedSupplements);
+router.put("/supplements", prescribeMedicine);
 
 // Route to get recommended supplements
 router.get("/supplements/:id", getRecommendedSupplements);

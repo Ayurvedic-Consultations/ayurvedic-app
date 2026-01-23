@@ -74,7 +74,7 @@ const bookingSchema = new mongoose.Schema({
 				type: String,
 				required: true
 			},
-			forIllness: {
+			reason: {
 				type: String,
 				required: true
 			},
@@ -82,7 +82,8 @@ const bookingSchema = new mongoose.Schema({
 			instructions: { type: String, required: true },
 			duration: { type: String, required: true },
 			startDate: { type: Date, required: true },
-			endDate: { type: Date, required: true }
+			endDate: { type: Date, required: true },
+			externalLink: { type: String, default: "" }
 		}
 	],
 	rating: {

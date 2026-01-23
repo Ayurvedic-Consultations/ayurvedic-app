@@ -4,99 +4,65 @@ const mongoose = require("mongoose");
 const dietYogaSchema = new mongoose.Schema({
 	patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
 	doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
-	patientEmail: {
-		type: String,
-		required: true,
-	},
-	patientName: {
-		type: String,
-		required: true,
-	},
-	doctorEmail: {
-		type: String,
-		required: true,
-	},
-	doctorName: {
-		type: String,
-		required: true,
-	},
-	// Diet recommendations
+	
 	diet: {
-		daily: {
-			breakfast: {
-				type: String,
-				default: "Default breakfast recommendation",
-			},
-			lunch: {
-				type: String,
-				default: "Default lunch recommendation",
-			},
-			dinner: {
-				type: String,
-				default: "Default dinner recommendation",
-			},
-			juices: {
-				type: String,
-				default: "Default juice recommendation",
-			}
-		},
 		weekly: {
 			monday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
-			},
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
+			},	
 			tuesday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			},
 			wednesday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			},
 			thursday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			},
 			friday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			},
 			saturday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			},
 			sunday: {
-				breakfast: { type: String, default: "Default breakfast" },
-				lunch: { type: String, default: "Default lunch" },
-				dinner: { type: String, default: "Default dinner" },
-				juices: { type: String, default: "Default juices" }
+				breakfast: { type: String},
+				lunch: { type: String},
+				dinner: { type: String},
+				juices: { type: String}
 			}
 		},
 		herbs: [String]
 	},
 	// Yoga recommendations
-	yoga: {
-		morningPlan: {
-			type: String,
-			default: "Default morning yoga plan",
-		},
-		eveningPlan: {
-			type: String,
-			default: "Default evening yoga plan",
-		}
-	},
+    yoga: {
+        morning: [{
+            name: { type: String, required: true },
+            link: { type: String, default: "" } 
+        }],
+        evening: [{
+            name: { type: String, required: true },
+            link: { type: String, default: "" }
+        }]
+    },
 	// Link to the original booking
 	bookingId: {
 		type: mongoose.Schema.Types.ObjectId,
