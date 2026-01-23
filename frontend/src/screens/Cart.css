@@ -31,6 +31,7 @@
   max-width: 1000px;
   margin: 2rem auto;
   padding: 1rem;
+  padding-top: 100px;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: var(--gray-100);
   min-height: 100vh;
@@ -240,6 +241,7 @@
 @media (max-width: 640px) {
   .cart-page {
     padding-bottom: 120px;
+    padding-top: 100px;
   }
 
   .cart-summary {
@@ -254,7 +256,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 1000;
+    z-index:auto;
   }
 
   .cart-summary h2 {

@@ -72,7 +72,7 @@
 .doctor-info h1 {
 	font-size: 50px;
 	font-style: italic;
-	text-wrap: nowrap;
+	text-wrap: auto;
 }
 
 .about-doctor {

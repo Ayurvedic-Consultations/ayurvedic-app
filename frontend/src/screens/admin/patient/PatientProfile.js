@@ -6,6 +6,8 @@ import PatientTrans from "./patientTrans";
 import PatientFeedback from "./PatientFeedback";
 import PatientHistory from "./PatientHistory";
 import DietPlan from "./DietPlan"; // ← your DietPlan component
+import Prescription from "./Prescription";
+
 
 import {
   Pill,
@@ -391,52 +393,8 @@ const PatientProfile = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "Prescriptions":
-        return (
-          <div className="card">
-            <h3>
-              <Pill size={20} /> Medicines Prescribed{" "}
-              <span className="badge">
-                {patientBookings.reduce(
-                  (total, booking) => total + booking.recommendedSupplements.length,
-                  0
-                )}
-              </span>
-            </h3>
+  return <Prescription patientBookings={patientBookings} />;
 
-            {patientBookings.length > 0 &&
-              patientBookings.map((booking, bIdx) =>
-                booking.recommendedSupplements.map((supp, sIdx) => (
-                  <div key={`${bIdx}-${sIdx}`} className="sub-card" style={{ width: "100%" }}>
-                    <div className="sub-card-header">
-                      <h4>{supp.medicineName}</h4>
-                      <span className="dosage">{supp.dosage}</span>
-                    </div>
-                    <div className="prescription-details">
-                      <div>
-                        <p className="label">For</p>
-                        <p>{supp.forIllness}</p>
-                      </div>
-                      <div>
-                        <p className="label">Duration</p>
-                        <p>{supp.duration}</p>
-                      </div>
-                      <div>
-                        <p className="label">Instruction</p>
-                        <p>{supp.instructions}</p>
-                      </div>
-                      <div>
-                        <p className="label">Prescribed by</p>
-                        <p>{booking.doctorName}</p>
-                      </div>
-                    </div>
-                    <p className="prescribed-date">
-                      ⏱ Prescribed on {new Date(booking.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))
-              )}
-          </div>
-        );
 
       case "Diet Plan":
         return <DietPlan dietYogaData={dietYogaData} loading={loadingDiet} patientId={patientId} />;

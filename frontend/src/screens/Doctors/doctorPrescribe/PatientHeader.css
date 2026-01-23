@@ -1,241 +1,200 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* --- CSS Variables for Theming --- */
-:root {
-  /* Colors */
-  --primary-color: #3b82f6; /* Blue 500 */
-  --primary-light: #e0e7ff; /* Light Blue */
-  --surface-color: #ffffff;
-  --bg-color: #f8f9fa;
-  --border-color: #e5e7eb;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --badge-bg: #f3f4f6;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-
-  /* Avatar */
-  --avatar-size: clamp(72px, 10vw, 96px);
-  --avatar-ring-color: rgba(59, 130, 246, 0.25);
-}
-
-/* --- General & Platform Styles --- */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  margin: 0;
-}
-
+/* Container & Platform Styling */
 .platform-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #334155;
 }
 
 .platform-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
 .platform-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0;
+    color: #0f172a;
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
 }
 
 .platform-subtitle {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
+    color: #64748b;
+    font-size: 1rem;
 }
 
-/* --- Patient Header Card --- */
+.header-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+    margin: 1.5rem 0;
+}
+
+/* Main Patient Header Card */
 .patient-header-cards {
-  background-color: var(--surface-color);
-  border-radius: 1rem;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-md);
-  padding: 2rem;
-  margin-bottom: 2rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f1f5f9;
+    padding: 1.5rem;
+    padding-top: 29px;
+    margin-top: 10rem;
+    margin-bottom: 2rem;
+    margin-left: 5rem;
 }
 
 .patient-header-contents {
-  display: flex;
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2rem);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
 }
 
-/* --- Avatar Section (Improved) --- */
-.patient-avatar-sections {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
+/* Avatar Styles */
 .patient-avatars {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  overflow: hidden;
-  position: relative;
-
-  /* Soft background for fallback, subtle gradient */
-  background: radial-gradient(120% 120% at 0% 0%, var(--primary-light) 0%, #eef2ff 45%, #ffffff 100%);
-
-  /* Clean white border + soft blue ring */
-  border: 3px solid var(--surface-color);
-  box-shadow:
-    0 0 0 6px var(--avatar-ring-color),
-    var(--shadow-md);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  will-change: transform;
-}
-
-.patient-avatars:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 6px rgba(59, 130, 246, 0.35),
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #e2e8f0;
 }
 
 .patient-avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* Centered, crisp initials fallback */
 .patient-avatar-fallback {
-  width: 100%;
-  height: 100%;
-  color: #1d4ed8; /* Blue 700 for contrast on light bg */
-  background: linear-gradient(135deg, #eef2ff 0%, #f5faff 100%);
-  font-weight: 700;
-  font-size: calc(var(--avatar-size) * 0.42);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  user-select: none;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #3b82f6;
+    text-transform: uppercase;
 }
 
-/* --- Info Container --- */
+/* Info Section Styling */
 .patient-info-containers {
-  flex-grow: 1;
+    flex: 1;
 }
 
 .patient-name-id-section {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
 .patient-name {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
 }
 
-/* Match JSX class: patient-id-tag (kept both for safety) */
-.patient-id-tag,
-.patient-id-tags {
-  background-color: var(--badge-bg);
-  color: var(--text-muted);
-  padding: 0.35rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid var(--border-color);
+.patient-id-tag {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 
-/* --- Details Grid --- */
+/* Details Grid */
 .patient-details-grids {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
 .detail-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0; /* allow text ellipsis */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #475569;
 }
 
 .detail-icon {
-  color: var(--primary-color);
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: #3b82f6; /* Modern Blue */
+    flex-shrink: 0;
 }
 
 .detail-text {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* --- Placeholder Content --- */
+/* Content Placeholder Styling */
 .content-placeholder {
-  border: 2px dashed var(--border-color);
-  border-radius: 1rem;
-  padding: 3rem;
-  text-align: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
 }
 
 .placeholder-text {
-  color: var(--text-muted);
-  font-size: 1rem;
+    color: #94a3b8;
+    font-style: italic;
 }
 
-/* --- Responsive Design (fixed class names) --- */
-@media (max-width: 992px) {
-  .patient-details-grids {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+    .patient-header-contents {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .patient-name-id-section {
+        justify-content: center;
+    }
+    
+    .patient-details-grids {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        justify-content: center;
+    }
 }
 
-@media (max-width: 768px) {
-  .patient-header-contents {
-    flex-direction: column;
-    align-items: center; /* Center avatar and text when stacked */
-    text-align: center;
-  }
-
-  .patient-name-id-section {
-    justify-content: center;
-  }
-
-  .patient-details-grids {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.25rem;
-  }
-
+@media (max-width: 640px) {
   .detail-item {
-    justify-content: center;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    padding: 10px 12px;
+
+    /* scrolling behavior */
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* prevent awkward wrapping */
+    white-space: nowrap;
+
+    /* smooth touch scrolling */
+    -webkit-overflow-scrolling: touch;
+
+    /* optional visual polish */
+    border-radius: 8px;
+  }
+
+  /* hide scrollbar (optional but clean) */
+  .detail-item::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .detail-item::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
   }
 }

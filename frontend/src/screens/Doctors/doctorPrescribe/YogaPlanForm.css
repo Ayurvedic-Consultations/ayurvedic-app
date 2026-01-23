@@ -1,18 +1,28 @@
 /* --- CSS Variables for Theming --- */
 :root {
-  --primary-color: hwb(92 0% 46% / 0.783); /* A calming purple for yoga theme */
-  --primary-light: #f3e5f5;
-  --primary-dark: #6a1b9a;
-  --text-dark: #343a40;
-  --text-muted: #6c757d;
-  --border-color: #dee2e6;
-  --card-bg: #ffffff;
-  --secondary-bg: #f8f9fa;
-  --danger-color: #dc3545;
-  --danger-hover: #b02a37;
+  /* Primary / Action */
+  --primary-color: #8FA36A;          /* Primary Action */
+  --primary-dark: #6F844F;           /* Hover / Active */
+  --primary-light: #EAF4E6;          /* Soft Accent BG */
+
+  /* Text */
+  --text-dark: #2F3E2E;              /* Main Text */
+  --text-muted: #5F6F5A;             /* Muted Text */
+
+  /* Backgrounds */
+  --card-bg: #FFFFFF;                /* Card BG */
+  --secondary-bg: #F7FAF9;           /* Page BG */
+
+  /* Borders & Accents */
+  --border-color: #D6E3CE;
+  --danger-color: #D9BE96;           /* Accent / Warning tone */
+  --danger-hover: #C8A951;           /* Accent Gold */
+
+  /* Shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
 
 /* --- Main Card & Header --- */
 .form-card {
