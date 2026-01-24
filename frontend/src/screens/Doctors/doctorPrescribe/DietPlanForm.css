@@ -15,24 +15,20 @@
   --danger-hover: #C8A951;
 }
 
-
-/* ===============================
-   Main Card & Form Structure
-================================= */
-.dp-form-card {
+.form-card {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-.dp-form-header {
+.form-header {
   background-color: var(--secondary-bg);
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.dp-form-title {
+.form-title {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -42,15 +38,15 @@
   color: var(--text-dark);
 }
 
-.dp-form-icon {
+.form-icon {
   color: var(--primary-color);
 }
 
-.dp-form-content {
+.form-content {
   padding: 24px;
 }
 
-.dp-diet-form {
+.diet-form {
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -59,7 +55,7 @@
 /* ===============================
    Tabs Styling
 ================================= */
-.dp-tabs-list {
+.tabs-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
@@ -68,7 +64,7 @@
   padding: 6px;
 }
 
-.dp-tab-trigger {
+.tab-trigger {
   padding: 10px 16px;
   font-size: 0.95rem;
   font-weight: 500;
@@ -80,38 +76,38 @@
   transition: all 0.2s ease-in-out;
 }
 
-.dp-tab-trigger:hover {
+.tab-trigger:hover {
   background-color: var(--primary-light);
   color: var(--text-dark);
 }
 
-.dp-tab-trigger.dp-active {
+.tab-trigger.active {
   background-color: var(--card-bg);
   color: var(--primary-color);
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.dp-tab-content {
+.tab-content {
   margin-top: 16px;
 }
 
 /* ===============================
    Daily Plan Grid
 ================================= */
-.dp-diet-plan-grid {
+.diet-plan-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 
-.dp-diet-section {
+.diet-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.dp-diet-label {
+.diet-label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -119,11 +115,11 @@
   color: var(--text-dark);
 }
 
-.dp-diet-icon {
+.diet-icon {
   color: var(--text-muted);
 }
 
-.dp-diet-textarea {
+.diet-textarea {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--border-color);
@@ -133,7 +129,7 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.dp-diet-textarea:focus {
+.diet-textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-light);
@@ -142,39 +138,39 @@
 /* ===============================
    Weekly Plan Styling
 ================================= */
-.dp-weekly-plan-container {
+.weekly-plan-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.dp-weekly-day-card {
+.weekly-day-card {
   border: 1px solid var(--border-color);
   border-left: 4px solid var(--primary-color);
   border-radius: 8px;
   padding: 16px;
 }
 
-.dp-weekly-day-title {
+.weekly-day-title {
   margin: 0 0 16px 0;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-dark);
 }
 
-.dp-weekly-day-grid {
+.weekly-day-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-.dp-weekly-meal-section {
+.weekly-meal-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.dp-weekly-meal-label {
+.weekly-meal-label {
   font-size: 0.875rem;
   color: var(--text-muted);
 }
@@ -182,7 +178,7 @@
 /* ===============================
    Herbs & Supplements Section
 ================================= */
-.dp-herbs-section {
+.herbs-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -190,7 +186,7 @@
   margin: 0 auto;
 }
 
-.dp-herbs-title {
+.herbs-title {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -200,19 +196,19 @@
   color: var(--text-dark);
 }
 
-.dp-herb-input-group {
+.herb-input-group {
   display: flex;
   gap: 8px;
 }
 
-.dp-herb-input {
+.herb-input {
   flex-grow: 1;
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
-.dp-add-herb-btn {
+.add-herb-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -225,17 +221,17 @@
   cursor: pointer;
 }
 
-.dp-add-herb-btn:hover {
+.add-herb-btn:hover {
   background-color: var(--primary-dark);
 }
 
-.dp-herb-tags {
+.herb-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.dp-herb-tag {
+.herb-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -245,7 +241,7 @@
   border-radius: 16px;
 }
 
-.dp-remove-herb-btn {
+.remove-herb-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -255,7 +251,7 @@
 /* ===============================
    Submit Button
 ================================= */
-.dp-submit-button {
+.submit-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -270,7 +266,7 @@
   align-self: flex-end;
 }
 
-.dp-submit-button:hover {
+.submit-button:hover {
   background-color: var(--primary-dark);
 }
 
@@ -278,16 +274,16 @@
    Responsive Design
 ================================= */
 @media (max-width: 768px) {
-  .dp-diet-plan-grid,
-  .dp-weekly-day-grid {
+  .diet-plan-grid,
+  .weekly-day-grid {
     grid-template-columns: 1fr;
   }
 
-  .dp-form-content {
+  .form-content {
     padding: 16px;
   }
 
-  .dp-submit-button {
+  .submit-button {
     width: 100%;
   }
 }

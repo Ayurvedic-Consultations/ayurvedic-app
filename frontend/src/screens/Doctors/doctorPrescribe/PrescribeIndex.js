@@ -143,7 +143,7 @@ const PrescribeIndex = () => {
 
 	return (
 		<div className="container">
-			<main className="main" style={{padding:"150px"}}>
+			<main className="main">
 				{/* Patient Information */}
 				<PatientHeader patient={patientData} loading={loading} />
 				<PrescriptionHistory prescriptions={prescriptions} loading={loadingPrescriptions} />

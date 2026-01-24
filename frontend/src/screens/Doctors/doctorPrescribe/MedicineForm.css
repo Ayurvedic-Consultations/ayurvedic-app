@@ -11,7 +11,7 @@
 }
 
 /* --- Main Form Card --- */
-.mf-form-card {
+.form-card {
   background-color: var(--card-bg);
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -21,13 +21,13 @@
 }
 
 /* --- Form Header --- */
-.mf-form-header {
+.form-header {
   background-color: var(--input-bg);
   padding: 16px 24px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.mf-form-title {
+.form-title {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -37,41 +37,41 @@
   margin: 0;
 }
 
-.mf-form-icon {
+.form-icon {
   color: var(--primary-color);
 }
 
 /* --- Form Content & Layout --- */
-.mf-form-content {
+.form-content {
   padding: 24px;
 }
 
-.mf-medicine-form {
+.medicine-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.mf-form-grid {
+.form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
 /* --- Form Elements Styling --- */
-.mf-form-group {
+.form-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.mf-form-label {
+.form-label {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-muted);
 }
 
-.mf-form-label:after {
+.form-label:after {
   content: " *";
   color: #DC2626;
 }
@@ -82,9 +82,9 @@ label[for="instructions"]:after {
   content: "";
 }
 
-.mf-form-input,
-.mf-form-select,
-.mf-form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
   padding: 10px 12px;
   font-size: 0.95rem;
@@ -94,26 +94,26 @@ label[for="instructions"]:after {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.mf-form-input:focus,
-.mf-form-select:focus,
-.mf-form-textarea:focus {
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(47, 125, 109, 0.25);
 }
 
 /* --- Textarea --- */
-.mf-form-textarea {
+.form-textarea {
   resize: vertical;
   min-height: 50px;
 }
 
 /* --- Input with Icon --- */
-.mf-input-with-icon {
+.input-with-icon {
   position: relative;
 }
 
-.mf-input-icon {
+.input-icon {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -122,17 +122,17 @@ label[for="instructions"]:after {
   pointer-events: none;
 }
 
-.mf-input-with-icon .mf-form-input {
+.input-with-icon .form-input {
   padding-left: 36px;
 }
 
 /* --- Full Width --- */
-.mf-full-width {
+.full-width {
   grid-column: 1 / -1;
 }
 
 /* --- Submit Button --- */
-.mf-submit-button {
+.submit-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -149,25 +149,25 @@ label[for="instructions"]:after {
   align-self: flex-end;
 }
 
-.mf-submit-button:hover {
+.submit-button:hover {
   background-color: var(--primary-hover);
 }
 
-.mf-submit-button:active {
+.submit-button:active {
   transform: scale(0.98);
 }
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
-  .mf-form-grid {
+  .form-grid {
     grid-template-columns: 1fr;
   }
 
-  .mf-form-content {
+  .form-content {
     padding: 16px;
   }
 
-  .mf-submit-button {
+  .submit-button {
     width: 100%;
   }
 }
@@ -178,45 +178,45 @@ label[for="instructions"]:after {
 
 /* Tablets & small laptops */
 @media (max-width: 1024px) {
-  .mf-form-grid {
+  .form-grid {
     grid-template-columns: 1fr;
   }
 
-  .mf-form-content {
+  .form-content {
     padding: 20px;
   }
 }
 
 /* Mobile devices */
 @media (max-width: 768px) {
-  .mf-form-card {
+  .form-card {
     border-radius: 0;
   }
 
-  .mf-form-header {
+  .form-header {
     padding: 14px 16px;
   }
 
-  .mf-form-title {
+  .form-title {
     font-size: 1rem;
     gap: 8px;
   }
 
-  .mf-form-content {
+  .form-content {
     padding: 16px;
   }
 
-  .mf-form-grid {
+  .form-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 
-  .mf-form-input,
-  .mf-form-textarea {
+  .form-input,
+  .form-textarea {
     font-size: 0.95rem;
   }
 
-  .mf-submit-button {
+  .submit-button {
     width: 100%;
     justify-content: center;
   }
@@ -224,19 +224,19 @@ label[for="instructions"]:after {
 
 /* Very small screens */
 @media (max-width: 480px) {
-  .mf-form-title {
+  .form-title {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .mf-form-icon {
+  .form-icon {
     font-size: 20px;
   }
 }
 
 
 @media (max-width: 1024px) {
-  .pt-tabs-containers {
+  .tabs-containers {
     max-width: 100%;
     padding: 20px;
   }
@@ -244,7 +244,7 @@ label[for="instructions"]:after {
 
 /* Mobile */
 @media (max-width: 768px) {
-  .pt-tabs-containers {
+  .tabs-containers {
     padding-right: 120px;
     border-radius: 10px;
   }
@@ -252,7 +252,7 @@ label[for="instructions"]:after {
 
 /* Small mobile */
 @media (max-width: 480px) {
-  .pt-tabs-containers {
+  .tabs-containers {
     /* padding: 14px; */
       padding-right: 100px;
     border-radius: 8px;

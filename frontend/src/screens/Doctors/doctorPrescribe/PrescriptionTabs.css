@@ -12,7 +12,7 @@
 }
 
 /* --- Main Tabs Container --- */
-.pt-tabs-containers {
+.tabs-containers {
   display: flex;
   flex-direction: column;
   background-color: var(--card-bg);
@@ -29,7 +29,7 @@
 }
 
 /* --- Tab Buttons List --- */
-.pt-tab-list {
+.tab-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
@@ -46,7 +46,7 @@
 }
 
 /* --- Individual Tab Button --- */
-.pt-tab-trigger {
+.tab-trigger {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,24 +65,24 @@
   white-space: nowrap;
 }
 
-.pt-tab-trigger:hover {
+.tab-trigger:hover {
   background-color: #e2e6ea;
   color: var(--text-dark);
 }
 
 /* --- Active Tab Styling --- */
-.pt-tab-trigger.pt-active {
+.tab-trigger.active {
   background-color: var(--card-bg);
   color: var(--primary-color);
   font-weight: 600;
   box-shadow: var(--shadow-sm);
 }
 
-.pt-tab-icon {
+.tab-icon {
   font-size: 1.125rem;
 }
 
 /* --- Tab Content Area --- */
-.pt-tab-content {
+.tab-content {
   margin-top: 16px;
 }

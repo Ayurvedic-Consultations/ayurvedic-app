@@ -128,16 +128,6 @@ body {
     box-shadow: var(--card-shadow);
 }
 
-
-/* Styling the column containers themselves for layout */
-.history-column {
-  /* This column acts as a container for PrescriptionHistory */
-}
-
-.prescription-column {
-  /* This column acts as a container for PrescriptionTabs */
-}
-
 /* Enhance readability for section headers within components */
 h2, h3 {
     margin-top: 0;

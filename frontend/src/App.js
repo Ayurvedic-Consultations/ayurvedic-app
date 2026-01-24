@@ -70,7 +70,6 @@ import Patientprofile from './screens/admin/patient/PatientProfile';
 import DoctorList from './screens/admin/doctors/DoctorList';
 import RetailerFullDetails from './screens/admin/Retailer/RetailerFullDetails';
 import { PatientHeader } from './screens/Doctors/doctorPrescribe/PatientHeader';
-import DoctorPrescribe from './screens/Doctors/doctorPrescribe/Doctor-Prescribe';
 import PrescribeIndex from './screens/Doctors/doctorPrescribe/PrescribeIndex';
 import PatientFeedback from './screens/Patients/PatientFeedback';
 import BuyerFeedback from './screens/Patients/BuyerFeedback';

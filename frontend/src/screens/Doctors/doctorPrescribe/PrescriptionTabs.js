@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Pill, Salad, HeartPulse } from 'lucide-react';
-import { Pill, Salad, HeartPulse } from 'lucide-react';
 import './PrescriptionTabs.css';
 import { MedicineForm } from './MedicineForm';
 import { DietPlanForm } from './DietPlanForm';
