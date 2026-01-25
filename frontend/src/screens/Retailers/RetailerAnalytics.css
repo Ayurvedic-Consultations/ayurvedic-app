@@ -1,6 +1,7 @@
 .retailer-analytics {
   padding: 20px;
   margin-top: 120px;
+  overflow-x: auto;
 }
 
 .analytics-summary {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./RetailerManagement.css"; // follow DoctorList.css structure
+import "./RetailerManagement.css";
 import { useNavigate } from "react-router-dom";
 import {
 	Store,
@@ -11,7 +11,6 @@ import {
 	Pencil,
 	X,
 } from "lucide-react";
-
 const initialRetailersData = [
 	{
 		_id: "dummy1",
@@ -24,24 +23,19 @@ const initialRetailersData = [
 		zipCode: "123456",
 	},
 ];
-
 const RetailerManagement = () => {
 	const [retailers, setRetailers] = useState(initialRetailersData);
 	const [loadingRetailers, setLoadingRetailers] = useState(true);
 	const [search, setSearch] = useState("");
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [retailerToEdit, setRetailerToEdit] = useState(null);
-
 	const navigate = useNavigate();
-
-	// ✅ Fetch all retailers
 	useEffect(() => {
 		const fetchAllRetailers = async () => {
 			try {
 				const res = await fetch(
 					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/retailers/getAllRetailers`
 				);
-
 				if (!res.ok) {
 					if (res.status === 404) {
 						setRetailers([]);
@@ -49,7 +43,6 @@ const RetailerManagement = () => {
 					}
 					throw new Error("Failed to fetch retailers");
 				}
-
 				const data = await res.json();
 				setRetailers(data);
 			} catch (error) {
@@ -58,11 +51,8 @@ const RetailerManagement = () => {
 				setLoadingRetailers(false);
 			}
 		};
-
 		fetchAllRetailers();
 	}, []);
-
-	// Filter by search term (safe checks)
 	const filteredRetailers = retailers.filter((r) => {
 		const term = search.toLowerCase();
 		return (
@@ -74,39 +64,35 @@ const RetailerManagement = () => {
 			(r.zipCode || "").includes(term)
 		);
 	});
-
 	const handleRowClick = (_id) => navigate(`/admin/medicine-orders/${_id}`);
-
 	const handleEditClick = (e, retailer) => {
 		e.stopPropagation();
 		setRetailerToEdit(retailer);
 		setIsEditModalOpen(true);
 	};
-
 	const handleSaveChanges = (updatedRetailer) => {
 		setRetailers(
-			retailers.map((r) => (r._id === updatedRetailer._id ? updatedRetailer : r))
+			retailers.map((r) =>
+				r._id === updatedRetailer._id ? updatedRetailer : r
+			)
 		);
 		setIsEditModalOpen(false);
 		setRetailerToEdit(null);
 	};
-
-	if(loadingRetailers) {
-		return <p style={{margin:"150px"}}> Loading... </p>;
+	if (loadingRetailers) {
+		return <div className="rm-loading-state">Loading Retailers...</div>;
 	}
-
 	return (
-		<div className="management-container">
-			<div className="header">
-				<button onClick={() => navigate(-1)} className="back-btn">
+		<div className="rm-management-container">
+			<div className="rm-header">
+				<button onClick={() => navigate(-1)} className="rm-back-btn">
 					<ArrowLeft size={18} /> Back
 				</button>
 				<h2>Retailer Management</h2>
 			</div>
-
-			<div className="controls-container">
-				<div className="search-bar">
-					<Search className="search-icon" size={20} />
+			<div className="rm-controls-container">
+				<div className="rm-search-bar">
+					<Search className="rm-search-icon" size={20} />
 					<input
 						type="text"
 						placeholder="Search by name, business, email, or phone..."
@@ -115,98 +101,100 @@ const RetailerManagement = () => {
 					/>
 				</div>
 			</div>
-
-			<div className="table-wrapper">
-				<table className="management-table">
-					<thead>
-						<tr>
-							<th>
-								<div className="th-content">
-									<Store size={16} />
-									<span>Business Name</span>
-								</div>
-							</th>
-							<th>
-								<div className="th-content">
-									<span>Status</span>
-								</div>
-							</th>
-							<th>
-								<div className="th-content">
-									<Mail size={16} />
-									<span>Email</span>
-								</div>
-							</th>
-							<th>
-								<div className="th-content">
-									<Phone size={16} />
-									<span>Phone</span>
-								</div>
-							</th>
-							<th>
-								<div className="th-content">
-									<MapPin size={16} />
-									<span>Zip Code</span>
-								</div>
-							</th>
-							<th>
-								<div className="th-content">
-									<span>Actions</span>
-								</div>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{filteredRetailers.length > 0 ? (
-							filteredRetailers.map((retailer) => (
-								<tr
-									key={retailer._id}
-									onClick={() => handleRowClick(retailer._id)}
-								>
-									<td data-label="Business Name">
-										<div className="retailer-name-cell" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-											<div className="avatar-sm">
-												{(retailer.BusinessName || retailer.firstName || "?").charAt(0)}
+			<div className="rm-table-wrapper">
+				<div className="rm-table-scroll-container">
+					<table className="rm-management-table">
+						<thead>
+							<tr>
+								<th>
+									<div className="rm-th-content">
+										<Store size={16} />
+										<span>Business Name</span>
+									</div>
+								</th>
+								<th>
+									<div className="rm-th-content">
+										<span>Status</span>
+									</div>
+								</th>
+								<th>
+									<div className="rm-th-content">
+										<Mail size={16} />
+										<span>Email</span>
+									</div>
+								</th>
+								<th>
+									<div className="rm-th-content">
+										<Phone size={16} />
+										<span>Phone</span>
+									</div>
+								</th>
+								<th>
+									<div className="rm-th-content">
+										<MapPin size={16} />
+										<span>Zip Code</span>
+									</div>
+								</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{filteredRetailers.length > 0 ? (
+								filteredRetailers.map((retailer) => (
+									<tr
+										key={retailer._id}
+										onClick={() => handleRowClick(retailer._id)}
+									>
+										<td>
+											<div className="rm-retailer-name-cell">
+												<div className="rm-avatar-sm">
+													{(
+														retailer.BusinessName ||
+														retailer.firstName ||
+														"?"
+													).charAt(0)}
+												</div>
+												<div>
+													{retailer.BusinessName ||
+														`${retailer.firstName} ${retailer.lastName}`}
+												</div>
 											</div>
-											<div>
-												{retailer.BusinessName || `${retailer.firstName} ${retailer.lastName}`}
-											</div>
-										</div>
-									</td>
-									<td data-label="Status">
-										<span
-											className={`status-pill ${(retailer.status || "").toLowerCase() === "active"
-													? "active"
-													: "inactive"
+										</td>
+										<td>
+											<span
+												className={`rm-status-pill ${
+													(retailer.status || "").toLowerCase() === "active"
+														? "rm-active"
+														: "rm-inactive"
 												}`}
-										>
-											{retailer.status}
-										</span>
-									</td>
-									<td data-label="Email">{retailer.email}</td>
-									<td data-label="Phone">{retailer.phone}</td>
-									<td data-label="Zip Code">{retailer.zipCode}</td>
-									<td data-label="Actions" className="action-buttons">
-										<button
-											className="edit-btn"
-											onClick={(e) => handleEditClick(e, retailer)}
-										>
-											<Pencil size={16} /> Edit
-										</button>
+											>
+												{retailer.status}
+											</span>
+										</td>
+										<td>{retailer.email}</td>
+										<td>{retailer.phone}</td>
+										<td>{retailer.zipCode}</td>
+										<td>
+											<button
+												className="rm-edit-btn"
+												onClick={(e) => handleEditClick(e, retailer)}
+											>
+												<Pencil size={16} /> Edit
+											</button>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td colSpan="6" className="rm-no-results">
+										No retailers found matching your criteria.
 									</td>
 								</tr>
-							))
-						) : (
-							<tr>
-								<td colSpan="6" className="no-results">
-									No retailers found matching your criteria.
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
+							)}
+						</tbody>
+					</table>
+				</div>
 			</div>
-
 			{retailerToEdit && (
 				<EditModal
 					isOpen={isEditModalOpen}
@@ -218,90 +206,95 @@ const RetailerManagement = () => {
 		</div>
 	);
 };
-
 const EditModal = ({ isOpen, onClose, retailer, onSave }) => {
 	const [formData, setFormData] = useState(retailer);
-
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		onSave(formData);
 	};
-
 	if (!isOpen) return null;
 	return (
-		<div className="modal-overlay">
-			<div className="modal-content">
-				<div className="modal-header">
+		<div className="rm-modal-overlay">
+			<div className="rm-modal-content">
+				<div className="rm-modal-header">
 					<h3>Edit Retailer Details</h3>
-					<button className="close-modal-btn" onClick={onClose}>
+					<button className="rm-close-modal-btn" onClick={onClose} aria-label="Close">
 						<X size={20} />
 					</button>
 				</div>
-				<form onSubmit={handleSubmit} className="edit-form">
-					<div className="form-group">
-						<label>Business Name</label>
-						<input
-							type="text"
-							name="BusinessName"
-							value={formData.BusinessName}
-							onChange={handleChange}
-						/>
+				<form onSubmit={handleSubmit} className="rm-edit-form">
+					<div className="rm-form-grid">
+						<div className="rm-form-group full-width">
+							<label>Business Name</label>
+							<input
+								type="text"
+								name="BusinessName"
+								value={formData.BusinessName}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="rm-form-group">
+							<label>Email</label>
+							<input
+								type="email"
+								name="email"
+								value={formData.email}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="rm-form-group">
+							<label>Phone</label>
+							<input
+								type="text"
+								name="phone"
+								value={formData.phone}
+								onChange={handleChange}
+							/>
+						</div>
+						<div className="rm-form-group">
+							<label>Status</label>
+							<div className="rm-select-wrapper">
+								<select
+									name="status"
+									value={formData.status}
+									onChange={handleChange}
+								>
+									<option value="active">Active</option>
+									<option value="inactive">Inactive</option>
+								</select>
+							</div>
+						</div>
+						<div className="rm-form-group">
+							<label>Zip Code</label>
+							<input
+								type="text"
+								name="zipCode"
+								value={formData.zipCode}
+								onChange={handleChange}
+							/>
+						</div>
 					</div>
-					<div className="form-group">
-						<label>Email</label>
-						<input
-							type="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-						/>
-					</div>
-					<div className="form-group">
-						<label>Phone</label>
-						<input
-							type="text"
-							name="phone"
-							value={formData.phone}
-							onChange={handleChange}
-						/>
-					</div>
-					<div className="form-group">
-						<label>Status</label>
-						<select
-							name="status"
-							value={formData.status}
-							onChange={handleChange}
-						>
-							<option value="active">Active</option>
-							<option value="inactive">Inactive</option>
-						</select>
-					</div>
-					<div className="form-group">
-						<label>Zip Code</label>
-						<input
-							type="text"
-							name="zipCode"
-							value={formData.zipCode}
-							onChange={handleChange}
-						/>
-					</div>
-					<div className="modal-actions">
-						<button type="button" className="btn-cancel" onClick={onClose}>
-							Cancel
-						</button>
-						<button type="submit" className="btn-save">
-							Save Changes
-						</button>
+					<div className="rm-modal-footer">
+						<div className="rm-modal-actions">
+							<button
+								type="button"
+								className="rm-btn-cancel"
+								onClick={onClose}
+							>
+								Cancel
+							</button>
+							<button type="submit" className="rm-btn-save">
+								Save Changes
+							</button>
+						</div>
 					</div>
 				</form>
 			</div>
 		</div>
 	);
 };
-
 export default RetailerManagement;

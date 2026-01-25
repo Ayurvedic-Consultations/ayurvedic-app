@@ -3,156 +3,144 @@ import "./PatientFullDetails.css";
 import { useNavigate } from "react-router-dom";
 
 const PatientManagement = () => {
-	const [patients, setPatients] = useState([
-		{
-			id: 3,
-			firstName: "Emily",
-			lastName: "Davis",
-			email: "emily.davis@email.com",
-			phone: "+1 (555) 345-6789",
-			gender: "Female",
-			zipCode: 312544,
-			dietPlan: true,
-		},
-	]);
+    const [patients, setPatients] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
-	const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                const res = await fetch(
+                    `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/getAllPatients`
+                );
+                if (!res.ok) throw new Error("Failed to fetch patients");
+                const data = await res.json();
+                setPatients(data);
+            } catch (error) {
+                console.error("Error fetching patients:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPatients();
+    }, []);
 
-	useEffect(() => {
-		const fetchPatients = async () => {
-			try {
-				const res = await fetch(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/getAllPatients`);
-				if (!res.ok) throw new Error("Failed to fetch patients");
-				const data = await res.json();
-				setPatients(data);
-			} catch (error) {
-				console.error("Error fetching patients:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
+    const filteredPatients = patients.filter(
+        (p) =>
+            p.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+            p.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+            p.email?.toLowerCase().includes(search.toLowerCase()) ||
+            p.phone?.toLowerCase().includes(search.toLowerCase())
+    );
 
-		fetchPatients();
-	}, []);
+    const handleRowClick = (id) => {
+        navigate(`/patients/${id}`);
+    };
 
-	const [search, setSearch] = useState("");
-	const filteredPatients = patients.filter(
-		(p) =>
-			p.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-			p.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-			p.email?.toLowerCase().includes(search.toLowerCase()) ||
-			p.phone?.toLowerCase().includes(search.toLowerCase())
-	);
+    const handleDelete = async (e, id) => {
+        e.stopPropagation(); // Prevents navigating to details page
+        if (!window.confirm("Are you sure you want to delete this patient?")) return;
 
-	const navigate = useNavigate();
-	// Row click → go to details page
-	
-	const handleRowClick = (id) => {
-		navigate(`/patients/${id}`);
-	};
+        try {
+            const res = await fetch(
+                `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/deletePatient/${id}`,
+                { method: "DELETE" }
+            );
 
-	const handleDelete = async (id) => {
-		if (!window.confirm("Are you sure you want to delete this patient?")) return;
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Failed to delete patient");
+            }
 
-		try {
-			const res = await fetch(
-				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/deletePatient/${id}`,
-				{
-					method: "DELETE",
-				}
-			);
+            setPatients((prev) => prev.filter((p) => p._id !== id));
+            alert("Patient deleted successfully!");
+        } catch (error) {
+            alert("Error deleting patient: " + error.message);
+        }
+    };
 
-			if (!res.ok) {
-				const errorData = await res.json();
-				throw new Error(errorData.message || "Failed to delete patient");
-			}
+    const handleEdit = (e, id) => {
+        e.stopPropagation(); // Prevents navigating to details page
+        alert(`Editing patient with ID: ${id}`);
+    };
 
-			// Remove from local state so UI updates
-			setPatients((prevPatients) => prevPatients.filter((p) => p._id !== id));
+    if (loading) {
+        return <div className="patfull-loader">Loading patients...</div>;
+    }
 
-			alert("Patient deleted successfully!");
-		} catch (error) {
-			console.error("Error deleting patient:", error);
-			alert("Error deleting patient: " + error.message);
-		}
-	};
+    return (
+        <div className="patfull-container">
+            <div className="patfull-header">
+                <button onClick={() => navigate(-1)} className="patfull-back-btn">
+                    ← Back
+                </button>
+                <h2>Patient Management</h2>
+            </div>
 
-	const handleEdit = (id) => {
-		alert(`Editing patient with ID: ${id}`);
-	};
+            <div className="patfull-search-bar">
+                <input
+                    type="text"
+                    placeholder="Search patients by name, email, or contact..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
 
-	const backToPatients = () => {
-		navigate(-1); // Adjust the path as needed
-	};
-
-	if (loading) {
-		return <p style={{ marginTop: "150px" }}>Loading patients...</p>;
-	}
-
-	return (
-		<div className="patient-container">
-			<div className="header">
-				<button onClick={backToPatients} className="back-btn">← Back</button>
-				<h2>Patient Management</h2>
-			</div>
-
-			<div className="data-search-bar">
-				<input
-					type="text"
-					placeholder="Search patients by name, email, or contact..."
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
-			</div>
-
-			<div className="table-wrapper">
-				<table className="patient-table">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Contact No.</th>
-							<th>Gender</th>
-							<th>ZipCode</th>
-							<th>Age</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{filteredPatients.length > 0 ? (
-							filteredPatients.map((patient) => (
-								<tr key={patient._id}
-									onClick={() => handleRowClick(patient._id)}
-									style={{ cursor: "pointer" }}
-								>
-									<td data-label="Name">{`${patient.firstName} ${patient.lastName}`}</td>
-									<td data-label="Email">{patient.email}</td>
-									<td data-label="Contact No.">{patient.phone}</td>
-									<td data-label="Gender">{patient.gender}</td>
-									<td data-label="ZipCode">{patient.zipCode}</td>
-									<td data-label="Age">{patient.age}</td>
-									<td data-label="Actions" className="action-buttons">
-										<button className="edit-btn" onClick={() => handleEdit(patient._id)}>
-											Edit
-										</button>
-										<button className="delete-btn" onClick={() => handleDelete(patient._id)}>
-											Delete
-										</button>
-									</td>
-								</tr>
-							))
-						) : (
-							<tr>
-								<td colSpan="7" className="no-patients">
-									No patients found matching your search.
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	);
+            <div className="patfull-table-wrapper">
+                <table className="patfull-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Contact No.</th>
+                            <th>Gender</th>
+                            <th>ZipCode</th>
+                            <th>Age</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredPatients.length > 0 ? (
+                            filteredPatients.map((patient) => (
+                                <tr
+                                    key={patient._id}
+                                    onClick={() => handleRowClick(patient._id)}
+                                >
+                                    <td>{`${patient.firstName} ${patient.lastName}`}</td>
+                                    <td>{patient.email}</td>
+                                    <td>{patient.phone}</td>
+                                    <td>{patient.gender}</td>
+                                    <td>{patient.zipCode}</td>
+                                    <td>{patient.age || "N/A"}</td>
+                                    <td className="patfull-action-buttons">
+                                        <button
+                                            className="patfull-edit-btn"
+                                            onClick={(e) => handleEdit(e, patient._id)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="patfull-delete-btn"
+                                            onClick={(e) => handleDelete(e, patient._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="7" className="patfull-no-patients">
+                                    No patients found matching your search.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 };
 
 export default PatientManagement;

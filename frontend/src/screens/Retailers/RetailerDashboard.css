@@ -1,36 +1,36 @@
-.retailer-dashboard {
+.retailerdb-dashboard {
 	width: 100%;
 	margin: 0;
-  box-sizing: border-box;
+	box-sizing: border-box;
 	text-align: center;
 	font-family: Arial, sans-serif;
 	padding: 20px;
 	margin-top: 140px;
-  overflow: hidden;
+	overflow: hidden;
 }
 
-.retailer-dashboard h1 {
+.retailerdb-dashboard h1 {
 	color: #333;
 	font-size: 2.5rem;
 	margin-bottom: 10px;
 	text-align: center;
 }
 
-.retailer-dashboard p {
+.retailerdb-dashboard p {
 	color: #555;
 	margin-bottom: 30px;
 	font-size: 1rem;
 	text-align: center;
 }
 
-.dashboard-buttons {
+.retailerdb-buttons {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 30px;
 	justify-items: center;
 }
 
-.dashboard-btn {
+.retailerdb-btn {
 	background-color: #e6f4e6;
 	color: #333;
 	border: none;
@@ -48,16 +48,21 @@
 	align-items: center;
 }
 
-.dashboard-btn:hover {
+.retailerdb-btn:hover {
 	transform: translateY(-2px);
 	background-color: #d4e9d4;
 }
 
 @media (max-width: 768px) {
-	.dashboard-btn {
+	.retailerdb-btn {
 		padding: 10px 20px;
 		font-size: 1rem;
 		width: 150px;
 		height: 60px;
+	}
+}
+@media (max-width: 480px) {
+	.retailerdb-buttons {
+		grid-template-columns: 1fr;
 	}
 }
