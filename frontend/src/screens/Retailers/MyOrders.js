@@ -52,62 +52,68 @@ function MyOrders() {
 	};
 
 	return (
-		<div className="orders-container" style={{ marginTop: "175px", padding: "15px", borderRadius: "15px" }}>
+		<div
+			className="myorders-container"
+			style={{ marginTop: "175px", padding: "15px", borderRadius: "15px" }}
+		>
 			<h1>My Orders</h1>
-			<div className="order-tabs">
+
+			<div className="myorders-tabs">
 				<button
-					className={status === "pending" ? "active" : ""}
+					className={status === "pending" ? "myorders-active" : ""}
 					onClick={() => setStatus("pending")}
 				>
 					Received
 				</button>
 				<button
-					className={status === "accepted" ? "active" : ""}
+					className={status === "accepted" ? "myorders-active" : ""}
 					onClick={() => setStatus("accepted")}
 				>
 					Accepted
 				</button>
 				<button
-					className={status === "delivered" ? "active" : ""}
+					className={status === "delivered" ? "myorders-active" : ""}
 					onClick={() => setStatus("delivered")}
 				>
 					Delivered
 				</button>
 				<button
-					className={status === "shipped" ? "active" : ""}
+					className={status === "shipped" ? "myorders-active" : ""}
 					onClick={() => setStatus("shipped")}
 				>
 					Shipped
 				</button>
 				<button
-					className={status === "rejected" ? "active" : ""}
+					className={status === "rejected" ? "myorders-active" : ""}
 					onClick={() => setStatus("rejected")}
 				>
 					Rejected
 				</button>
 			</div>
+
 			{orders
 				.filter((order) => order.status === status)
 				.map((order) => (
-					<div key={order._id} className="order-card">
+					<div key={order._id} className="myorders-card">
 						<p>
 							<strong>Buyer Name:</strong> {order.customerName}
 						</p>
 						<p>
-							<strong>Order Recieving Date:</strong> {new Date(order.date).toLocaleDateString()}
+							<strong>Order Recieving Date:</strong>{" "}
+							{new Date(order.date).toLocaleDateString()}
 						</p>
 
 						<p>
-							<strong>Shipping Address:</strong>{
-								order.shippingAddress
-									? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}`
-									: "N/A"
-							}
+							<strong>Shipping Address:</strong>{" "}
+							{order.shippingAddress
+								? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}`
+								: "N/A"}
 						</p>
 
 						<p>
 							<strong>Items:</strong>
 						</p>
+
 						<table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "10px" }}>
 							<thead>
 								<tr>
@@ -136,23 +142,27 @@ function MyOrders() {
 							<strong>Status:</strong> {order.status}
 						</p>
 
-						<div className="action-buttons">
-							{(status === "pending" || "accepted") &&
-								"Update Status:"}
-							{(status === "pending") &&
+						<div className="myorders-actions">
+							{(status === "pending" || "accepted") && "Update Status:"}
+
+							{status === "pending" && (
 								<button onClick={() => updateOrderStatus(order._id, "accepted")}>
 									Accept
-								</button>}
-							{(status === "pending") &&
+								</button>
+							)}
+
+							{status === "pending" && (
 								<button onClick={() => updateOrderStatus(order._id, "rejected")}>
 									Reject
-								</button>}
-							{(status === "accepted") &&
+								</button>
+							)}
+
+							{status === "accepted" && (
 								<button onClick={() => updateOrderStatus(order._id, "shipped")}>
 									Shipped
-								</button>}
+								</button>
+							)}
 						</div>
-
 					</div>
 				))}
 		</div>

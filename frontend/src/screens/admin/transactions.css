@@ -1,238 +1,296 @@
-/*
- * Transactions Component Styles
- * A modern, clean, and animated design for a transactions dashboard.
- */
-
 :root {
-  --primary-color: #4a90e2;
-  --secondary-color: #2c3e50;
-  --bg-light: #f4f7f9;
-  --text-dark: #333;
-  --text-light: #666;
-  --border-color: #e0e6ed;
-  --success-color: #2ecc71;
-  --box-shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --primary-green: #8F9E6F;
+  --dark-green: #3E4B2C;
+  --light-green: #E9F6E8;
+  --nav-green: #9AAA6F;
+  --beige: #E3C79E;
+  --page-bg: #F7FAF7;
+  --text-dark: #333333;
+  --white: #FFFFFF;
+  --shadow: 0 8px 30px rgba(62, 75, 44, 0.06);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body {
-  background-color: var(--bg-light);
-}
-
-/* Container */
-.transactions-container {
+/* Base Container */
+.tx-container {
   max-width: 1100px;
   margin: 40px auto;
-  padding: 160px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: var(--box-shadow-light);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.transactions-container:hover {
-  box-shadow: var(--box-shadow-hover);
-}
-
-/* Header */
-.transactions-header {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: var(--secondary-color);
-  text-align: center;
-  position: relative;
-}
-
-.transactions-header::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background-color: var(--primary-color);
-  border-radius: 2px;
-  animation: header-underline 0.5s ease-out forwards;
-}
-
-@keyframes header-underline {
-  from { width: 0; }
-  to { width: 60px; }
-}
-
-/* Filter Controls */
-.filter-controls {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 25px;
-  gap: 15px;
-}
-
-.filter-controls label {
-  font-weight: 500;
-  color: var(--text-light);
-}
-
-.filter-controls select {
-  padding: 10px 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 15px;
+  padding: 0 20px;
+  background-color: var(--page-bg);
   color: var(--text-dark);
-  transition: all 0.3s ease-in-out;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 18px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
 }
 
-.filter-controls select:hover {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
-}
-
-/* Table */
-.transactions-table-wrapper {
-  overflow-x: auto;
-  border-radius: 12px;
-  box-shadow: var(--box-shadow-light);
-}
-
-.transactions-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 15px;
-}
-
-.transactions-table th,
-.transactions-table td {
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--border-color);
+/* Header Section */
+.tx-header-section {
+  margin-bottom: 32px;
   text-align: left;
+  margin-top: 5rem;
 }
 
-.transactions-table th {
-  background: var(--bg-light);
-  font-weight: 600;
-  color: var(--secondary-color);
+.tx-header {
+  color: var(--dark-green);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.tx-subtitle {
+  color: var(--nav-green);
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+/* Search & Filter Bar */
+.tx-filter-controls {
+  display: flex;
+  gap: 20px;
+  background: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  align-items: flex-end;
+  border: 1px solid var(--light-green);
+}
+
+.tx-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.tx-control-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--dark-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tx-control-group select,
+.tx-search {
+  padding: 12px 16px;
+  border: 2px solid var(--light-green);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  transition: var(--transition);
+  outline: none;
+  background-color: var(--white);
+}
+
+.tx-control-group select:focus,
+.tx-search:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(143, 158, 111, 0.15);
+}
+
+/* Table Design */
+.tx-table-wrapper {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--light-green);
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+.tx-table thead {
+  background-color: var(--light-green);
+}
+
+.tx-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--dark-green);
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
-.transactions-table tbody tr {
-  background: #ffffff;
-  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+.tx-table tbody tr {
+  border-bottom: 1px solid var(--light-green);
+  transition: var(--transition);
 }
 
-.transactions-table tbody tr:hover {
-  background: #f0f8ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
+.tx-table tbody tr:hover {
+  background-color: rgba(227, 199, 158, 0.1); /* Subtle beige glow */
 }
 
-/* Amount column style */
-.transactions-table td:nth-child(4) {
+.tx-table td {
+  padding: 18px 20px;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* Specific Cells */
+.tx-id-cell {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.8rem;
+  color: var(--nav-green);
+}
+
+.tx-amount-cell {
   font-weight: 700;
-  color: var(--success-color);
+  color: var(--dark-green);
 }
 
-/* No Data */
-.no-transactions {
-  padding: 40px;
+/* Dynamic Badges (Matches your .replace logic) */
+.tx-badge {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Badge Color Logic */
+.tx-badge.patient-doctor {
+  background-color: var(--dark-green);
+  color: var(--white);
+}
+
+.tx-badge.patient-retailer {
+  background-color: var(--primary-green);
+  color: var(--white);
+}
+
+.tx-badge.doctor-retailer {
+  background-color: var(--beige);
+  color: var(--dark-green);
+}
+
+/* Loading & States */
+.tx-status-message {
+  padding: 80px;
   text-align: center;
-  color: var(--text-light);
-  font-style: italic;
-  font-size: 18px;
-  background-color: var(--bg-light);
-  border-radius: 12px;
-  margin-top: 20px;
-  animation: fadeIn 0.5s ease-out;
+  color: var(--dark-green);
 }
 
-/* === extra styles for search bar === */
-.filter-controls {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  align-items: center;
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--light-green);
+  border-top: 4px solid var(--primary-green);
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 1s linear infinite;
 }
 
-.filter-controls label {
-  font-weight: 500;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.transaction-search {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  flex: 1;
-  min-width: 200px; /* ensures it fits even on small screens */
+/* No Results State */
+.tx-no-transactions {
+  text-align: center;
+  padding: 60px;
+  background: var(--white);
+  border-radius: 16px;
+  border: 2px dashed var(--beige);
 }
 
-.transaction-search:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
 }
 
-/* responsive tweaks if needed */
-@media (max-width: 480px) {
-  .filter-controls {
+/* --- Responsive Layout (Mobile) --- */
+@media (max-width: 850px) {
+  .tx-filter-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  .transaction-search {
-    width: 100%;
+
+  .tx-table thead {
+    display: none;
+  }
+
+  .tx-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 2px solid var(--light-green);
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .tx-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--page-bg);
+    text-align: right;
+  }
+
+  .tx-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--nav-green);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    margin-right: 15px;
+    text-align: left;
+  }
+
+  .tx-table td:last-child {
+    border-bottom: none;
   }
 }
 
-
-/* Animation for loading/error messages */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.tx-container {
+    /* 1. Mobile First: Take up almost full width on small screens */
+    width: 95%;
+    
+    /* 2. Desktop Cap: Don't let the table stretch too far on big monitors */
+    max-width: 1200px;
+    
+    /* 3. Centering & Spacing */
+    margin: 20px auto; /* Reduced margin for mobile, scales up naturally */
+    padding: 15px;
+    
+    /* 4. The Visuals */
+    background-color: var(--page-bg);
+    color: var(--text-dark);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* 5. Smooth Adaptation */
+    transition: all 0.3s ease-in-out;
+    box-sizing: border-box; /* Ensures padding doesn't break the width */
 }
 
-.transactions-error {
-  padding: 20px;
-  color: #d9534f;
-  background-color: #f2dede;
-  border: 1px solid #ebccd1;
-  border-radius: 8px;
-  text-align: center;
-  animation: fadeIn 0.5s ease-out;
+/* --- Responsive Adjustments --- */
+
+/* For Tablets and Small Laptops */
+@media (min-width: 768px) {
+    .tx-container {
+        width: 90%;
+        margin: 40px auto;
+        padding: 25px;
+    }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .transactions-container {
-    padding: 20px;
-    margin: 20px;
-  }
+/* For Standard PC Desktops (Full HD) */
+@media (min-width: 1200px) {
+    .tx-container {
+        width: 85%; /* Gives a nice 'gutter' on the sides */
+    }
+}
 
-  .transactions-header {
-    font-size: 26px;
-  }
-
-  .transactions-table th,
-  .transactions-table td {
-    padding: 12px 15px;
-    font-size: 13px;
-  }
+/* For Ultra-Wide or 4K Monitors */
+@media (min-width: 1920px) {
+    .tx-container {
+        max-width: 1440px; /* Expands slightly for very large displays */
+    }
 }

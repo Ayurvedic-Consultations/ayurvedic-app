@@ -77,7 +77,6 @@ const PrescribeIndex = () => {
 	const [prescriptions, setPrescriptions] = useState(samplePrescriptions);
 	const [loadingPrescriptions, setLoadingPrescriptions] = useState(true);
 
-	// Fetch patient details
 	useEffect(() => {
 		const fetchPatientDetails = async () => {
 			if (!patientId) {
@@ -108,7 +107,6 @@ const PrescribeIndex = () => {
 		fetchPatientDetails();
 	}, [patientId]);
 
-	// Fetch booking details
 	useEffect(() => {
 		const fetchPrescriptions = async () => {
 			if (!patientId) {
@@ -138,13 +136,11 @@ const PrescribeIndex = () => {
 		};
 
 		fetchPrescriptions();
-
-	}, [bookingId, patientId])
+	}, [bookingId, patientId]);
 
 	return (
-		<div className="container">
-			<main className="main">
-				{/* Patient Information */}
+		<div className="pi-container">
+			<main className="pi-main">
 				<PatientHeader patient={patientData} loading={loading} />
 				<PrescriptionHistory prescriptions={prescriptions} loading={loadingPrescriptions} />
 				<PrescriptionTabs bookingId={bookingId} patientId={patientId} doctorId={doctorId}/>

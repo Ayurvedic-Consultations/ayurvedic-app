@@ -1,211 +1,214 @@
-/* --- Base Container --- */
-.patient-container {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  padding: 20px;
-  background-color: #f4f7f9;
-  min-height: 100vh;
+:root {
+  --primary-green: #8F9E6F;
+  --dark-green: #3E4B2C;
+  --light-green: #E9F6E8;
+  --nav-green: #9AAA6F;
+  --beige: #E3C79E;
+  --page-bg: #F7FAF7;
+  --text-dark: #333333;
+  --white: #FFFFFF;
+  
+  /* Modern UI Variables */
+  --radius-lg: 16px;
+  --radius-md: 8px;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.1);
 }
 
-/* --- Header and Back Button --- */
-.header {
+.patfull-container {
+  /* Fluid width: 95% on smaller screens, maxes out at 1600px */
+  width: 95%;
+  max-width: 1600px;
+  margin: 8rem auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
+}
+
+/* Header & Navigation */
+.patfull-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 25px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.back-btn {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  color: #333;
-  transition: all 0.2s ease-in-out;
+.patfull-header h2 {
+  color: var(--dark-green);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  margin: 0;
 }
 
-.back-btn:hover {
-  background-color: #f0f0f0;
-  border-color: #d0d0d0;
-}
-
-.header h2 {
-  color: #2c3e50;
-  font-size: 28px;
-  font-weight: 600;
-  flex-grow: 1;
-  text-align: center;
-}
-
-/* --- Search Bar --- */
-.data-search-bar {
-  margin-bottom: 25px;
-}
-
-.data-search-bar input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  color: #555;
-  transition: border-color 0.2s;
-}
-
-.data-search-bar input:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-/* --- Table Styles --- */
-.table-wrapper {
-  overflow-x: auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.patient-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.patient-table thead {
-  background-color: #2c3e50;
-  color: #fff;
-}
-
-.patient-table th {
-  padding: 15px 20px;
-  font-weight: 600;
-  text-align: left;
-  text-transform: uppercase;
-  font-size: 14px;
-}
-
-.patient-table tbody tr {
-  border-bottom: 1px solid #ecf0f1;
-  transition: background-color 0.2s ease;
-}
-
-.patient-table tbody tr:hover {
-  background-color: #f5f8fa;
-}
-
-.patient-table td {
-  padding: 15px 20px;
-  font-size: 16px;
-  color: #555;
-}
-
-.no-patients {
-  text-align: center;
-  color: #7f8c8d;
-  font-size: 16px;
-  padding: 50px;
-}
-
-/* --- Action Buttons --- */
-.action-buttons {
-  white-space: nowrap; /* Prevents buttons from wrapping */
-}
-
-.edit-btn, .delete-btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+.patfull-back-btn {
+  background: var(--nav-green);
+  color: var(--white);
   border: none;
-  color: #fff;
-  margin-right: 8px;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.edit-btn {
-  background-color: #3498db;
+.patfull-back-btn:hover {
+  background: var(--dark-green);
+  transform: translateX(-3px);
 }
 
-.edit-btn:hover {
-  background-color: #2980b9;
+/* Search Area */
+.patfull-search-bar {
+  margin-bottom: 2rem;
 }
 
-.delete-btn {
-  background-color: #e74c3c;
+.patfull-search-bar input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid var(--light-green);
+  border-radius: var(--radius-md);
+  background: var(--page-bg);
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-.delete-btn:hover {
-  background-color: #c0392b;
+.patfull-search-bar input:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(143, 158, 111, 0.1);
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
-  .patient-container {
-    padding: 15px;
-  }
-  
-  .header {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-  }
+/* --- THE RESPONSIVE GRID TABLE --- */
+.patfull-table-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Fallback for very small screens */
+}
 
-  .back-btn {
-    align-self: flex-start;
-  }
-  
-  .patient-table {
-    border: none;
-  }
+.patfull-table {
+  width: 100%;
+  min-width: 900px; /* Ensures desktop readability */
+  border-collapse: separate;
+  border-spacing: 0 8px; /* Adds space between rows */
+}
 
-  .patient-table thead {
-    display: none; /* Hide the table header */
-  }
+.patfull-table thead th {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  padding: 1.2rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
-  .patient-table, .patient-table tbody, .patient-table tr, .patient-table td {
-    display: block; /* Make table elements act like blocks */
-    width: 100%;
+/* Rounding the header corners */
+.patfull-table thead th:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.patfull-table thead th:last-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+.patfull-table tbody tr {
+  background-color: var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.patfull-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background-color: var(--page-bg);
+}
+
+.patfull-table td {
+  padding: 1.2rem 1rem;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Table Data Styling */
+.patfull-table td:first-child { 
+  border-left: 1px solid #f0f0f0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  font-weight: 600;
+  color: var(--dark-green);
+}
+
+.patfull-table td:last-child { 
+  border-right: 1px solid #f0f0f0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* Action Buttons */
+.patfull-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.patfull-edit-btn, .patfull-delete-btn {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.patfull-edit-btn {
+  background: var(--primary-green);
+  color: var(--white);
+}
+
+.patfull-edit-btn:hover {
+  background: var(--dark-green);
+}
+
+.patfull-delete-btn {
+  background: var(--beige);
+  color: var(--dark-green);
+}
+
+.patfull-delete-btn:hover {
+  background: #d8b684;
+  filter: brightness(0.9);
+}
+
+/* --- ADAPTIVE LOADING --- */
+.patfull-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.5rem;
+  color: var(--primary-green);
+}
+
+/* --- MEDIA QUERIES FOR DIFFERENT DESKTOPS --- */
+
+/* For Small Laptops (1024px to 1280px) */
+@media (max-width: 1280px) {
+  .patfull-container {
+    width: 98%;
+    padding: 1.5rem;
   }
   
-  .patient-table tr {
-    border: 1px solid #e0e0e0;
-    margin-bottom: 15px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    padding: 15px;
-    display: grid;
-    gap: 5px;
+  .patfull-table td, .patfull-table th {
+    padding: 1rem 0.8rem;
+  }
+}
+
+/* For Extra Large Screens (4K / 2560px+) */
+@media (min-width: 1920px) {
+  .patfull-container {
+    max-width: 1800px;
   }
   
-  .patient-table td {
-    text-align: right;
-    padding: 10px 0;
-    position: relative;
-    border-bottom: 1px solid #ecf0f1;
-  }
-  
-  .patient-table td:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-  
-  .patient-table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  
-  .action-buttons {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .no-patients {
-    text-align: center;
-    padding: 30px;
+  .patfull-table td {
+    font-size: 1.1rem;
+    padding: 1.5rem;
   }
 }

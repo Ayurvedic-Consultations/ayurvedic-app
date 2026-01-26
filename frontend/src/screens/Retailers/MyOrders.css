@@ -8,7 +8,7 @@ body {
 	padding: 0;
 }
 
-.orders-container {
+.myorders-container {
     width: 80%;
     max-width: 900px;
     margin: 40px auto;
@@ -25,13 +25,19 @@ h1 {
 }
 
 /* Order Tabs */
-.order-tabs {
+.myorders-tabs {
 	display: flex;
-	justify-content: flex-end;
-	margin-bottom: 30px;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+	overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+
+  /* smooth mobile scrolling */
+  -webkit-overflow-scrolling: touch;
 }
 
-.order-tabs button {
+.myorders-tabs button {
 	padding: 12px 25px;
 	margin-left: 10px;
 	background-color: #f8f9fa;
@@ -44,18 +50,18 @@ h1 {
 	color: #333;
 }
 
-.order-tabs button.active {
+.myorders-tabs button.myorders-active {
 	background-color: #4caf50;
 	border-color: #4caf50;
 	color: white;
 }
 
-.order-tabs button:not(.active):hover {
+.myorders-tabs button:not(.myorders-active):hover {
 	background-color: #e6e6e6;
 }
 
 /* Order Card */
-.order-card {
+.myorders-card {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -66,30 +72,32 @@ h1 {
 	background-color: #ffffff;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	transition: transform 0.2s;
+	overflow-x: auto;
+	/* overflow-x: scroll; */
 }
 
-.order-card:hover {
+.myorders-card:hover {
 	transform: translateY(-5px);
 }
 
-.order-card p {
+.myorders-card p {
 	margin: 10px 0;
 	font-size: 1rem;
 }
 
-.order-card strong {
+.myorders-card strong {
 	font-weight: 600;
 	color: #4caf50;
 }
 
 /* Action Buttons */
-.action-buttons {
+.myorders-actions {
 	margin-top: 20px;
 	display: flex;
 	gap: 15px;
 }
 
-.action-buttons button {
+.myorders-actions button {
 	padding: 12px 20px;
 	font-size: 0.9rem;
 	font-weight: 600;
@@ -99,20 +107,20 @@ h1 {
 	border: none;
 }
 
-.action-buttons button:nth-child(1) {
+.myorders-actions button:nth-child(1) {
 	background-color: #4caf50;
 	color: white;
 }
 
-.action-buttons button:nth-child(1):hover {
+.myorders-actions button:nth-child(1):hover {
 	background-color: #45a045;
 }
 
-.action-buttons button:nth-child(2) {
+.myorders-actions button:nth-child(2) {
 	background-color: #f44336;
 	color: white;
 }
 
-.action-buttons button:nth-child(2):hover {
+.myorders-actions button:nth-child(2):hover {
 	background-color: #e53935;
 }
