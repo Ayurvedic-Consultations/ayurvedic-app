@@ -86,6 +86,7 @@ exports.getPatientDietYoga = async (req, res) => {
 	const { patientId } = req.params; // Patient's ID from URL
 
 	try {
+		console.log("fetching patinet diet yuoga >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
 		const dietYogaPlan = await DietYoga.findOne({ patient: patientId });
 
 		if (!dietYogaPlan) {
