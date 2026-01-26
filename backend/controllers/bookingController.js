@@ -1,5 +1,8 @@
 const Booking = require("../models/Booking");
 const Doctor = require("../models/Doctor");
+const Medicine = require("../models/Medicine");
+const Cart = require("../models/Cart");
+const Notification = require("../models/Notification");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
@@ -322,66 +325,176 @@ exports.deleteBooking = async (req, res) => {
 };
 
 // Add or update recommended supplements
+// exports.prescribeMedicine = async (req, res) => {
+//     // 1. Get the data exactly as sent by your frontend handleSubmit
+//     const { 
+//         bookingId, 
+//         medicineData 
+//     } = req.body;
+
+//     try {
+//         // 2. Validate Input
+//         if (!bookingId || !medicineData) {
+//             return res.status(400).json({ error: "Booking ID and Medicine Data are required." });
+//         }
+
+//         // 3. Create the Supplement Object
+//         // We manually map the frontend fields to match your Mongoose Schema exactly
+//         const newSupplement = {
+//             medicineName: medicineData.medicineName,
+//             reason: medicineData.reason, 
+//             dosage: medicineData.dosage,
+//             instructions: medicineData.instructions,
+//             duration: `${medicineData.startDate} to ${medicineData.endDate}`,
+//             startDate: new Date(medicineData.startDate),
+//             endDate: new Date(medicineData.endDate),
+//             externalLink: medicineData.externalLink || "" 
+//         };
+
+//         // 4. Perform the Update
+//         // $push: Appends 'newSupplement' to the 'recommendedSupplements' array
+//         const updatedBooking = await Booking.findByIdAndUpdate(
+//             bookingId,
+//             { 
+//                 $push: { recommendedSupplements: newSupplement } 
+//             },
+//             { 
+//                 new: true,          // Returns the updated document so you can see the change
+//                 runValidators: true // Ensures the new item follows schema rules (required fields, etc.)
+//             }
+//         );
+
+//         if (!updatedBooking) {
+//             return res.status(404).json({ error: "Booking not found." });
+//         }
+
+//         return res.status(200).json({
+//             message: "New prescription added successfully",
+//             currentPrescriptions: updatedBooking.recommendedSupplements
+//         });
+
+//     } catch (error) {
+//         console.error("Error prescribing medicine:", error);
+//         return res.status(500).json({ error: "Server error", details: error.message });
+//     }
+// };
+
 exports.prescribeMedicine = async (req, res) => {
-    // 1. Get the data exactly as sent by your frontend handleSubmit
-    const { 
-        bookingId, 
-        medicineData // Contains: { medicineName, reason, dosage, startDate, endDate, instructions, externalLink }
-    } = req.body;
+	const {
+		bookingId,
+		medicineData
+	} = req.body;
 
-    try {
-        // 2. Validate Input
-        if (!bookingId || !medicineData) {
-            return res.status(400).json({ error: "Booking ID and Medicine Data are required." });
-        }
+	try {
+		// 1. Validate Input
+		if (!bookingId || !medicineData) {
+			return res.status(400).json({ error: "Booking ID and Medicine Data are required." });
+		}
 
-        // 3. Create the Supplement Object
-        // We manually map the frontend fields to match your Mongoose Schema exactly
-        const newSupplement = {
-            medicineName: medicineData.medicineName,
-            
-            // FIX 1: Map 'reason' (Frontend) to 'forIllness' (Backend Schema)
-            reason: medicineData.reason, 
-            
-            dosage: medicineData.dosage,
-            instructions: medicineData.instructions,
-            
-            // FIX 2: Create the 'duration' string required by your schema
-            duration: `${medicineData.startDate} to ${medicineData.endDate}`,
-            
-            startDate: new Date(medicineData.startDate),
-            endDate: new Date(medicineData.endDate),
+		// 2. Fetch the Booking first (We need patientId & doctorId for Cart/Notifs)
+		const booking = await Booking.findById(bookingId);
+		if (!booking) {
+			return res.status(404).json({ error: "Booking not found." });
+		}
 
-            // Optional: Only saves if you added 'externalLink' to your schema
-            externalLink: medicineData.externalLink || "" 
-        };
+		// --- STEP A: Update Booking (Prescription Logic) ---
+		const newSupplement = {
+			medicineName: medicineData.medicineName,
+			reason: medicineData.reason, 
+			dosage: medicineData.dosage,
+			instructions: medicineData.instructions,
+			duration: `${medicineData.startDate} to ${medicineData.endDate}`,
+			startDate: new Date(medicineData.startDate),
+			endDate: new Date(medicineData.endDate),
+			externalLink: medicineData.externalLink || ""
+		};
 
-        // 4. Perform the Update
-        // $push: Appends 'newSupplement' to the 'recommendedSupplements' array
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            bookingId,
-            { 
-                $push: { recommendedSupplements: newSupplement } 
-            },
-            { 
-                new: true,          // Returns the updated document so you can see the change
-                runValidators: true // Ensures the new item follows schema rules (required fields, etc.)
-            }
-        );
+		booking.recommendedSupplements.push(newSupplement);
+		await booking.save();
 
-        if (!updatedBooking) {
-            return res.status(404).json({ error: "Booking not found." });
-        }
+		// --- STEP B: Check Inventory & Update Cart ---
+		// 1. Search for the medicine in your DB (Case insensitive search)
+		const medicineInStock = await Medicine.findOne({
+			name: { $regex: new RegExp(`^${medicineData.medicineName}$`, "i") }
+		});
 
-        return res.status(200).json({
-            message: "New prescription added successfully",
-            currentPrescriptions: updatedBooking.recommendedSupplements
-        });
+		let cartMessage = "";
 
-    } catch (error) {
-        console.error("Error prescribing medicine:", error);
-        return res.status(500).json({ error: "Server error", details: error.message });
-    }
+		if (medicineInStock) {
+			let cart = await Cart.findOne({ patientId: booking.patientId });
+
+			// Calculate item details
+			const itemToAdd = {
+				medicineId: medicineInStock._id,
+				quantity: 1, // Default to 1, or parse from dosage if you have logic for that
+				price: medicineInStock.price
+			};
+
+			if (!cart) {
+				// Create new cart if none exists
+				cart = new Cart({
+					patientId: booking.patientId,
+					doctorId: booking.doctorId, // Linking to this specific doctor
+					items: [itemToAdd],
+					totalPrice: medicineInStock.price
+				});
+			} else {
+				// Append to existing cart
+
+				// Check if item already exists to avoid duplicates (Optional, but good UX)
+				const existingItemIndex = cart.items.findIndex(
+					item => item.medicineId.toString() === medicineInStock._id.toString()
+				);
+
+				if (existingItemIndex > -1) {
+					// Item exists, just increase quantity
+					cart.items[existingItemIndex].quantity += 1;
+				} else {
+					// Item does not exist, push new
+					cart.items.push(itemToAdd);
+				}
+
+				// Recalculate Total Price
+				cart.totalPrice += medicineInStock.price;
+				cart.updatedAt = Date.now();
+			}
+
+			await cart.save();
+			cartMessage = `and has been automatically added to your cart.`;
+		} else {
+			cartMessage = `but is currently unavailable in our store. Please purchase it externally.`;
+		}
+
+		// --- STEP C: Create Notification ---
+
+		// Use doctorName from booking schema if available, otherwise "Your Doctor"
+		const doctorName = booking.doctorName || "Your Doctor";
+
+		const notificationMessage = `Dr. ${doctorName} prescribed ${medicineData.medicineName}. It has been added to your prescription list ${cartMessage}`;
+
+		const newNotification = new Notification({
+			userId: booking.patientId,
+			role: 'patient',
+			orderId: bookingId, // Linking to booking ID as reference
+			type: 'system',
+			message: notificationMessage,
+			isRead: false
+		});
+
+		await newNotification.save();
+
+		// --- Final Response ---
+
+		return res.status(200).json({
+			message: "Prescription added and cart processed successfully",
+			currentPrescriptions: booking.recommendedSupplements,
+			cartUpdated: !!medicineInStock
+		});
+
+	} catch (error) {
+		console.error("Error prescribing medicine:", error);
+		return res.status(500).json({ error: "Server error", details: error.message });
+	}
 };
 
 // Get all supplements for a booking

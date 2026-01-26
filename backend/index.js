@@ -20,6 +20,7 @@ const generateBlogRoutes = require("./routes/generateBlogRoutes");
 const getAllRecords = require("./routes/patientRecordsRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const retailerRoutes = require("./routes/retailerRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 
 mongoose.set('debug', true);
@@ -61,6 +62,7 @@ app.use("/api/prakriti", prakritiRoutes)
 app.use("/api/diet-yoga", dietYogaRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use("/api/search", searchRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.use("/api/upload", uploadRoutes);
 app.use("/api/webhook", generateBlogRoutes);
