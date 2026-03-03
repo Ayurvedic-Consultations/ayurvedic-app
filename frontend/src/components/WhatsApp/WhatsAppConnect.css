@@ -1,0 +1,428 @@
+/* ═══════════════════════════════════════════════════════
+   WhatsApp Connect Widget — Premium Styling
+   ═══════════════════════════════════════════════════════ */
+
+.wa-widget {
+  background: linear-gradient(135deg, #0a2e1a 0%, #0d3d23 50%, #0a2e1a 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(37, 211, 102, 0.15), 0 2px 8px rgba(0,0,0,0.2);
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  margin: 20px 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wa-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(37, 211, 102, 0.25), 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* ─── Header ─── */
+.wa-widget-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, rgba(37, 211, 102, 0.15), rgba(37, 211, 102, 0.05));
+  border-bottom: 1px solid rgba(37, 211, 102, 0.15);
+  gap: 14px;
+}
+
+.wa-header-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.wa-header-text h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #e8f5e9;
+  letter-spacing: -0.3px;
+}
+
+.wa-header-text p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+
+.wa-status-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.wa-status-badge.wa-linked {
+  background: rgba(37, 211, 102, 0.15);
+  color: #25D366;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+}
+
+.wa-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #25D366;
+  animation: wa-pulse 2s infinite;
+}
+
+@keyframes wa-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(37, 211, 102, 0); }
+}
+
+/* ─── Body ─── */
+.wa-widget-body {
+  padding: 24px;
+}
+
+/* ─── Loading ─── */
+.wa-widget-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 12px;
+  color: rgba(255,255,255,0.5);
+  font-size: 14px;
+}
+
+.wa-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(37, 211, 102, 0.2);
+  border-top-color: #25D366;
+  border-radius: 50%;
+  animation: wa-spin 0.8s linear infinite;
+}
+
+.wa-spinner-sm {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(37, 211, 102, 0.2);
+  border-top-color: #25D366;
+  border-radius: 50%;
+  animation: wa-spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes wa-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Linked View ─── */
+.wa-linked-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wa-linked-info {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wa-info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wa-info-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  min-width: 100px;
+}
+
+.wa-info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8f5e9;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.wa-lang-select {
+  background: rgba(255,255,255,0.1);
+  color: #e8f5e9;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.wa-lang-select:hover,
+.wa-lang-select:focus {
+  border-color: #25D366;
+}
+
+.wa-lang-select option {
+  background: #1a1a2e;
+  color: #e8f5e9;
+}
+
+/* ─── Features List ─── */
+.wa-features-list {
+  background: rgba(37, 211, 102, 0.05);
+  border: 1px solid rgba(37, 211, 102, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.wa-features-list h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #25D366;
+  font-weight: 600;
+}
+
+.wa-features-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.wa-features-list li {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+
+/* ─── Unlink ─── */
+.wa-unlink-confirm {
+  background: rgba(255, 76, 76, 0.08);
+  border: 1px solid rgba(255, 76, 76, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.wa-unlink-confirm p {
+  color: rgba(255,255,255,0.8);
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.wa-unlink-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ─── Unlinked View ─── */
+.wa-connect-section {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.wa-connect-illustration {
+  margin-bottom: 16px;
+  animation: wa-float 3s ease-in-out infinite;
+}
+
+@keyframes wa-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.wa-connect-section h4 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #e8f5e9;
+}
+
+.wa-connect-desc {
+  color: rgba(255,255,255,0.55);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Language Chips ─── */
+.wa-lang-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.wa-lang-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  transition: all 0.2s;
+}
+
+.wa-lang-chip:hover {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: rgba(37, 211, 102, 0.3);
+  color: #25D366;
+}
+
+/* ─── QR Section ─── */
+.wa-qr-section {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.wa-qr-wrapper {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: inline-block;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(37, 211, 102, 0.2);
+}
+
+.wa-qr-image {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.wa-qr-instruction {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.wa-qr-waiting {
+  color: rgba(255,255,255,0.45);
+  font-size: 13px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Buttons ─── */
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  text-decoration: none;
+}
+
+.wa-btn-primary {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.wa-btn-primary:hover {
+  background: linear-gradient(135deg, #2be672, #15a08f);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  transform: translateY(-1px);
+}
+
+.wa-btn-lg {
+  padding: 14px 28px;
+  font-size: 16px;
+  border-radius: 14px;
+}
+
+.wa-btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: #e8f5e9;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.wa-btn-secondary:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.wa-btn-outline {
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 13px;
+}
+
+.wa-btn-outline:hover {
+  border-color: rgba(255, 76, 76, 0.3);
+  color: #ff4c4c;
+}
+
+.wa-btn-danger {
+  background: rgba(255, 76, 76, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 76, 76, 0.3);
+}
+
+.wa-btn-danger:hover {
+  background: rgba(255, 76, 76, 0.25);
+}
+
+.wa-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 600px) {
+  .wa-widget-header {
+    padding: 16px 18px;
+    flex-wrap: wrap;
+  }
+
+  .wa-header-text h3 {
+    font-size: 16px;
+  }
+
+  .wa-status-badge {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .wa-features-list ul {
+    grid-template-columns: 1fr;
+  }
+
+  .wa-qr-image {
+    width: 160px;
+    height: 160px;
+  }
+}

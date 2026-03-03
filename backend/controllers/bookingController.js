@@ -3,9 +3,24 @@ const Doctor = require("../models/Doctor");
 const Medicine = require("../models/Medicine");
 const Cart = require("../models/Cart");
 const Notification = require("../models/Notification");
+const Patient = require("../models/Patient");
+const WhatsAppSession = require("../models/WhatsAppSession");
+const whatsappService = require("../services/whatsappService");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+
+// Helper to send WhatsApp notification to a patient
+const notifyPatientWhatsApp = async (patientId, sendFn, ...args) => {
+	try {
+		const session = await WhatsAppSession.findOne({ patientId, isActive: true });
+		if (session) {
+			await sendFn(session.whatsappNumber, ...args);
+		}
+	} catch (err) {
+		console.error("WhatsApp notify error:", err.message);
+	}
+};
 
 // Add or update rating and review
 exports.updateRatingAndReview = async (req, res) => {
@@ -121,6 +136,9 @@ exports.createBooking = async (req, res) => {
 
 		// Save the booking to the database
 		await newBooking.save();
+
+		// Send WhatsApp notification
+		notifyPatientWhatsApp(patientId, whatsappService.sendBookingConfirmation, newBooking);
 
 		return res.status(201).json({
 			message: "Appointment booked successfully",
@@ -263,6 +281,13 @@ exports.updateBookingStatus = async (req, res) => {
 			return res.status(404).json({ error: "Booking not found" });
 		}
 
+		// Send WhatsApp notification based on acceptance/denial
+		if (requestAccept === "accepted") {
+			notifyPatientWhatsApp(updatedBooking.patientId, whatsappService.sendMeetLink, updatedBooking);
+		} else if (requestAccept === "denied") {
+			notifyPatientWhatsApp(updatedBooking.patientId, whatsappService.sendBookingDenied, updatedBooking, doctorsMessage);
+		}
+
 		return res.status(200).json({
 			message: `Booking ${requestAccept === "y" ? "accepted" : "denied"
 				} successfully`,
@@ -294,6 +319,9 @@ exports.updateMeetLink = async (req, res) => {
 		if (!updatedBooking) {
 			return res.status(404).json({ error: "Booking not found" });
 		}
+
+		// Send meet link to patient via WhatsApp
+		notifyPatientWhatsApp(updatedBooking.patientId, whatsappService.sendMeetLink, updatedBooking);
 
 		return res.status(200).json({
 			message: "Meet link updated successfully",
@@ -400,7 +428,7 @@ exports.prescribeMedicine = async (req, res) => {
 		// --- STEP A: Update Booking (Prescription Logic) ---
 		const newSupplement = {
 			medicineName: medicineData.medicineName,
-			reason: medicineData.reason, 
+			reason: medicineData.reason,
 			dosage: medicineData.dosage,
 			instructions: medicineData.instructions,
 			duration: `${medicineData.startDate} to ${medicineData.endDate}`,
