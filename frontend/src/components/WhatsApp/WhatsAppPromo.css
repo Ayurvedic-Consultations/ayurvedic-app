@@ -1,0 +1,305 @@
+/* ═══════════════════════════════════════════════════════
+   WhatsApp Promo Section — Landing Page
+   ═══════════════════════════════════════════════════════ */
+
+.wa-promo-section {
+    padding: 80px 24px;
+    background: linear-gradient(180deg, #0a0a1a 0%, #0d1f12 50%, #0a0a1a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.wa-promo-section::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(37, 211, 102, 0.08), transparent 70%);
+    pointer-events: none;
+}
+
+.wa-promo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* ─── Left Content ─── */
+.wa-promo-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wa-promo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(37, 211, 102, 0.1);
+    border: 1px solid rgba(37, 211, 102, 0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #25D366;
+    letter-spacing: 1px;
+    width: fit-content;
+}
+
+.wa-promo-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #25D366;
+    animation: wa-promo-pulse 2s infinite;
+}
+
+@keyframes wa-promo-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.wa-promo-title {
+    font-size: 40px;
+    font-weight: 800;
+    color: #f0f0f0;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin: 0;
+}
+
+.wa-promo-highlight {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.wa-promo-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0;
+    max-width: 480px;
+}
+
+/* ─── Features ─── */
+.wa-promo-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.wa-promo-feature {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.wa-promo-feature:hover {
+    background: rgba(37, 211, 102, 0.05);
+    border-color: rgba(37, 211, 102, 0.15);
+}
+
+.wa-promo-feature-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.wa-promo-feature strong {
+    font-size: 14px;
+    color: #e8f5e9;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.wa-promo-feature p {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ─── CTA Button ─── */
+.wa-promo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: fit-content;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+}
+
+.wa-promo-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+}
+
+/* ─── Language tags ─── */
+.wa-promo-langs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.wa-promo-langs span {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+}
+
+/* ─── Right Visual — Phone Mockup ─── */
+.wa-promo-visual {
+    display: flex;
+    justify-content: center;
+}
+
+.wa-promo-phone {
+    width: 320px;
+    background: #111b21;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(37, 211, 102, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    animation: wa-phone-float 4s ease-in-out infinite;
+}
+
+@keyframes wa-phone-float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(0.5deg);
+    }
+}
+
+.wa-promo-phone-header {
+    background: #202c33;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wa-promo-phone-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.wa-phone-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e9edef;
+}
+
+.wa-phone-status {
+    font-size: 12px;
+    color: #25D366;
+}
+
+.wa-promo-phone-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 320px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23111b21' width='100' height='100'/%3E%3Ccircle fill='%23ffffff' cx='50' cy='50' r='0.5' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ─── Chat Bubbles ─── */
+.wa-chat-bubble {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    position: relative;
+}
+
+.wa-chat-bubble p {
+    margin: 0 0 2px;
+    color: #e9edef;
+}
+
+.wa-chat-time {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    float: right;
+    margin-top: 4px;
+    margin-left: 8px;
+}
+
+.wa-chat-received {
+    background: #202c33;
+    align-self: flex-start;
+    border-top-left-radius: 2px;
+}
+
+.wa-chat-sent {
+    background: #005c4b;
+    align-self: flex-end;
+    border-top-right-radius: 2px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+    .wa-promo-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .wa-promo-title {
+        font-size: 30px;
+    }
+
+    .wa-promo-features {
+        grid-template-columns: 1fr;
+    }
+
+    .wa-promo-visual {
+        order: -1;
+    }
+
+    .wa-promo-phone {
+        width: 280px;
+    }
+}

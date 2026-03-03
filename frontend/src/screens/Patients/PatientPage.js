@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientPage.css"; // Import the CSS file for styling
 import { AuthContext } from "../../context/AuthContext";
+import WhatsAppConnectWidget from "../../components/WhatsApp/WhatsAppConnectWidget";
 
 // Import images for each service category
 // import appointmentImage from "../../media/doctor.png";
@@ -193,6 +194,12 @@ function PatientPage() {
 							</p>
 						</div>
 					</div>
+				</section>
+
+				{/* WhatsApp Integration Section */}
+				<section className="services-section">
+					<h2>Stay Connected via WhatsApp</h2>
+					<WhatsAppConnectWidget />
 				</section>
 			</main>
 		</div>

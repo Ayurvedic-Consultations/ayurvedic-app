@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId, 
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   role: {
@@ -17,7 +17,7 @@ const NotificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['order', 'payment', 'delivery', 'system'],
+    enum: ['order', 'payment', 'delivery', 'system', 'appointment', 'meetlink', 'reminder'],
     default: 'system'
   },
   message: {
@@ -25,6 +25,10 @@ const NotificationSchema = new mongoose.Schema({
     required: true
   },
   isRead: {
+    type: Boolean,
+    default: false
+  },
+  whatsappDelivered: {
     type: Boolean,
     default: false
   },
