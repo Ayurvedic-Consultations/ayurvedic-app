@@ -506,3 +506,138 @@
     font-size: 18px;
   }
 }
+
+/* =========================================
+   YOGA SECTION STYLING (New & Improved)
+   ========================================= */
+
+.yoga-highlight-section {
+  background: linear-gradient(to bottom, var(--color-surface-alt), #fcfdfc);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.yoga-header {
+  margin-bottom: 25px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding-bottom: 15px;
+}
+
+.yoga-main-title {
+  margin: 0;
+  color: var(--color-success-text);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.yoga-subtitle {
+  display: block;
+  font-size: 13px;
+  color: var(--color-muted-text);
+  margin-top: 4px;
+}
+
+/* Layout for Morning/Evening Columns */
+.yoga-sections-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Side by side on desktop */
+  gap: 30px;
+}
+
+.yoga-routine-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.yoga-time-title {
+  margin: 0;
+  font-size: 15px;
+  color: var(--color-primary-text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.icon-morning { color: #e6a23c; } /* Sun color */
+.icon-evening { color: #6b7c93; } /* Moon color */
+
+/* The Card for each Exercise */
+.yoga-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.yoga-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.yoga-card:hover {
+  border-color: var(--color-success-text);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.yoga-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yoga-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary-text);
+}
+
+.yoga-tag {
+  font-size: 11px;
+  color: var(--color-muted-text);
+  font-weight: 500;
+}
+
+/* The "Watch" Button */
+.btn-watch {
+  text-decoration: none;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+  flex-shrink: 0; /* Prevents button squishing */
+}
+
+.btn-watch:hover {
+  background-color: #d4edda; /* Slightly darker green bg */
+  color: #155724;
+}
+
+/* Responsive: Stack columns on mobile */
+@media (max-width: 768px) {
+  .yoga-sections-wrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

@@ -93,7 +93,7 @@ exports.getAllBlogs = async (req, res) => {
             date: blog.date,
             authorName: blog.authorName,
             category: blog.category,
-            type: 'normal',
+            type: 'normal',//expert written
             // Add image for frontend consistency (if available)
             image: blog.image || null,
         }));
@@ -101,6 +101,8 @@ exports.getAllBlogs = async (req, res) => {
         const normalizedAIBlogs = aiBlogs.map(blog => ({
             _id: blog._id,
             title: blog.title,
+            url: blog.url,
+            category: blog.tags.join(', '),
             // --- FIX IS HERE: Change 'content.text' to 'content.html' ---
             description: blog.content.html,
             // -----------------------------------------------------------

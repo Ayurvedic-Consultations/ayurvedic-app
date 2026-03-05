@@ -9,6 +9,11 @@ const orderSchema = new mongoose.Schema({
     subTotal: { type: Number, required: true }
   }],
   totalPrice: Number,
+  retailerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Retailer',
+    required: true
+  },
   buyer: {
     firstName: String,
     lastName: String,

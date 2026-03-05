@@ -109,6 +109,15 @@ const bookingSchema = new mongoose.Schema({
 		enum: ['Pending', 'Completed'], // Can either be Pending or Completed
 		default: 'Pending',
 	},
+	paymentDetails: {
+		razorpayOrderId: { type: String },
+		razorpayPaymentId: { type: String },
+		razorpaySignature: { type: String },
+		amount: { type: Number },
+		currency: { type: String, default: "INR" },
+		status: { type: String, enum: ["created", "paid", "failed"], default: "created" },
+		transferId: { type: String } 
+	}
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);

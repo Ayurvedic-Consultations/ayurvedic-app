@@ -107,6 +107,7 @@ function AppointmentSlots() {
 				setMeetLink(meetLinks);
 				setAppointments(filteredAppointments);
 				setLoading(false);
+				console.log("Fetched Appointments:", filteredAppointments);
 			} catch (error) {
 				setError(error.message);
 				setLoading(false);
@@ -122,54 +123,13 @@ function AppointmentSlots() {
 		return () => clearInterval(intervalId);
 	}, [doctorId, email]); // FIX: Added doctorId to dependencies
 
-	const handleCreateMeetLink = (id) => {
-		// Open the meet link service (e.g., Google Meet)
-		window.open("https://meet.google.com", "_blank");
-		// Show the input field for the user to paste the generated link
-		setShowInput((prev) => ({ ...prev, [id]: true }));
-	};
-
-	const handleSendMeetLink = async (id) => {
-		if (!meetLink[id] || meetLink[id].trim() === "") {
-			alert("Please enter a valid Meet link.");
-			return;
+	// Replace handleCreateMeetLink with a simple opener
+	const handleJoinMeet = (link) => {
+		if (link && link !== "no") {
+			window.open(link, "_blank");
+		} else {
+			alert("Meeting link is not available for this appointment.");
 		}
-
-		try {
-			const response = await fetch(
-				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/bookings/update/meet-link/${id}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ meetLink: meetLink[id] }),
-				}
-			);
-
-			const data = await response.json();
-
-			if (response.ok) {
-				alert("Meet link sent successfully!");
-				// FIX: Update the appointment list locally without full refresh
-				setAppointments(prevApps =>
-					prevApps.map(app =>
-						app._id === id ? { ...app, meetLink: meetLink[id] } : app
-					)
-				);
-				// Hide the input field after sending
-				setShowInput(prev => ({ ...prev, [id]: false }));
-
-			} else {
-				alert(`Error: ${data.error}`);
-			}
-		} catch (error) {
-			alert("Failed to send the meet link.");
-		}
-	};
-
-	const handleInputChange = (id, value) => {
-		setMeetLink((prev) => ({ ...prev, [id]: value }));
 	};
 
 	// Helper function to determine if an appointment is currently active
@@ -256,34 +216,13 @@ function AppointmentSlots() {
 										{hasMeetLink ? (
 											<button
 												className="action-button join-button"
-												onClick={() => window.open(appointment.meetLink, "_blank")}
+												onClick={() => handleJoinMeet(appointment.meetLink)}
 											>
 												Join Meet
 											</button>
-										) : showInput[appointment._id] ? (
-											<>
-												<input
-													type="text"
-													placeholder="Paste Meet link"
-													value={meetLink[appointment._id] || ""}
-													onChange={(e) =>
-														handleInputChange(appointment._id, e.target.value)
-													}
-													className="meet-link-input"
-												/>
-												<button
-													className="action-button send-link-button"
-													onClick={() => handleSendMeetLink(appointment._id)}
-												>
-													Send Link
-												</button>
-											</>
 										) : (
-											<button
-												className="action-button create-link-button"
-												onClick={() => handleCreateMeetLink(appointment._id)}
-											>
-												Create Meet Link
+											<button className="action-button disabled-button" disabled>
+												Meeting Link Pending
 											</button>
 										)}
 									</div>

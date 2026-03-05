@@ -3,7 +3,6 @@ const Doctor = require("../models/Doctor");
 const Medicine = require("../models/Medicine");
 const Cart = require("../models/Cart");
 const Notification = require("../models/Notification");
-const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 
@@ -248,30 +247,43 @@ exports.getNotifications = async (req, res) => {
 
 // New controller function to update booking requestAccept status
 exports.updateBookingStatus = async (req, res) => {
-	const { id } = req.params; // Get booking ID from the URL params
-	const { requestAccept, doctorsMessage } = req.body; // Get the new requestAccept value and doctors message from the request body
+    const { id } = req.params; 
+    const { requestAccept, doctorsMessage } = req.body; 
 
-	try {
-		// Find the booking by ID and update the requestAccept and doctorsMessage field
-		const updatedBooking = await Booking.findByIdAndUpdate(
-			id,
-			{ requestAccept, doctorsMessage },
-			{ new: true }
-		);
+    try {
+        // Prepare the update object
+        let updateData = { 
+            requestAccept, 
+            doctorsMessage 
+        };
 
-		if (!updatedBooking) {
-			return res.status(404).json({ error: "Booking not found" });
-		}
+        // Logic to generate Jitsi link if the request is accepted
+        if (requestAccept === "accepted") {
+            // Create a unique room name using the booking ID and a short random string
+            // Jitsi rooms are accessed via: https://meet.jit.si/RoomName
+            const uniqueRoomName = `AyuHub-${id}-${Math.random().toString(36).substring(7)}`;
+            updateData.meetLink = `https://meet.jit.si/${uniqueRoomName}`;
+        }
 
-		return res.status(200).json({
-			message: `Booking ${requestAccept === "y" ? "accepted" : "denied"
-				} successfully`,
-			booking: updatedBooking,
-		});
-	} catch (error) {
-		console.error("Error updating booking:", error);
-		return res.status(500).json({ error: "Server error" });
-	}
+        // Find the booking by ID and update the fields
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true }
+        );
+
+        if (!updatedBooking) {
+            return res.status(404).json({ error: "Booking not found" });
+        }
+
+        return res.status(200).json({
+            message: `Booking ${requestAccept === "accepted" ? "accepted" : "denied"} successfully`,
+            booking: updatedBooking,
+        });
+    } catch (error) {
+        console.error("Error updating booking:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
 };
 
 // New controller function to update the meetLink
@@ -324,61 +336,6 @@ exports.deleteBooking = async (req, res) => {
 	}
 };
 
-// Add or update recommended supplements
-// exports.prescribeMedicine = async (req, res) => {
-//     // 1. Get the data exactly as sent by your frontend handleSubmit
-//     const { 
-//         bookingId, 
-//         medicineData 
-//     } = req.body;
-
-//     try {
-//         // 2. Validate Input
-//         if (!bookingId || !medicineData) {
-//             return res.status(400).json({ error: "Booking ID and Medicine Data are required." });
-//         }
-
-//         // 3. Create the Supplement Object
-//         // We manually map the frontend fields to match your Mongoose Schema exactly
-//         const newSupplement = {
-//             medicineName: medicineData.medicineName,
-//             reason: medicineData.reason, 
-//             dosage: medicineData.dosage,
-//             instructions: medicineData.instructions,
-//             duration: `${medicineData.startDate} to ${medicineData.endDate}`,
-//             startDate: new Date(medicineData.startDate),
-//             endDate: new Date(medicineData.endDate),
-//             externalLink: medicineData.externalLink || "" 
-//         };
-
-//         // 4. Perform the Update
-//         // $push: Appends 'newSupplement' to the 'recommendedSupplements' array
-//         const updatedBooking = await Booking.findByIdAndUpdate(
-//             bookingId,
-//             { 
-//                 $push: { recommendedSupplements: newSupplement } 
-//             },
-//             { 
-//                 new: true,          // Returns the updated document so you can see the change
-//                 runValidators: true // Ensures the new item follows schema rules (required fields, etc.)
-//             }
-//         );
-
-//         if (!updatedBooking) {
-//             return res.status(404).json({ error: "Booking not found." });
-//         }
-
-//         return res.status(200).json({
-//             message: "New prescription added successfully",
-//             currentPrescriptions: updatedBooking.recommendedSupplements
-//         });
-
-//     } catch (error) {
-//         console.error("Error prescribing medicine:", error);
-//         return res.status(500).json({ error: "Server error", details: error.message });
-//     }
-// };
-
 exports.prescribeMedicine = async (req, res) => {
 	const {
 		bookingId,
@@ -400,7 +357,7 @@ exports.prescribeMedicine = async (req, res) => {
 		// --- STEP A: Update Booking (Prescription Logic) ---
 		const newSupplement = {
 			medicineName: medicineData.medicineName,
-			reason: medicineData.reason, 
+			reason: medicineData.reason,
 			dosage: medicineData.dosage,
 			instructions: medicineData.instructions,
 			duration: `${medicineData.startDate} to ${medicineData.endDate}`,

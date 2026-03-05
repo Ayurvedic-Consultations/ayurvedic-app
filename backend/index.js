@@ -21,6 +21,7 @@ const getAllRecords = require("./routes/patientRecordsRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const retailerRoutes = require("./routes/retailerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const scheduler = require("./scheduler");
 
 
 mongoose.set('debug', true);
@@ -70,6 +71,9 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/retailers", retailerRoutes);
 app.use("/api/patient-records", getAllRecords);
 
+
+// Start the scheduler
+scheduler();
 
 // Start the server
 app.listen(PORT, () => {

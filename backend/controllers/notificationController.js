@@ -21,13 +21,32 @@ exports.createNotification = async (userId, title, message, relatedTo, relatedId
 
 exports.getNotifications = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const notifications = await Notification.find({ recipient: userId })
+    let { patientId, userId, role } = req.query;
+
+    if (!patientId && !userId && req.user) {
+        userId = req.user.id;
+    }
+    if (!role && req.user) {
+        role = req.user.role;
+    }
+
+    const finalUserId = userId || patientId;
+
+    if (!finalUserId || !role) {
+        return res.status(400).json({ message: "Missing userId/patientId or role" });
+    }
+
+    // 3. Query the database
+    const notifications = await Notification.find({ 
+        userId: finalUserId,  
+        role: role    
+    })
       .sort({ createdAt: -1 })
       .limit(50);
     
     res.status(200).json(notifications);
   } catch (error) {
+    console.error("Error getting notifications:", error);
     res.status(500).json({ message: error.message });
   }
 };

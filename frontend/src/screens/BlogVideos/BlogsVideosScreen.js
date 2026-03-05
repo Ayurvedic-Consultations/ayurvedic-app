@@ -75,10 +75,10 @@ function BlogsVideosScreen() {
 				<div className="hero-overlay" />
 				<div className="hero-content">
 					<h1 className="hero-title">
-						<span className="hero-title1">
+						<span className="hero-title1" style={{fontSize:"60px"}}>
 							Welcome to Our <br />
 						</span>
-						<span className="hero-title2">Ayurveda Guide</span>
+						<span className="hero-title2" style={{fontSize:"60px"}}>Ayurveda Guide</span>
 					</h1>
 					<p className="hero-subtext">
 						Explore expert articles and videos on Ayurveda,

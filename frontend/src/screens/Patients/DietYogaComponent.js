@@ -1,34 +1,51 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-    Leaf,
-    Activity,
-    ShieldAlert,
-    CheckCircle2,
-    ClipboardEdit,
-    User,
-    Clock,
-    CalendarDays
+    ShieldAlert, CheckCircle2, ClipboardEdit, User, Apple, Soup, Salad,
+    GlassWater, CalendarDays, ChevronLeft, Clock, ArrowRight, Leaf,
+    Sun, Moon, Activity, HeartPulse, Video
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import './DietYogaComponent.css';
 
+const DAY_UI_META = {
+    monday: { label: "Light Detox", icon: <Leaf size={18} /> },
+    tuesday: { label: "Energy Boost", icon: <Activity size={18} /> },
+    wednesday: { label: "Digestion Focus", icon: <HeartPulse size={18} /> },
+    thursday: { label: "Protein Day", icon: <Apple size={18} /> },
+    friday: { label: "Cooling Day", icon: <GlassWater size={18} /> },
+    saturday: { label: "Recovery", icon: <Moon size={18} /> },
+    sunday: { label: "Relax & Reset", icon: <Sun size={18} /> }
+};
+
 const DietYogaComponent = () => {
     const { auth } = useContext(AuthContext);
-	const patientId = auth?.user?.id;
-    const [activeTab, setActiveTab] = useState('general');
-    const [prakriti, setPrakriti] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const [dietYogaData, setDietYogaData] = useState(null);
-    const [loadingDiet, setLoadingDiet] = useState(true);
-    const [error, setError] = useState(null);
-
-    // NEW: State to track which day is selected (Default to today)
-    const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const [selectedDay, setSelectedDay] = useState(daysOfWeek[new Date().getDay()]);
+    const patientId = auth?.user?.id;
 
     const token = localStorage.getItem('token');
 
+    // --- STATE MANAGEMENT ---
+    const [activeTab, setActiveTab] = useState('general');
+
+    // Data States
+    const [prakriti, setPrakriti] = useState(null);
+    const [dietYogaData, setDietYogaData] = useState(null);
+
+    // UI/View States
+    // Initialize selectedDay as null to show the Weekly Grid first
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [selectedMeal, setSelectedMeal] = useState(null);
+
+    // Loading/Error States
+    const [loadingPrakriti, setLoadingPrakriti] = useState(true);
+    const [loadingDiet, setLoadingDiet] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Helper to get today's name for highlighting (optional)
+    const todayName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
+
+    // --- EFFECTS ---
+
+    // 1. Fetch Prakriti
     useEffect(() => {
         const fetchPrakritiData = async () => {
             if (!patientId) return;
@@ -38,15 +55,16 @@ const DietYogaComponent = () => {
                 });
                 const data = await response.json();
                 setPrakriti(data.dominantType || 'Vata');
-                setLoading(false);
             } catch (err) {
                 console.error("Error fetching Prakriti:", err);
-                setLoading(false);
+            } finally {
+                setLoadingPrakriti(false);
             }
         };
         fetchPrakritiData();
     }, [patientId, token]);
 
+    // 2. Fetch Diet Plan
     useEffect(() => {
         const fetchDietYoga = async () => {
             if (!patientId) return;
@@ -54,42 +72,29 @@ const DietYogaComponent = () => {
             try {
                 const res = await fetch(
                     `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/patients/dietYoga/${patientId}`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }
+                    { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } }
                 );
 
                 if (!res.ok) {
                     if (res.status === 404) {
-                        setDietYogaData(null);
+                        setDietYogaData(null); // No plan assigned yet
                         return;
                     }
                     throw new Error("Failed to fetch diet & yoga plan");
                 }
-
                 const data = await res.json();
                 setDietYogaData(data);
             } catch (error) {
-                console.error("Error fetching diet & yoga plan:", error);
+                console.error("Error fetching diet plan:", error);
                 setError(error.message);
             } finally {
                 setLoadingDiet(false);
             }
         };
-
         fetchDietYoga();
     }, [patientId, token]);
 
-    // NEW: Get diet based on the selectedDay state, not just today
-    const getSelectedDayDiet = () => {
-        if (!dietYogaData?.diet?.weekly) return null;
-        return dietYogaData.diet.weekly[selectedDay];
-    };
-
-    const currentDiet = getSelectedDayDiet();
+    // --- HELPERS ---
 
     const getGeneralPlanByPrakriti = (type) => {
         const plans = {
@@ -115,10 +120,186 @@ const DietYogaComponent = () => {
         return plans[type] || plans.Vata;
     };
 
+    // Re-added helper to prevent crashes in View 3
+    const getRecipe = (mealType, mealName) => ({
+        name: mealName || "Consult your doctor",
+        prep: "10 mins",
+        cook: mealType === "juice" || mealType === "juices" ? "0 mins" : "20 mins",
+        ingredients: [
+            { name: "Main Ingredient", qty: "1 portion" },
+            { name: "Seasonal Veg/Fruit", qty: "As advised" },
+            { name: "Spices", qty: "To taste" }
+        ],
+        steps: [
+            "Wash and prepare ingredients.",
+            "Cook gently to preserve nutrients.",
+            "Consume warm."
+        ]
+    });
+
     const activePlan = getGeneralPlanByPrakriti(prakriti);
+
+    // --- RENDER HELPERS FOR CUSTOM TAB ---
+
+    const renderRecipeView = () => {
+        const dayData = dietYogaData.diet.weekly[selectedDay];
+        const mealKey = selectedMeal === "juice" ? "juices" : selectedMeal;
+        const mealName = dayData ? dayData[mealKey] : "Not assigned";
+        const recipe = getRecipe(selectedMeal, mealName);
+
+        return (
+            <div className="diet-card full-width animate-in">
+                <div className="diet-header-nav">
+                    <button className="btn-back-pill" onClick={() => setSelectedMeal(null)}>
+                        <ChevronLeft size={16} /> Back
+                    </button>
+                    <div className="recipe-hero">
+                        <h2>{selectedMeal.toUpperCase()}</h2>
+                        <p className="subtitle">{recipe.name}</p>
+                    </div>
+                </div>
+                {/* Recipe Details */}
+                <div className="recipe-section">
+                    <h4 className="section-title"><Leaf size={14} /> INGREDIENTS</h4>
+                    <div className="ingredients-wrapper">
+                        {recipe.ingredients.map((i, idx) => (
+                            <div key={idx} className="ingredient-pill">
+                                <span className="qty">• {i.qty}</span><span>{i.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="recipe-section">
+                    <h4 className="section-title"><Clock size={14} /> PREPARATION</h4>
+                    <div className="steps-timeline">
+                        {recipe.steps.map((s, i) => (
+                            <div key={i} className="step-row">
+                                <div className="step-marker">{i + 1}</div><p className="step-text">{s}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const renderDailyView = () => {
+        const uiMeta = DAY_UI_META[selectedDay] || { label: "Daily Plan", icon: <Sun size={18} /> };
+        const dayData = dietYogaData.diet.weekly[selectedDay] || {};
+
+        return (
+            <div className="diet-card full-width animate-in">
+                <div className="diet-header-row">
+                    <button className="btn-back-simple" onClick={() => setSelectedDay(null)}>
+                        <ChevronLeft size={18} /> Back to Week
+                    </button>
+                    <h3>{selectedDay.toUpperCase()} • {uiMeta.label}</h3>
+                </div>
+                <div className="meals-grid-layout">
+                    {["breakfast", "lunch", "dinner", "juice"].map((meal) => {
+                        const dataKey = meal === "juice" ? "juices" : meal;
+                        const mealContent = dayData[dataKey] || "Rest";
+                        return (
+                            <div key={meal} className="meal-category-card" onClick={() => setSelectedMeal(meal)}>
+                                <div className="meal-icon-circle">
+                                    {meal === "breakfast" ? <Sun size={24} /> :
+                                        meal === "lunch" ? <Salad size={24} /> :
+                                            meal === "dinner" ? <Moon size={24} /> : <GlassWater size={24} />}
+                                </div>
+                                <div className="meal-info">
+                                    <h5>{meal.toUpperCase()}</h5>
+                                    <span>{mealContent}</span>
+                                </div>
+                                <div className="meal-arrow"><ArrowRight size={20} /></div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
+    const renderWeeklyView = () => (
+        <div className="diet-card full-width animate-in">
+            <div className="diet-header-row">
+                <div className="header-left">
+                    <div className="icon-badge"><CalendarDays size={20} /></div>
+                    <h3>Weekly Diet Plan</h3>
+                </div>
+                <span className="status-pill active">Active Plan</span>
+            </div>
+
+            <div className="weekly-calendar-grid">
+                {Object.keys(DAY_UI_META).map((day) => (
+                    <div
+                        key={day}
+                        // Highlight if it's today
+                        className={`calendar-day-card ${day === todayName ? 'today-highlight' : ''}`}
+                        onClick={() => setSelectedDay(day)}
+                    >
+                        <span className="day-name">{day.slice(0, 3).toUpperCase()}</span>
+                        <span className="day-label">{DAY_UI_META[day].label}</span>
+                    </div>
+                ))}
+            </div>
+
+            {/* YOGA SECTION */}
+            <div className="yoga-highlight-section">
+                <div className="yoga-header">
+                    <h4 className="yoga-main-title">🧘 Yoga Recommendations</h4>
+                    <span className="yoga-subtitle">Daily movement for balance</span>
+                </div>
+                <div className="yoga-sections-wrapper">
+                    {/* Morning */}
+                    {dietYogaData.yoga?.morning?.length > 0 && (
+                        <div className="yoga-routine-column">
+                            <h5 className="yoga-time-title"><Sun size={18} className="icon-morning" /> Morning Flow</h5>
+                            <div className="yoga-card-list">
+                                {dietYogaData.yoga.morning.map((y, idx) => (
+                                    <div key={idx} className="yoga-card">
+                                        <div className="yoga-card-content">
+                                            <span className="yoga-name">{y.name}</span>
+                                        </div>
+                                        {y.link && (
+                                            <a href={y.link} target="_blank" rel="noopener noreferrer" className="btn-watch">
+                                                <Video size={14} /> Watch
+                                            </a>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    {/* Evening */}
+                    {dietYogaData.yoga?.evening?.length > 0 && (
+                        <div className="yoga-routine-column">
+                            <h5 className="yoga-time-title"><Moon size={18} className="icon-evening" /> Evening Flow</h5>
+                            <div className="yoga-card-list">
+                                {dietYogaData.yoga.evening.map((y, idx) => (
+                                    <div key={idx} className="yoga-card">
+                                        <div className="yoga-card-content">
+                                            <span className="yoga-name">{y.name}</span>
+                                        </div>
+                                        {y.link && (
+                                            <a href={y.link} target="_blank" rel="noopener noreferrer" className="btn-watch">
+                                                <Video size={14} /> Watch
+                                            </a>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
+    // --- MAIN RENDER ---
 
     return (
         <div className="clinical-dashboard-wrapper">
+            {/* Tab Navigation */}
             <div className="selection-card-row">
                 <div
                     className={`nav-card ${activeTab === 'general' ? 'active' : ''}`}
@@ -145,48 +326,56 @@ const DietYogaComponent = () => {
                 </div>
             </div>
 
+            {/* TAB: GENERAL PROTOCOL */}
             {activeTab === 'general' && (
                 <div className="dashboard-view-animate">
-                    <div className="status-banner">
-                        <span className="badge-pill">Patient Type: <strong>{prakriti}</strong></span>
-                        <span className="timestamp"><Clock size={14} /> System Generated</span>
-                    </div>
+                    {loadingPrakriti ? (
+                        <div className="loading-state">Loading Prakriti...</div>
+                    ) : (
+                        <>
+                            <div className="status-banner">
+                                <span className="badge-pill">Patient Type: <strong>{prakriti}</strong></span>
+                                <span className="timestamp"><Clock size={14} /> System Generated</span>
+                            </div>
 
-                    <div className="clinical-grid">
-                        <div className="grid-card favor">
-                            <div className="grid-header">
-                                <CheckCircle2 className="text-teal" />
-                                <h4>Dietary Recommendations (Favor)</h4>
-                            </div>
-                            <div className="pill-container">
-                                {activePlan.favor.map(item => <span key={item} className="pill-item">{item}</span>)}
-                            </div>
-                        </div>
+                            <div className="clinical-grid">
+                                <div className="grid-card favor">
+                                    <div className="grid-header">
+                                        <CheckCircle2 className="text-teal" />
+                                        <h4>Dietary Recommendations (Favor)</h4>
+                                    </div>
+                                    <div className="pill-container">
+                                        {activePlan.favor.map(item => <span key={item} className="pill-item">{item}</span>)}
+                                    </div>
+                                </div>
 
-                        <div className="grid-card avoid">
-                            <div className="grid-header">
-                                <ShieldAlert className="text-red" />
-                                <h4>Restricted Items (Avoid)</h4>
-                            </div>
-                            <div className="pill-container">
-                                {activePlan.avoid.map(item => <span key={item} className="pill-item-red">{item}</span>)}
-                            </div>
-                        </div>
+                                <div className="grid-card avoid">
+                                    <div className="grid-header">
+                                        <ShieldAlert className="text-red" />
+                                        <h4>Restricted Items (Avoid)</h4>
+                                    </div>
+                                    <div className="pill-container">
+                                        {activePlan.avoid.map(item => <span key={item} className="pill-item-red">{item}</span>)}
+                                    </div>
+                                </div>
 
-                        <div className="grid-card full-width">
-                            <div className="grid-header">
-                                <Leaf className="text-teal" />
-                                <h4>Lifestyle & Yoga Protocol</h4>
+                                <div className="grid-card full-width">
+                                    <div className="grid-header">
+                                        <Leaf className="text-teal" />
+                                        <h4>Lifestyle & Yoga Protocol</h4>
+                                    </div>
+                                    <p className="description-text">{activePlan.description}</p>
+                                    <div className="yoga-highlight">
+                                        <strong>Recommended Flow:</strong> {activePlan.yoga}
+                                    </div>
+                                </div>
                             </div>
-                            <p className="description-text">{activePlan.description}</p>
-                            <div className="yoga-highlight">
-                                <strong>Recommended Flow:</strong> {activePlan.yoga}
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
             )}
 
+            {/* TAB: CUSTOM (CLINICAL PRESCRIPTION) */}
             {activeTab === 'custom' && (
                 <div className="dashboard-view-animate">
                     <div className="editor-controls">
@@ -197,95 +386,19 @@ const DietYogaComponent = () => {
                     </div>
 
                     {loadingDiet ? (
-                        <div className="loading-state">Loading clinical plan...</div>
+                        <div className="loading-state">Loading Plan...</div>
+                    ) : error ? (
+                        <div className="error-state">Error: {error}</div>
                     ) : !dietYogaData ? (
-                        <div className="empty-state">
-                            <ShieldAlert className="text-gray" size={32} />
-                            <p>No clinical prescription has been assigned by your doctor yet.</p>
-                        </div>
+                        <div className="empty-state">No Plan Assigned</div>
                     ) : (
-                        <div className="prescription-layout">
-                            
-                            {/* NEW: Day Selector Buttons */}
-                            <div className="clinical-input-group">
-                                <label><CalendarDays size={16} /> Select Day</label>
-                                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                                    {daysOfWeek.map(day => (
-                                        <button
-                                            key={day}
-                                            onClick={() => setSelectedDay(day)}
-                                            style={{
-                                                padding: '0.5rem 1rem',
-                                                borderRadius: '20px',
-                                                border: '1px solid #ccc',
-                                                background: selectedDay === day ? '#2E7D32' : 'white',
-                                                color: selectedDay === day ? 'white' : '#333',
-                                                cursor: 'pointer',
-                                                textTransform: 'capitalize',
-                                                fontSize: '0.85rem'
-                                            }}
-                                        >
-                                            {day.slice(0, 3)}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="clinical-input-group">
-                                <label><CalendarDays size={16} /> Diet Plan for <span style={{textTransform: 'capitalize', color:'#2E7D32'}}>{selectedDay}</span></label>
-                                <div className="read-only-box">
-                                    {currentDiet ? (
-                                        <div className="diet-day-grid">
-                                            <p><strong>Breakfast:</strong> {currentDiet.breakfast || "Not specified"}</p>
-                                            <p><strong>Lunch:</strong> {currentDiet.lunch || "Not specified"}</p>
-                                            <p><strong>Dinner:</strong> {currentDiet.dinner || "Not specified"}</p>
-                                            <p><strong>Juices/Fluids:</strong> {currentDiet.juices || "Not specified"}</p>
-                                        </div>
-                                    ) : (
-                                        "No diet plan found for this day."
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="clinical-input-group">
-                                <label><Activity size={16} /> Specialized Yoga Routine</label>
-                                <div className="read-only-box">
-                                    <div className="yoga-section">
-                                        <strong>Morning:</strong>
-                                        <ul>
-                                            {dietYogaData.yoga?.morning?.map((y, i) => (
-                                                <li key={i}>{y.name} {y.link && <a href={y.link} target="_blank" rel="noreferrer">(Link)</a>}</li>
-                                            )) || "None"}
-                                        </ul>
-                                    </div>
-                                    <div className="yoga-section mt-2">
-                                        <strong>Evening:</strong>
-                                        <ul>
-                                            {dietYogaData.yoga?.evening?.map((y, i) => (
-                                                <li key={i}>{y.name} {y.link && <a href={y.link} target="_blank" rel="noreferrer">(Link)</a>}</li>
-                                            )) || "None"}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="clinical-input-group">
-                                <label><CheckCircle2 size={16} /> Herbal Support</label>
-                                <div className="read-only-box">
-                                    {dietYogaData.diet?.herbs?.length > 0
-                                        ? dietYogaData.diet.herbs.map((herb, i) => (
-                                            <span key={i} style={{ display: 'inline-block', margin: '0.25rem' }} className="pill-item">
-                                                {herb}
-                                            </span>
-                                        ))
-                                        : "No specific herbs prescribed."}
-                                </div>
-                            </div>
-
-                            <div className="last-sync">
-                                Plan Created: {new Date(dietYogaData.createdAt).toLocaleDateString()}
-                            </div>
-                        </div>
+                        // Logic Router:
+                        // 1. If Meal is selected -> Show Recipe View
+                        // 2. If Day is selected -> Show Daily View
+                        // 3. Default -> Show Weekly View
+                        selectedMeal ? renderRecipeView() :
+                            selectedDay ? renderDailyView() :
+                                renderWeeklyView()
                     )}
                 </div>
             )}

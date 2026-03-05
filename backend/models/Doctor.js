@@ -11,14 +11,18 @@ const doctorSchema = new mongoose.Schema({
     address: { type: String, required: true },
     designation: { type: String, required: true },
     specialization: { type: [String], required: true },
-    experience: { type: Number, required: true }, 
+    experience: { type: Number, required: true },
     certificate: { type: String, required: true },
     password: { type: String, required: true },
     price: { type: Number, required: true },
     education: { type: String, required: true },
     dob: { type: Date, required: true },
     qrCode: { type: String },
-    role: { type: String, default: 'doctor' }
+    role: { type: String, default: 'doctor' },
+    razorpayAccountId: {
+        type: String,
+        default: null 
+    },
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

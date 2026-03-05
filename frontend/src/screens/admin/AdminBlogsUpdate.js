@@ -8,12 +8,15 @@ export default function AdminBlogUpdate() {
     const navigate = useNavigate();
     // Assuming initialBlog.content.text is the HTML string content.
     const { initialBlog } = location.state;
+    console.log("Initial Blog Data Received:", initialBlog);
 
     const [blog, setBlog] = useState({
         _id: initialBlog._id || '',
         title: initialBlog.title || '',
         url: initialBlog.url || '',
-        tags: initialBlog.tags?.join(', ') || '',
+        category: Array.isArray(initialBlog.category) 
+        ? initialBlog.category.join(', ') 
+        : (initialBlog.category || ''),
         content: initialBlog.description || '',
     });
 
@@ -40,8 +43,10 @@ export default function AdminBlogUpdate() {
     const handleUpdate = async () => {
         const updatedData = {
             ...blog,
+            title: blog.title,
+            url: blog.url,
             // Tags conversion is correct
-            tags: blog.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+            tags: blog.category.split(',').map(tag => tag.trim()).filter(tag => tag),
             // Content wrapping is correct
             content: {
                 html: blog.content,
@@ -113,14 +118,14 @@ export default function AdminBlogUpdate() {
                     </div>
 
                     <div className="form-field-group">
-                        <label htmlFor="tags" className="label">
+                        <label htmlFor="category" className="label">
                             Tags (comma-separated)
                         </label>
                         <input
                             type="text"
-                            name="tags"
-                            id="tags"
-                            value={blog.tags}
+                            name="category"
+                            id="category"
+                            value={blog.category}
                             onChange={handleChange}
                             className="input"
                         />
