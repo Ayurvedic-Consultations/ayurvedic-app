@@ -86,6 +86,7 @@ exports.registerDoctor = async (req, res) => {
 	const {
 		firstName,
 		lastName,
+		registrationNumber,
 		email,
 		phone,
 		dob,
@@ -103,9 +104,9 @@ exports.registerDoctor = async (req, res) => {
 	const qrCode = req.files?.qrCode ? req.files.qrCode[0].path : null;
 
 	// Check if files are uploaded
-	if (!certificate || !qrCode) {
-		return res.status(400).json({ error: 'Both certificate and qrCode files are required.' });
-	}
+	// if (!certificate || !qrCode) {
+	// 	return res.status(400).json({ error: 'Both certificate and qrCode files are required.' });
+	// }
 
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
@@ -120,6 +121,7 @@ exports.registerDoctor = async (req, res) => {
 		const doctor = new Doctor({
 			firstName,
 			lastName,
+			registrationNumber,
 			email,
 			phone,
 			dob,

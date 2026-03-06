@@ -11,6 +11,7 @@ function SignUpDoctorScreen() {
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
+		registrationNumber: "",
 		email: "",
 		phone: "",
 		dob: "",
@@ -23,7 +24,7 @@ function SignUpDoctorScreen() {
 		designation: "",
 		price: "",
 		password: "",
-		confirmPassword: "", 
+		confirmPassword: "",
 	});
 
 	const handleQrCodeChange = (e) => {
@@ -31,19 +32,33 @@ function SignUpDoctorScreen() {
 	};
 
 
+	// const isFormValid = () => {
+	// 	return (
+	// 		formData.firstName !== "" &&
+	// 		formData.lastName !== "" &&
+	// 		formData.registrationNumber !== "" &&
+	// 		formData.email !== "" &&
+	// 		formData.phone !== "" &&
+	// 		formData.dob !== "" &&
+	// 		formData.age !== "" &&
+	// 		formData.gender !== "" &&
+	// 		formData.specialization !== "" &&
+	// 		formData.zipCode !== "" &&
+	// 		formData.password !== "" &&
+	// 		formData.confirmPassword !== "" &&
+	// 		formData.password === formData.confirmPassword
+	// 	);
+	// };
+
 	const isFormValid = () => {
 		return (
-			formData.firstName !== "" &&
-			formData.lastName !== "" &&
-			formData.email !== "" &&
-			formData.phone !== "" &&
-			formData.dob !== "" &&
-			formData.age !== "" &&
-			formData.gender !== "" &&
-			formData.specialization !== "" &&
-			formData.zipCode !== "" &&
+			formData.firstName.trim() !== "" &&
+			formData.lastName.trim() !== "" &&
+			formData.registrationNumber.trim() !== "" &&
+			formData.designation.trim() !== "" &&
+			formData.email.trim() !== "" &&
+			formData.price !== "" &&
 			formData.password !== "" &&
-			formData.confirmPassword !== "" &&
 			formData.password === formData.confirmPassword
 		);
 	};
@@ -75,25 +90,25 @@ function SignUpDoctorScreen() {
 		}
 
 		// Validate file upload
-		if (!certificate) {
-			alert("Please upload your ayurvedic degree certificate.");
-			return;
-		}
+		// if (!certificate) {
+		// 	alert("Please upload your ayurvedic degree certificate.");
+		// 	return;
+		// }
 
-		if (certificate.size > 5 * 1024 * 1024) {
-			alert("File size exceeds 5MB limit");
-			return;
-		}
+		// if (certificate.size > 5 * 1024 * 1024) {
+		// 	alert("File size exceeds 5MB limit");
+		// 	return;
+		// }
 
-		if (!qrCode) {
-			alert("Please upload your QR code for payments.");
-			return;
-		}
+		// if (!qrCode) {
+		// 	alert("Please upload your QR code for payments.");
+		// 	return;
+		// }
 
-		if (qrCode.size > 5 * 1024 * 1024) {
-			alert("QR code file size exceeds 5MB limit");
-			return;
-		}
+		// if (qrCode.size > 5 * 1024 * 1024) {
+		// 	alert("QR code file size exceeds 5MB limit");
+		// 	return;
+		// }
 
 
 		// Create FormData object for file upload
@@ -101,8 +116,8 @@ function SignUpDoctorScreen() {
 		Object.keys(formData).forEach((key) => {
 			data.append(key, formData[key]);
 		});
-		data.append("certificate", certificate);
-		data.append("qrCode", qrCode);
+		// data.append("certificate", certificate);
+		// data.append("qrCode", qrCode);
 
 		try {
 			const response = await fetch(
@@ -159,6 +174,17 @@ function SignUpDoctorScreen() {
 						/>
 					</div>
 					<div className="form-group">
+						<label>Registration Number</label>
+						<input
+							type="text"
+							name="registrationNumber"
+							value={formData.registrationNumber}
+							onChange={handleInputChange}
+							placeholder="AYU123456"
+							required
+						/>
+					</div>
+					<div className="form-group">
 						<label>Email ID</label>
 						<input
 							type="email"
@@ -177,7 +203,7 @@ function SignUpDoctorScreen() {
 							value={formData.phone}
 							onChange={handleInputChange}
 							placeholder="0123456789"
-							required
+						// required
 						/>
 					</div>
 					<div className="form-group">
@@ -187,7 +213,7 @@ function SignUpDoctorScreen() {
 							name="dob"
 							value={formData.dob}
 							onChange={handleInputChange}
-							required
+						// required
 						/>
 					</div>
 					<div className="form-group">
@@ -198,7 +224,7 @@ function SignUpDoctorScreen() {
 							value={formData.age}
 							onChange={handleInputChange}
 							placeholder="24"
-							required
+						// required
 						/>
 					</div>
 					<div className="form-group">
@@ -209,7 +235,7 @@ function SignUpDoctorScreen() {
 							value={formData.experience}
 							onChange={handleInputChange}
 							placeholder="24"
-							required
+						// required
 						/>
 					</div>
 					<div className="form-group">
@@ -248,9 +274,20 @@ function SignUpDoctorScreen() {
 							value={formData.zipCode}
 							onChange={handleInputChange}
 							placeholder="000001"
-							required
+						// required
 						/>
 					</div>
+					{/* <div className="form-group">
+						<label>Address</label>
+						<input
+							type="text"
+							name="address"
+							value={formData.address}
+							onChange={handleInputChange}
+							placeholder="123 Main St, City, State"
+						// required
+						/>
+					</div> */}
 					<div className="form-group">
 						<label>Education (College)</label>
 						<input
@@ -259,7 +296,7 @@ function SignUpDoctorScreen() {
 							value={formData.education}
 							onChange={handleInputChange}
 							placeholder="Ayurvedic College"
-							required
+						// required
 						/>
 					</div>
 					<div className="form-group">
@@ -274,7 +311,7 @@ function SignUpDoctorScreen() {
 						/>
 					</div>
 					<div className="form-group">
-						<label>Price</label>
+						<label>Appointment Fee</label>
 						<input
 							type="number"
 							name="price"
@@ -314,7 +351,7 @@ function SignUpDoctorScreen() {
 						type="file"
 						accept=".png, .jpg, .jpeg"
 						onChange={handleFileChange}
-						required
+					// required
 					/>
 					<p className="file-info">
 						Supported file formats: png, jpg. File size limit: 5MB
@@ -326,7 +363,7 @@ function SignUpDoctorScreen() {
 						type="file"
 						accept=".png, .jpg, .jpeg"
 						onChange={handleQrCodeChange}
-						required
+					// required
 					/>
 					<p className="file-info">Supported formats: png, jpg. File size limit: 5MB</p>
 				</div>

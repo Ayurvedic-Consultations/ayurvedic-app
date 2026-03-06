@@ -51,8 +51,6 @@ router.post("/register/patient", registerPatient);
 router.post("/login", loginUser);
 
 //  Admin Login Route
-
-
 // Create Admin
 router.post("/admin/register", async (req, res) => {
   const { firstName, lastName, email, phone, password } = req.body;
