@@ -1,6 +1,5 @@
-/* Cart.css - Premium Pharmacy Cart (Images Fixed + Beautiful UI) */
-
 :root {
+<<<<<<< HEAD
 	--primary: #4f46e5;
 	--primary-dark: #4338ca;
 	--success: #10b981;
@@ -16,7 +15,30 @@
 	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
 	--shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
 	--transition: all 0.25s ease;
+=======
+  --primary: #2f7d32;        /* Herbal green */
+  --primary-dark: #1b5e20;   /* Deep neem green */
+
+  --success: #3fa34d;        /* Tulsi green */
+  --danger: #c44536;         /* Natural clay red */
+
+  --gray-100: #f4f7f3;       /* Soft herbal white */
+  --gray-200: #e0e6df;       /* Leaf gray */
+  --gray-300: #c8d1c5;       /* Sage gray */
+  --gray-500: #6b7c6f;       /* Earthy gray-green */
+  --gray-700: #3e4f44;       /* Forest charcoal */
+  --gray-900: #1f2d24;       /* Deep soil */
+
+  --radius: 1rem;
+
+  --shadow-sm: 0 1px 3px rgba(31, 45, 36, 0.12);
+  --shadow-md: 0 4px 12px rgba(31, 45, 36, 0.14);
+  --shadow-lg: 0 10px 30px rgba(31, 45, 36, 0.18);
+
+  --transition: all 0.25s ease;
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
+
 
 /* ==== Base ==== */
 *,
@@ -128,9 +150,15 @@
 }
 
 .cart-details p {
+<<<<<<< HEAD
 	color: var(--primary);
 	font-weight: 700;
 	font-size: 1.2rem;
+=======
+  color: #6b8e23;
+  font-weight: 700;
+  font-size: 1.2rem;
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 /* ─── Quantity Controls ─── */
@@ -145,6 +173,7 @@
 }
 
 .quantity-controls button {
+<<<<<<< HEAD
 	width: 40px;
 	height: 40px;
 	border: 2px solid var(--gray-300);
@@ -165,6 +194,30 @@
 	color: white;
 	border-color: var(--primary);
 	transform: scale(1.05);
+=======
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--gray-300);
+  background: white;
+  color: var(--gray-700);
+  font-weight: bold;
+  font-size: 1.3rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #6b8e23; */
+}
+
+.quantity-controls button:hover:not(:disabled) {
+  /* background: var(--primary); */
+  background-color: #6b8e23;
+  color: white;
+  border-color: var(--color-white);
+  transform: scale(1.05);
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 .quantity-controls button:disabled {
@@ -223,6 +276,7 @@
 }
 
 .cart-summary h2 {
+<<<<<<< HEAD
 	font-size: 2rem;
 	font-weight: 800;
 	color: var(--primary);
@@ -242,12 +296,42 @@
 	max-width: 420px;
 	transition: var(--transition);
 	box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+=======
+  font-size: 2rem;
+  font-weight: 800;
+  color: #6b8e23;
+  margin-bottom: 1.5rem;
 }
 
+.checkout-btn {
+  /* background: var(--primary); */
+  background: #6b8e23;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  width: 100%;
+  max-width: 420px;
+  transition: var(--transition);
+  box-shadow: 0 6px 16px #6b8e23;
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
+}
+
+
+
 .checkout-btn:hover:not(:disabled) {
+<<<<<<< HEAD
 	background: var(--primary-dark);
 	transform: translateY(-3px);
 	box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4);
+=======
+  background:#91c921;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px #6b8e23;
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 .checkout-btn:disabled {

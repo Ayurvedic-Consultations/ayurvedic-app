@@ -74,6 +74,7 @@ import PrescribeIndex from './screens/Doctors/doctorPrescribe/PrescribeIndex';
 import PatientFeedback from './screens/Patients/PatientFeedback';
 import BuyerFeedback from './screens/Patients/BuyerFeedback';
 import MedicineIdDetails from './screens/MedicineIdDetails';
+import PrakritiAssessment from './screens/Patients/PrakritiAssessment';
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -132,6 +133,9 @@ function App() {
         <Route path="/profile/doctor/:id" element={<DoctorFullDetails />} />
         <Route path="/profile/retailer/:id" element={<RetailerFullDetails />} />
         <Route path="/profile/patient/:id" element={<Patientprofile />} />
+        <Route path="/prakritiassessment" element={<PrakritiAssessment/>} />
+
+
 
 
 

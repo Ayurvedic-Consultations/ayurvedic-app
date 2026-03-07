@@ -70,6 +70,8 @@
 	border: 2px solid #a8b572;
 	background-color: #f9e4ad;
 	height: auto;
+	outline: none;
+  box-shadow: none;
 }
 
 .dropdown select {
@@ -84,6 +86,8 @@
 	align-items: center;
 	justify-content: center;
 	margin-bottom: none;
+	outline: none;
+  box-shadow: none;
 }
 
 .search-input {
@@ -95,6 +99,8 @@
 	padding: 8px;
 	border-left: none;
 	font-size: 16px;
+	outline: none;
+  box-shadow: none;
 }
 
 .search-input{

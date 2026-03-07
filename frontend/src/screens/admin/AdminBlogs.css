@@ -171,6 +171,16 @@
   transition: background-color 0.3s;
 }
 
+.updatee-btn {
+  background-color: #6b8e23;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
 .delete-btn:hover {
   background-color: #c0392b;
 }

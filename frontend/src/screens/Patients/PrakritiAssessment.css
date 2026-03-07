@@ -1,0 +1,434 @@
+
+
+:root {
+  /* Extracted from your uploaded image */
+  --ayur-green-primary: #328048;   /* Primary Button Green */
+  --ayur-green-hover: #286b3b;     /* Darker hover state */
+  --ayur-olive: #8CA175;           /* Navbar Bottom Green */
+  --ayur-sand: #ebdca5;            /* Navbar Top Beige/Sand */
+  --ayur-text-dark: #1b3b22;       /* "Hi Ravi!" Dark Green */
+  --ayur-text-muted: #5c6a58;      /* Soft olive-gray for secondary text */
+  --ayur-bg-light: #ecdcbb;        /* Very slight warm off-white */
+  --ayur-border: #4d5e3c;          /* Soft greenish-gray border */
+}
+
+/* Main Container */
+.pa-module-container {
+  max-width: 950px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 48px;
+  padding-top: 7rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--ayur-text-dark);
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(44, 74, 48, 0.06); /* Soft green-tinted shadow */
+}
+
+/* Language Toggle */
+.pa-lang-toggle-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 32px;
+  gap: 12px;
+}
+
+.pa-lang-btn {
+  background: var(--ayur-bg-light);
+  border: 1px solid var(--ayur-border);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ayur-text-muted);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pa-lang-btn:hover {
+  background: #f1f5ed;
+  color: var(--ayur-text-dark);
+}
+
+.pa-lang-btn.active {
+  background: var(--ayur-green-primary);
+  color: #ffffff;
+  border-color: var(--ayur-green-primary);
+  box-shadow: 0 4px 12px rgba(50, 128, 72, 0.2);
+}
+
+/* Stepper Header */
+.pa-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.pa-step-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid var(--ayur-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: #ffffff;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pa-step-icon.active {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(140, 161, 117, 0.2); /* Olive glow */
+  border-color: var(--ayur-olive) !important;
+}
+
+.pa-step-line {
+  height: 3px;
+  width: 90px;
+  background-color: var(--ayur-border);
+  margin: 0 16px;
+  transition: background-color 0.4s ease;
+  border-radius: 2px;
+}
+
+.pa-step-line.active {
+  background-color: var(--ayur-olive); 
+}
+
+.pa-step-description {
+  text-align: center;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  margin-bottom: 48px;
+  transition: all 0.4s ease;
+  animation: fadeInDown 0.5s forwards;
+}
+
+/* Question Cards */
+.pa-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.pa-card {
+  background: #ffffff;
+  border: 1px solid var(--ayur-border);
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pa-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(140, 161, 117, 0.12); /* Olive tinted soft shadow */
+  border-color: var(--ayur-olive);
+}
+
+.pa-card-header {
+  margin-bottom: 32px;
+}
+
+.pa-sanskrit-tag {
+  display: inline-block;
+  background: var(--ayur-bg-light);
+  color: #7a6b32; /* Deepened sand color for text legibility */
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  border: 1px solid #eaddb6;
+}
+
+.pa-question-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ayur-text-dark);
+  line-height: 1.5;
+}
+
+/* Connected Likert Scale (0-4 Options) */
+.pa-options-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 24px 0 0 0;
+}
+
+/* The horizontal connecting line behind the options */
+.pa-options-group::before {
+  content: '';
+  position: absolute;
+  top: 38px; /* aligns with the center of the circles */
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background-color: var(--ayur-border);
+  z-index: 1;
+  border-radius: 2px;
+}
+
+.pa-radio-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+  z-index: 2;
+  position: relative;
+}
+
+.pa-radio-label input {
+  display: none;
+}
+
+.pa-radio-custom {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #b9c4b1; /* Soft muted olive */
+  background-color: #ffffff;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.pa-radio-label:hover .pa-radio-custom {
+  transform: scale(1.15);
+  border-color: var(--ayur-olive);
+}
+
+.pa-radio-dot {
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.pa-radio-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ayur-text-muted);
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.pa-radio-label:hover .pa-radio-text {
+  color: var(--ayur-text-dark);
+  font-weight: 600;
+}
+
+/* Navigation Buttons */
+.pa-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ayur-border);
+}
+
+.pa-btn {
+  padding: 16px 40px;
+  border-radius: 50px; /* Pill shape matching your image */
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.pa-btn-secondary {
+  background: var(--ayur-bg-light);
+  color: var(--ayur-text-muted);
+  border: 1px solid var(--ayur-border);
+}
+
+.pa-btn-secondary:hover:not(:disabled) {
+  background: #f1f5ed;
+  color: var(--ayur-text-dark);
+}
+
+.pa-btn-primary {
+  /* This ensures the specific Dosha color from JS isn't completely lost, 
+     but acts as a fallback. If you want strict adherence to the green button in 
+     the image, change the inline style in your JS or add !important here */
+  color: white;
+  box-shadow: 0 6px 16px rgba(50, 128, 72, 0.25);
+}
+
+.pa-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(50, 128, 72, 0.35);
+  filter: brightness(0.95);
+}
+
+.pa-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Results Dashboard */
+.pa-results-container {
+  text-align: center;
+  padding: 108px 24px;
+  animation: fadeIn 0.6s ease;
+}
+
+.pa-results-container h2 {
+  font-size: 2.2rem;
+  color: var(--ayur-text-dark);
+  margin-bottom: 32px;
+}
+
+.pa-primary-result {
+  background: linear-gradient(145deg, var(--ayur-bg-light), #ffffff);
+  padding: 48px 24px;
+  border-radius: 24px;
+  margin-bottom: 48px;
+  border: 1px solid var(--ayur-border);
+  box-shadow: 0 12px 32px rgba(140, 161, 117, 0.08);
+}
+
+.pa-primary-result h3 {
+  font-size: 2.8rem;
+  color: var(--ayur-green-primary);
+  margin: 0 0 16px 0;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.pa-primary-result p {
+  color: var(--ayur-text-muted);
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.pa-bars-container {
+  max-width: 650px;
+  margin: 0 auto 48px auto;
+  text-align: left;
+}
+
+.pa-bar-row {
+  margin-bottom: 32px;
+}
+
+.pa-bar-label {
+  font-weight: 700;
+  color: var(--ayur-text-dark);
+  margin-bottom: 12px;
+  display: block;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.pa-bar-track {
+  width: 100%;
+  height: 32px;
+  background: var(--ayur-bg-light);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+  border: 1px solid var(--ayur-border);
+}
+
+.pa-bar-fill {
+  height: 100%;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 16px;
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pa-bar-text {
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-12px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pa-module-container {
+    padding: 24px 20px;
+    margin: 20px auto;
+    border-radius: 16px;
+    padding-top: 7rem;
+  }
+  
+  .pa-options-group::before {
+    display: none; 
+  }
+
+  .pa-options-group {
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 0;
+  }
+
+  .pa-radio-label {
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+    background: var(--ayur-bg-light);
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--ayur-border);
+  }
+
+  .pa-radio-custom {
+    margin-bottom: 0;
+    margin-right: 20px;
+  }
+
+  .pa-radio-text {
+    font-size: 1.05rem;
+  }
+  
+  .pa-lang-toggle-wrapper {
+    justify-content: center;
+  }
+}

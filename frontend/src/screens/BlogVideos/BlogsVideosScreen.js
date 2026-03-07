@@ -50,8 +50,12 @@ function BlogsVideosScreen() {
 			(activeTab === "video" && item.type === "Video");
 
 		const contentText = item.description;
-		const itemTags = item.type === 'normal' ? (item.category ? [item.category] : []) : item.tags;
-
+		const itemTags =
+			item.type === "normal"
+				? item.category
+					? [item.category]
+					: []
+				: item.tags;
 
 		const matchesCategory =
 			category === "all" ||
@@ -59,17 +63,17 @@ function BlogsVideosScreen() {
 
 		const matchesSearch =
 			item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			contentText?.toLowerCase().includes(searchQuery.toLowerCase()); 
-
+			contentText?.toLowerCase().includes(searchQuery.toLowerCase());
 
 		return matchesTab && matchesCategory && matchesSearch;
 	});
 
-	if (loading) return <p className="loading">Loading blogs...</p>;
+	if (loading) return <p className="bvs-loading">Loading blogs...</p>;
 
 	return (
-		<section className="blogs-videos-screen">
+		<section className="bvs-blogs-videos-screen">
 			{/* Hero Section */}
+<<<<<<< HEAD
 			<div className="hero-section">
 				<img src="/images/blog_bg.jpg" alt="Hero" className="hero-bg" />
 				<div className="hero-overlay" />
@@ -79,16 +83,27 @@ function BlogsVideosScreen() {
 							Welcome to Our <br />
 						</span>
 						<span className="hero-title2" style={{fontSize:"60px"}}>Ayurveda Guide</span>
+=======
+			<div className="bvs-hero-section">
+				<img src="/images/blog_bg.jpg" alt="Hero" className="bvs-hero-bg" />
+				<div className="bvs-hero-overlay" />
+				<div className="bvs-hero-content">
+					<h1 className="bvs-hero-title">
+						<span className="bvs-hero-title1">
+							Welcome to Our <br />
+						</span>
+						<span className="bvs-hero-title2">Ayurveda Guide</span>
+>>>>>>> a82322c (PrakritiAssessment and CSS changes)
 					</h1>
-					<p className="hero-subtext">
+					<p className="bvs-hero-subtext">
 						Explore expert articles and videos on Ayurveda,
 						<br /> wellness, and natural living.
 					</p>
-					<div className="hero-buttons">
-						<button className="hero-btn article" onClick={scrollToContent}>
+					<div className="bvs-hero-buttons">
+						<button className="bvs-hero-btn bvs-article" onClick={scrollToContent}>
 							<BookOpen /> <span>Explore Articles</span>
 						</button>
-						<button className="hero-btn video" onClick={scrollToContent}>
+						<button className="bvs-hero-btn bvs-video" onClick={scrollToContent}>
 							<Play /> Watch Videos
 						</button>
 					</div>
@@ -96,9 +111,9 @@ function BlogsVideosScreen() {
 			</div>
 
 			{/* Filter Section */}
-			<div className="filter-section" id="content-section">
-				<div className="filter-bar">
-					<div className="search-box">
+			<div className="bvs-filter-section" id="content-section">
+				<div className="bvs-filter-bar">
+					<div className="bvs-search-box">
 						<Search />
 						<input
 							type="text"
@@ -108,12 +123,9 @@ function BlogsVideosScreen() {
 						/>
 					</div>
 
-					<div className="dropdown-box">
+					<div className="bvs-dropdown-box">
 						<Filter />
-						<select
-							value={category}
-							onChange={(e) => setCategory(e.target.value)}
-						>
+						<select value={category} onChange={(e) => setCategory(e.target.value)}>
 							<option value="all">All Categories</option>
 							<option value="health">Health Tips</option>
 							<option value="herbs">Herbs & Remedies</option>
@@ -154,21 +166,21 @@ function BlogsVideosScreen() {
 						</select>
 					</div>
 
-					<div className="tab-buttons">
+					<div className="bvs-tab-buttons">
 						<button
-							className={`tab ${activeTab === "all" ? "active" : ""}`}
+							className={`bvs-tab ${activeTab === "all" ? "bvs-active" : ""}`}
 							onClick={() => setActiveTab("all")}
 						>
 							All
 						</button>
 						<button
-							className={`tab ${activeTab === "blog" ? "active" : ""}`}
+							className={`bvs-tab ${activeTab === "blog" ? "bvs-active" : ""}`}
 							onClick={() => setActiveTab("blog")}
 						>
 							<BookOpen /> Blogs
 						</button>
 						<button
-							className={`tab ${activeTab === "video" ? "active" : ""}`}
+							className={`bvs-tab ${activeTab === "video" ? "bvs-active" : ""}`}
 							onClick={() => setActiveTab("video")}
 						>
 							<Play /> Videos
@@ -178,63 +190,66 @@ function BlogsVideosScreen() {
 			</div>
 
 			{/* Cards */}
-			<div className="card-grid">
+			<div className="bvs-card-grid">
 				{filteredData.length > 0 ? (
 					filteredData.map((item, index) => {
-						const isNormalBlog = item.type === 'normal';
+						const isNormalBlog = item.type === "normal";
 
 						const rawHtmlContent = item.description;
 						const previewText = rawHtmlContent
-							? rawHtmlContent.replace(/<[^>]*>/g, '').slice(0, 120) // Strip HTML for preview
-							: 'No content available...';
+							? rawHtmlContent.replace(/<[^>]*>/g, "").slice(0, 120)
+							: "No content available...";
 
-						// Image URL
-						const imageUrl = item.image || item.content?.images?.[0]?.url || null;
+						const imageUrl =
+							item.image || item.content?.images?.[0]?.url || null;
 
-						// Tags/Category
 						const itemTags = isNormalBlog
-							? (item.category ? [item.category] : [])
+							? item.category
+								? [item.category]
+								: []
 							: item.tags || [];
 
-						// Author Name (Backend ensures this is always present now)
-						const itemAuthor = item.authorName || (item.user ? item.user.name : "Anonymous");
+						const itemAuthor =
+							item.authorName ||
+							(item.user ? item.user.name : "Anonymous");
 
 						return (
-							<div className="card" key={item._id || index}>
-								<div className="card-header">
-									{/* Use the dynamically determined image URL */}
+							<div className="bvs-card" key={item._id || index}>
+								<div className="bvs-card-header">
 									{imageUrl ? (
 										<img src={imageUrl} alt={item.title} />
 									) : (
 										<img src="/images/blog_img.jpg" alt={item.title} />
 									)}
-									{(item.type === "ai") ? <span className="card-type">AI</span> : null}
+									{item.type === "ai" ? (
+										<span className="bvs-card-type">AI</span>
+									) : null}
 								</div>
 
-								<div className="card-body">
-									<p className="card-meta">
-										{/* Use item.date, which is normalized in the backend */}
+								<div className="bvs-card-body">
+									<p className="bvs-card-meta">
 										{new Date(item.date).toLocaleDateString()}
 									</p>
-									<h3 className="card-title">{item.title}</h3>
+									<h3 className="bvs-card-title">{item.title}</h3>
 
-									{/* Use the cleaned preview text */}
-									<p className="card-description">
+									<p className="bvs-card-description">
 										{previewText}...
 									</p>
 
-									<p className="card-author">👤 {itemAuthor}</p>
-									<div className="card-tags">
+									<p className="bvs-card-author">👤 {itemAuthor}</p>
+
+									<div className="bvs-card-tags">
 										{itemTags.map((tag, idx) => (
 											<span key={idx}>#{tag}</span>
 										))}
 									</div>
 
 									<button
-										className="card-action"
+										className="bvs-card-action"
 										onClick={() =>
-											// Send the full item object to the blog page
-											navigate(`/blog/${item._id}`, { state: { blog: item } })
+											navigate(`/blog/${item._id}`, {
+												state: { blog: item },
+											})
 										}
 									>
 										Read Article
@@ -244,7 +259,9 @@ function BlogsVideosScreen() {
 						);
 					})
 				) : (
-					<p className="no-content">No content found for selected filters.</p>
+					<p className="bvs-no-content">
+						No content found for selected filters.
+					</p>
 				)}
 			</div>
 		</section>

@@ -13,7 +13,7 @@
   /* Status Colors */
   --status-delivered-text: #155724;
   --status-delivered-bg: #d4edda;
-  --status-shipped-text: #004085;
+  --status-shipped-text: #2d5885;
   --status-shipped-bg: #cce5ff;
   --status-pending-text: #721c24;
   --status-pending-bg: #f8d7da;
@@ -74,7 +74,7 @@
 .orders-table th {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--secondary-text);
+  color: #4a6c06;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -94,7 +94,7 @@
 
 .order-id {
   font-weight: 600;
-  color: var(--button-primary-bg);
+  color:#748556;
 }
 
 .order-total {

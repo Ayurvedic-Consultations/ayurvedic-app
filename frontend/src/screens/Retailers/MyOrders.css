@@ -51,8 +51,8 @@ h1 {
 }
 
 .myorders-tabs button.myorders-active {
-	background-color: #4caf50;
-	border-color: #4caf50;
+	    background-color: #556b2f;
+    border-color: #1f2937;
 	color: white;
 }
 
@@ -87,7 +87,7 @@ h1 {
 
 .myorders-card strong {
 	font-weight: 600;
-	color: #4caf50;
+	color: #536c28
 }
 
 /* Action Buttons */
@@ -108,16 +108,16 @@ h1 {
 }
 
 .myorders-actions button:nth-child(1) {
-	background-color: #4caf50;
+	background-color:#748556;
 	color: white;
 }
 
 .myorders-actions button:nth-child(1):hover {
-	background-color: #45a045;
+	background-color: #83a743;
 }
 
 .myorders-actions button:nth-child(2) {
-	background-color: #f44336;
+	background-color:#cf1d10;
 	color: white;
 }
 
