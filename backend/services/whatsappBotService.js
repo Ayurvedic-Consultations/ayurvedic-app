@@ -4,6 +4,7 @@ const Doctor = require("../models/Doctor");
 const DoctorData = require("../models/DoctorData");
 const Booking = require("../models/Booking");
 const Patient = require("../models/Patient");
+const ytSearch = require("yt-search");
 const { translateToLanguage, detectAndTranslateToEnglish } = require("./translationService");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -284,8 +285,16 @@ const startBookingFlow = async (session) => {
             return { reply };
         }
 
-        // Store doctors list in draft for reference
-        session.bookingDraft = { availableDoctors: allDoctors.slice(0, 10) };
+        // Store doctors list in draft for reference — stringify IDs for Mixed type
+        const doctorsList = allDoctors.slice(0, 10).map(d => ({
+            id: d.id.toString(),
+            name: d.name,
+            spec: d.spec,
+            price: d.price,
+            source: d.source,
+        }));
+        session.bookingDraft = { availableDoctors: doctorsList };
+        session.markModified('bookingDraft');
         session.conversationState = "awaiting_doctor";
         await session.save();
 
@@ -320,12 +329,13 @@ const handleAwaitingDoctor = async (session, text) => {
 
     const selected = doctors[num - 1];
     session.bookingDraft = {
-        ...session.bookingDraft,
-        doctorId: selected.id,
+        availableDoctors: session.bookingDraft.availableDoctors,
+        doctorId: selected.id.toString(),
         doctorName: selected.name,
         doctorSource: selected.source,
         amountPaid: selected.price,
     };
+    session.markModified('bookingDraft');
     session.conversationState = "awaiting_date";
     await session.save();
 
@@ -371,7 +381,11 @@ const handleAwaitingDate = async (session, text) => {
         return { reply };
     }
 
-    session.bookingDraft.dateOfAppointment = date.toISOString();
+    session.bookingDraft = {
+        ...session.bookingDraft.toObject ? session.bookingDraft.toObject() : session.bookingDraft,
+        dateOfAppointment: date.toISOString(),
+    };
+    session.markModified('bookingDraft');
     session.conversationState = "awaiting_time";
     await session.save();
 
@@ -402,7 +416,11 @@ const handleAwaitingTime = async (session, text) => {
         return { reply };
     }
 
-    session.bookingDraft.timeSlot = timeSlots[num];
+    session.bookingDraft = {
+        ...session.bookingDraft.toObject ? session.bookingDraft.toObject() : session.bookingDraft,
+        timeSlot: timeSlots[num],
+    };
+    session.markModified('bookingDraft');
     session.conversationState = "awaiting_illness";
     await session.save();
 
@@ -423,7 +441,11 @@ const handleAwaitingIllness = async (session, text) => {
         return { reply };
     }
 
-    session.bookingDraft.patientIllness = text.trim();
+    session.bookingDraft = {
+        ...session.bookingDraft.toObject ? session.bookingDraft.toObject() : session.bookingDraft,
+        patientIllness: text.trim(),
+    };
+    session.markModified('bookingDraft');
     session.conversationState = "awaiting_confirm";
     await session.save();
 
@@ -502,18 +524,19 @@ const handleAwaitingConfirm = async (session, text, lowerText) => {
         }
 
         // Create the booking
+        console.log("📋 Creating booking with draft:", JSON.stringify(draft, null, 2));
         const newBooking = new Booking({
             doctorId: draft.doctorId,
-            doctorName: draft.doctorName.replace("Dr. ", ""),
+            doctorName: draft.doctorName ? draft.doctorName.replace("Dr. ", "") : "Unknown",
             doctorEmail: doctorEmail || "doctor@platform.com",
-            timeSlot: draft.timeSlot,
-            dateOfAppointment: draft.dateOfAppointment,
+            timeSlot: draft.timeSlot || "9:00 AM - 10:00 AM",
+            dateOfAppointment: new Date(draft.dateOfAppointment),
             patientId: patient._id,
-            patientEmail: patient.email,
-            patientName: `${patient.firstName} ${patient.lastName}`,
-            patientGender: patient.gender,
-            patientAge: patient.age,
-            patientIllness: draft.patientIllness,
+            patientEmail: patient.email || "patient@platform.com",
+            patientName: `${patient.firstName || ""} ${patient.lastName || ""}`.trim() || "Patient",
+            patientGender: patient.gender || "Not specified",
+            patientAge: patient.age || 0,
+            patientIllness: draft.patientIllness || "General consultation",
             meetLink: "no",
             amountPaid: draft.amountPaid || 0,
         });
@@ -533,8 +556,24 @@ const handleAwaitingConfirm = async (session, text, lowerText) => {
             `⏰ Time: ${draft.timeSlot}\n` +
             `💰 Amount: ₹${newBooking.amountPaid}\n\n` +
             `Status: ⏳ Pending doctor confirmation\n\n` +
-            `You'll receive a notification when the doctor confirms and the meeting link is ready.\n\n` +
-            `Type *menu* for more options.`;
+            `You'll receive a notification when the doctor confirms and the meeting link is ready.\n\n`;
+
+        // Add YouTube Video Suggestion
+        try {
+            const illness = draft.patientIllness || "General consultation";
+            const searchResults = await ytSearch(illness + " ayurvedic cure");
+            const videos = searchResults.videos;
+            if (videos && videos.length > 0) {
+                // sort by views descending
+                videos.sort((a, b) => b.views - a.views);
+                const bestVideo = videos[0];
+                reply += `📺 *Helpful Video For Your Concern:*\nTitle: ${bestVideo.title}\nLink: ${bestVideo.url}\n\n`;
+            }
+        } catch (ytErr) {
+            console.error("YouTube Search Error:", ytErr);
+        }
+
+        reply += `Type *menu* for more options.`;
 
         if (lang !== "en") reply = await translateToLanguage(reply, lang);
         return { reply, bookingCreated: newBooking };

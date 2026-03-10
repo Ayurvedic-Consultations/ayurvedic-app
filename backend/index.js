@@ -4,6 +4,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
+const rateLimit = require("express-rate-limit");
 const authRoutes = require("./routes/authRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
@@ -41,7 +45,19 @@ const allowedOrigins = [
   // Add other necessary frontend origins here if applicable
 ];
 
-// Middleware
+// Security Middleware
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // limit each IP to 200 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes."
+});
+app.use("/api", limiter);
+
+// Standard Middleware
 app.use(cors({
   origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],

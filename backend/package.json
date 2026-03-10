@@ -22,9 +22,12 @@
     "dompurify": "^3.2.7",
     "dotenv": "^16.6.1",
     "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.3.1",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "googleapis": "^144.0.0",
+    "helmet": "^8.1.0",
     "joi": "^17.13.3",
     "jsdom": "^27.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -40,6 +43,8 @@
     "path": "^0.12.7",
     "qrcode": "^1.5.4",
     "twilio": "^5.12.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xss-clean": "^0.1.4",
+    "yt-search": "^2.13.1"
   }
 }

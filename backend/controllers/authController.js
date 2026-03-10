@@ -128,13 +128,14 @@ exports.registerDoctor = async (req, res) => {
 			gender,
 			specialization: specializationArray,
 			zipCode,
+			address: "Not Provided",
 			education,
 			designation,
 			price,
 			password: hashedPassword,
 			certificate,
 			qrCode,
-			role: 'doctor' 
+			role: 'doctor'
 		});
 		await doctor.save();
 		const token = generateToken(doctor);
@@ -147,7 +148,8 @@ exports.registerDoctor = async (req, res) => {
 			},
 		});
 	} catch (error) {
-		res.status(500).json({ error: 'Registration failed' });
+		console.error("Doctor Registration Error:", error);
+		res.status(500).json({ error: 'Registration failed', details: error.message });
 	}
 };
 
@@ -159,7 +161,7 @@ exports.registerRetailer = async (req, res) => {
 	try {
 		console.log("Creating retailer:", firstName, lastName, BusinessName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer' ,email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
+		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer', email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
 		await retailer.save();
 		const token = generateToken(retailer);
 		res.status(201).json({
@@ -182,7 +184,7 @@ exports.registerPatient = async (req, res) => {
 	try {
 		console.log("Registering patient:", firstName, lastName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient' ,age, gender, zipCode, password: hashedPassword });
+		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient', age, gender, zipCode, password: hashedPassword });
 		await patient.save();
 		const token = generateToken(patient);
 		console.log("Patient registered successfully:", patient);

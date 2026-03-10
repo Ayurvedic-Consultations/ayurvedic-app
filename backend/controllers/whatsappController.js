@@ -1,50 +1,31 @@
 const WhatsAppSession = require("../models/WhatsAppSession");
 const Patient = require("../models/Patient");
 const { processMessage } = require("../services/whatsappBotService");
-const { transcribeAudio, mapDetectedLanguage } = require("../services/speechService");
+const { transcribeAudio } = require("../services/speechService");
 const { sendTextMessage } = require("../services/whatsappService");
 const QRCode = require("qrcode");
+const mongoose = require("mongoose");
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 /**
  * POST /api/whatsapp/webhook
- * Main Twilio webhook — receives all inbound WhatsApp messages (text + audio)
  */
 exports.handleInboundWebhook = async (req, res) => {
     try {
-        const {
-            From: from,
-            Body: body,
-            NumMedia: numMedia,
-            MediaUrl0: mediaUrl,
-            MediaContentType0: mediaType,
-        } = req.body;
-
-        console.log(`📩 WhatsApp message from ${from}: ${body || "[media]"}`);
+        const { From: from, Body: body, NumMedia: numMedia, MediaUrl0: mediaUrl, MediaContentType0: mediaType } = req.body;
+        console.log(`📩 WhatsApp from ${from}: ${body || "[media]"}`);
 
         let messageText = body || "";
 
-        // Handle audio/voice notes
         if (parseInt(numMedia) > 0 && mediaType && mediaType.includes("audio")) {
             console.log("🎤 Processing voice note...");
-
-            // Get patient's preferred language for better transcription
-            const session = await WhatsAppSession.findOne({
-                whatsappNumber: from,
-                isActive: true,
-            });
-            const preferredLang = session?.preferredLanguage || "en";
-
-            const transcription = await transcribeAudio(mediaUrl, preferredLang);
-
+            const session = await WhatsAppSession.findOne({ whatsappNumber: from, isActive: true });
+            const transcription = await transcribeAudio(mediaUrl, session?.preferredLanguage || "en");
             if (transcription.text) {
                 messageText = transcription.text;
-                console.log(`🎤 Transcribed: ${messageText}`);
             } else {
-                // Send error message via Twilio
-                await sendTextMessage(
-                    from,
-                    "🎤 Sorry, I couldn't understand the voice note. Please try again or type your message."
-                );
+                await sendTextMessage(from, "🎤 Sorry, I couldn't understand the voice note. Please try again or type your message.");
                 return res.status(200).send("<Response></Response>");
             }
         }
@@ -54,25 +35,18 @@ exports.handleInboundWebhook = async (req, res) => {
             return res.status(200).send("<Response></Response>");
         }
 
-        // Process the message through the bot
         const result = await processMessage(from, messageText);
+        if (result.reply) await sendTextMessage(from, result.reply);
 
-        // Send the reply back via Twilio
-        if (result.reply) {
-            await sendTextMessage(from, result.reply);
-        }
-
-        // TwiML empty response (we send messages via REST API, not TwiML)
         res.status(200).set("Content-Type", "text/xml").send("<Response></Response>");
     } catch (error) {
-        console.error("❌ Webhook error:", error);
+        console.error("❌ Webhook error:", error.message);
         res.status(200).set("Content-Type", "text/xml").send("<Response></Response>");
     }
 };
 
 /**
  * GET /api/whatsapp/webhook
- * Twilio webhook verification (not always needed for Twilio, but good practice)
  */
 exports.verifyWebhook = (req, res) => {
     res.status(200).send("Webhook is active");
@@ -80,71 +54,61 @@ exports.verifyWebhook = (req, res) => {
 
 /**
  * POST /api/whatsapp/link
- * Link a patient account to a WhatsApp number — called from frontend
- * Body: { patientId }
- * Returns: QR code data URL and deep link
  */
 exports.linkWhatsApp = async (req, res) => {
     try {
         const { patientId } = req.body;
-
-        if (!patientId) {
-            return res.status(400).json({ error: "Patient ID is required" });
+        if (!patientId || !isValidObjectId(patientId)) {
+            return res.status(400).json({ error: "Valid Patient ID is required" });
         }
 
         const patient = await Patient.findById(patientId);
-        if (!patient) {
-            return res.status(404).json({ error: "Patient not found" });
-        }
+        if (!patient) return res.status(404).json({ error: "Patient not found" });
 
-        // Generate the WhatsApp deep link
-        const whatsappNumber = (
-            process.env.TWILIO_WHATSAPP_NUMBER || "whatsapp:+14155238886"
-        ).replace("whatsapp:", "");
-
+        const whatsappNumber = (process.env.TWILIO_WHATSAPP_NUMBER || "whatsapp:+14155238886").replace("whatsapp:", "");
         const linkMessage = `LINK:${patientId}`;
         const deepLink = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${encodeURIComponent(linkMessage)}`;
 
-        // Generate QR code as data URL
         const qrCodeDataUrl = await QRCode.toDataURL(deepLink, {
-            width: 300,
-            margin: 2,
-            color: {
-                dark: "#075E54", // WhatsApp green
-                light: "#FFFFFF",
-            },
+            width: 300, margin: 2,
+            color: { dark: "#075E54", light: "#FFFFFF" },
         });
 
         return res.status(200).json({
             message: "QR code generated",
             qrCode: qrCodeDataUrl,
-            deepLink: deepLink,
-            whatsappNumber: whatsappNumber,
+            deepLink,
+            whatsappNumber,
             isLinked: patient.whatsappLinked || false,
         });
     } catch (error) {
-        console.error("❌ Link generation error:", error);
-        return res.status(500).json({ error: "Server error" });
+        console.error("❌ Link error:", error.message);
+        return res.status(500).json({ error: "Server error: " + error.message });
     }
 };
 
 /**
  * GET /api/whatsapp/link-status/:patientId
- * Check if a patient has WhatsApp linked
  */
 exports.getLinkStatus = async (req, res) => {
     try {
         const { patientId } = req.params;
+        console.log(`🔍 Checking link status for patient ID: ${patientId}`);
+        if (!isValidObjectId(patientId)) {
+            console.log("❌ Invalid ObjectId");
+            return res.status(200).json({ isLinked: false, whatsappNumber: null, preferredLanguage: "en", linkedAt: null });
+        }
 
         const patient = await Patient.findById(patientId);
         if (!patient) {
-            return res.status(404).json({ error: "Patient not found" });
+            console.log("❌ Patient not found in DB");
+            return res.status(200).json({ isLinked: false, whatsappNumber: null, preferredLanguage: "en", linkedAt: null });
         }
 
-        const session = await WhatsAppSession.findOne({
-            patientId,
-            isActive: true,
-        });
+        console.log("✅ Patient found. whatsappLinked:", patient.whatsappLinked, "whatsappNumber:", patient.whatsappNumber);
+
+        const session = await WhatsAppSession.findOne({ patientId, isActive: true });
+        console.log("✅ Session found:", !!session);
 
         return res.status(200).json({
             isLinked: patient.whatsappLinked || false,
@@ -153,95 +117,65 @@ exports.getLinkStatus = async (req, res) => {
             linkedAt: session?.linkedAt || null,
         });
     } catch (error) {
-        console.error("❌ Link status error:", error);
-        return res.status(500).json({ error: "Server error" });
+        console.error("❌ Link status error:", error.message);
+        return res.status(200).json({ isLinked: false, whatsappNumber: null, preferredLanguage: "en", linkedAt: null });
     }
 };
 
 /**
  * DELETE /api/whatsapp/unlink/:patientId
- * Unlink WhatsApp from patient account
  */
 exports.unlinkWhatsApp = async (req, res) => {
     try {
         const { patientId } = req.params;
+        if (!isValidObjectId(patientId)) return res.status(400).json({ error: "Invalid Patient ID" });
 
-        // Deactivate session
-        await WhatsAppSession.updateMany(
-            { patientId },
-            { isActive: false }
-        );
-
-        // Update patient
-        await Patient.findByIdAndUpdate(patientId, {
-            whatsappLinked: false,
-            whatsappNumber: null,
-        });
+        await WhatsAppSession.updateMany({ patientId }, { isActive: false });
+        await Patient.findByIdAndUpdate(patientId, { whatsappLinked: false, whatsappNumber: null });
 
         return res.status(200).json({ message: "WhatsApp unlinked successfully" });
     } catch (error) {
-        console.error("❌ Unlink error:", error);
+        console.error("❌ Unlink error:", error.message);
         return res.status(500).json({ error: "Server error" });
     }
 };
 
 /**
  * POST /api/whatsapp/send-notification
- * Internal endpoint to manually send a WhatsApp notification
- * Body: { patientId, message }
  */
 exports.sendNotification = async (req, res) => {
     try {
         const { patientId, message } = req.body;
+        if (!patientId || !message) return res.status(400).json({ error: "patientId and message are required" });
+        if (!isValidObjectId(patientId)) return res.status(400).json({ error: "Invalid Patient ID" });
 
-        if (!patientId || !message) {
-            return res.status(400).json({ error: "patientId and message are required" });
-        }
-
-        const session = await WhatsAppSession.findOne({
-            patientId,
-            isActive: true,
-        });
-
-        if (!session) {
-            return res.status(404).json({ error: "Patient has no active WhatsApp session" });
-        }
+        const session = await WhatsAppSession.findOne({ patientId, isActive: true });
+        if (!session) return res.status(404).json({ error: "No active WhatsApp session" });
 
         const result = await sendTextMessage(session.whatsappNumber, message);
-
-        return res.status(200).json({
-            message: "Notification sent",
-            delivered: !!result,
-        });
+        return res.status(200).json({ message: "Notification sent", delivered: !!result });
     } catch (error) {
-        console.error("❌ Send notification error:", error);
+        console.error("❌ Send notification error:", error.message);
         return res.status(500).json({ error: "Server error" });
     }
 };
 
 /**
  * POST /api/whatsapp/update-language
- * Update preferred language
- * Body: { patientId, language }
  */
 exports.updateLanguage = async (req, res) => {
     try {
         const { patientId, language } = req.body;
         const validLangs = ["en", "hi", "bn", "ta", "te"];
-
-        if (!validLangs.includes(language)) {
-            return res.status(400).json({ error: "Invalid language. Use: en, hi, bn, ta, te" });
-        }
+        if (!validLangs.includes(language)) return res.status(400).json({ error: "Invalid language" });
+        if (!isValidObjectId(patientId)) return res.status(400).json({ error: "Invalid Patient ID" });
 
         await Patient.findByIdAndUpdate(patientId, { preferredLanguage: language });
-        await WhatsAppSession.updateMany(
-            { patientId, isActive: true },
-            { preferredLanguage: language }
-        );
+        await WhatsAppSession.updateMany({ patientId, isActive: true }, { preferredLanguage: language });
 
         return res.status(200).json({ message: "Language updated", language });
     } catch (error) {
-        console.error("❌ Language update error:", error);
+        console.error("❌ Language update error:", error.message);
         return res.status(500).json({ error: "Server error" });
     }
 };

@@ -1,10 +1,7 @@
-/* ═══════════════════════════════════════════════════════
-   WhatsApp Promo Section — Landing Page
-   ═══════════════════════════════════════════════════════ */
 
 .wa-promo-section {
     padding: 80px 24px;
-    background: linear-gradient(180deg, #0a0a1a 0%, #0d1f12 50%, #0a0a1a 100%);
+    background: linear-gradient(180deg, #f9fcf7 0%, #edf5e8 50%, #f9fcf7 100%);
     position: relative;
     overflow: hidden;
 }
@@ -16,7 +13,7 @@
     right: -200px;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(37, 211, 102, 0.08), transparent 70%);
+    background: radial-gradient(circle, rgba(102, 187, 106, 0.12), transparent 70%);
     pointer-events: none;
 }
 
@@ -29,7 +26,7 @@
     align-items: center;
 }
 
-/* ─── Left Content ─── */
+/* Left Content */
 .wa-promo-content {
     display: flex;
     flex-direction: column;
@@ -40,13 +37,13 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(37, 211, 102, 0.1);
-    border: 1px solid rgba(37, 211, 102, 0.25);
+    background: rgba(46, 125, 50, 0.08);
+    border: 1px solid rgba(46, 125, 50, 0.2);
     border-radius: 100px;
     padding: 6px 16px;
     font-size: 12px;
     font-weight: 700;
-    color: #25D366;
+    color: #2e7d32;
     letter-spacing: 1px;
     width: fit-content;
 }
@@ -74,10 +71,11 @@
 .wa-promo-title {
     font-size: 40px;
     font-weight: 800;
-    color: #f0f0f0;
+    color: #212121;
     line-height: 1.2;
     letter-spacing: -1px;
     margin: 0;
+    font-family: 'Playfair Display', serif;
 }
 
 .wa-promo-highlight {
@@ -90,12 +88,12 @@
 .wa-promo-desc {
     font-size: 16px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.55);
+    color: #555;
     margin: 0;
     max-width: 480px;
 }
 
-/* ─── Features ─── */
+/* Features */
 .wa-promo-features {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -108,15 +106,18 @@
     gap: 12px;
     align-items: flex-start;
     padding: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, .7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(46, 125, 50, .08);
+    border-radius: 14px;
+    transition: all 0.25s;
 }
 
 .wa-promo-feature:hover {
-    background: rgba(37, 211, 102, 0.05);
-    border-color: rgba(37, 211, 102, 0.15);
+    background: rgba(255, 255, 255, .95);
+    border-color: rgba(46, 125, 50, .2);
+    box-shadow: 0 4px 16px rgba(46, 125, 50, .08);
+    transform: translateY(-2px);
 }
 
 .wa-promo-feature-icon {
@@ -127,19 +128,19 @@
 
 .wa-promo-feature strong {
     font-size: 14px;
-    color: #e8f5e9;
+    color: #212121;
     display: block;
     margin-bottom: 4px;
 }
 
 .wa-promo-feature p {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.45);
+    color: #777;
     line-height: 1.4;
     margin: 0;
 }
 
-/* ─── CTA Button ─── */
+/* CTA Button */
 .wa-promo-cta {
     display: inline-flex;
     align-items: center;
@@ -148,21 +149,36 @@
     background: linear-gradient(135deg, #25D366, #128C7E);
     color: white;
     border: none;
-    border-radius: 14px;
+    border-radius: 50px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     width: fit-content;
     transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.wa-promo-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .2), transparent);
+    transform: translateX(-100%);
+    transition: transform .6s;
+}
+
+.wa-promo-cta:hover::before {
+    transform: translateX(100%);
 }
 
 .wa-promo-cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(37, 211, 102, 0.4);
 }
 
-/* ─── Language tags ─── */
+/* Language tags */
 .wa-promo-langs {
     display: flex;
     flex-wrap: wrap;
@@ -171,13 +187,14 @@
 
 .wa-promo-langs span {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 6px;
+    color: #666;
+    padding: 4px 12px;
+    background: rgba(46, 125, 50, .05);
+    border: 1px solid rgba(46, 125, 50, .1);
+    border-radius: 8px;
 }
 
-/* ─── Right Visual — Phone Mockup ─── */
+/* Phone Mockup */
 .wa-promo-visual {
     display: flex;
     justify-content: center;
@@ -188,8 +205,7 @@
     background: #111b21;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(37, 211, 102, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, .08);
     animation: wa-phone-float 4s ease-in-out infinite;
 }
 
@@ -197,11 +213,11 @@
 
     0%,
     100% {
-        transform: translateY(0) rotate(0deg);
+        transform: translateY(0);
     }
 
     50% {
-        transform: translateY(-10px) rotate(0.5deg);
+        transform: translateY(-10px);
     }
 }
 
@@ -242,17 +258,15 @@
     flex-direction: column;
     gap: 8px;
     min-height: 320px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23111b21' width='100' height='100'/%3E%3Ccircle fill='%23ffffff' cx='50' cy='50' r='0.5' opacity='0.03'/%3E%3C/svg%3E");
+    background: #0b141a;
 }
 
-/* ─── Chat Bubbles ─── */
 .wa-chat-bubble {
     max-width: 85%;
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
     line-height: 1.4;
-    position: relative;
 }
 
 .wa-chat-bubble p {
@@ -280,7 +294,7 @@
     border-top-right-radius: 2px;
 }
 
-/* ─── Responsive ─── */
+/* Responsive */
 @media (max-width: 900px) {
     .wa-promo-container {
         grid-template-columns: 1fr;

@@ -113,6 +113,18 @@ const sendPrescriptionNotification = async (to, doctorName, medicineName) => {
     return sendTextMessage(to, body);
 };
 
+/**
+ * Send booking cancelled notification
+ */
+const sendBookingCancelled = async (to, bookingData) => {
+    const body =
+        `⚠️ *Appointment Cancelled*\n\n` +
+        `Your appointment with Dr. ${bookingData.doctorName} on ${new Date(bookingData.dateOfAppointment).toLocaleDateString("en-IN")} has been cancelled.\n\n` +
+        `We apologize for the inconvenience.`;
+
+    return sendTextMessage(to, body);
+};
+
 module.exports = {
     sendTextMessage,
     sendBookingConfirmation,
@@ -120,4 +132,5 @@ module.exports = {
     sendBookingDenied,
     sendReminder,
     sendPrescriptionNotification,
+    sendBookingCancelled,
 };

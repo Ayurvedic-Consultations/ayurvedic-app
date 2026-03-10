@@ -345,6 +345,9 @@ exports.deleteBooking = async (req, res) => {
 			return res.status(404).json({ error: "Booking not found" });
 		}
 
+		// Send WhatsApp notification
+		notifyPatientWhatsApp(deletedBooking.patientId, whatsappService.sendBookingCancelled, deletedBooking);
+
 		return res.status(200).json({ message: "Booking deleted successfully" });
 	} catch (error) {
 		console.error("Error deleting booking:", error);
@@ -510,6 +513,11 @@ exports.prescribeMedicine = async (req, res) => {
 		});
 
 		await newNotification.save();
+
+		// --- STEP D: Send WhatsApp Notification to Patient ---
+		notifyPatientWhatsApp(booking.patientId, (to) =>
+			whatsappService.sendPrescriptionNotification(to, doctorName, medicineData.medicineName)
+		);
 
 		// --- Final Response ---
 
