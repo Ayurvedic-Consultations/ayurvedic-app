@@ -9,11 +9,12 @@ const AdminDashboard = () => {
 		{ name: 'Doctor Management', path: '/admin/consultations' },
 		{ name: 'Retailer Management', path: '/admin/medicine-orders' },
 		{ name: 'Transactions', path: '/admin/transactions' },
-		{ name: 'Blogs', path: '/admin/blogs' }
+		{ name: 'Blogs', path: '/admin/blogs' },
+		{ name: '💬 WhatsApp AI Bot', path: '/admin/whatsapp' }
 	];
 
 	return (
-		<div style={{ textAlign: 'center', marginTop: '165px', padding: "25px", boxSizing: "border-box", marginLeft: "50px", marginRight: "50px", marginBottom:"25px", background:"white", borderRadius:"15px" }}>
+		<div style={{ textAlign: 'center', marginTop: '165px', padding: "25px", boxSizing: "border-box", marginLeft: "50px", marginRight: "50px", marginBottom: "25px", background: "white", borderRadius: "15px" }}>
 			<h1>Admin Dashboard</h1>
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', padding: '20px' }}>
 				{sections.map((section, index) => (
