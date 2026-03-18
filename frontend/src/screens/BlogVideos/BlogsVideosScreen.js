@@ -73,17 +73,6 @@ function BlogsVideosScreen() {
 	return (
 		<section className="bvs-blogs-videos-screen">
 			{/* Hero Section */}
-<<<<<<< HEAD
-			<div className="hero-section">
-				<img src="/images/blog_bg.jpg" alt="Hero" className="hero-bg" />
-				<div className="hero-overlay" />
-				<div className="hero-content">
-					<h1 className="hero-title">
-						<span className="hero-title1" style={{fontSize:"60px"}}>
-							Welcome to Our <br />
-						</span>
-						<span className="hero-title2" style={{fontSize:"60px"}}>Ayurveda Guide</span>
-=======
 			<div className="bvs-hero-section">
 				<img src="/images/blog_bg.jpg" alt="Hero" className="bvs-hero-bg" />
 				<div className="bvs-hero-overlay" />
@@ -93,7 +82,6 @@ function BlogsVideosScreen() {
 							Welcome to Our <br />
 						</span>
 						<span className="bvs-hero-title2">Ayurveda Guide</span>
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 					</h1>
 					<p className="bvs-hero-subtext">
 						Explore expert articles and videos on Ayurveda,

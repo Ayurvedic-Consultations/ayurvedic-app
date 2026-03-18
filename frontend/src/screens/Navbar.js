@@ -97,7 +97,7 @@ function NavBar() {
 
         <div className="auth">
           <NavLink to="/signin" className="signin-btn-text">
-            Sign In
+            Login
           </NavLink>
           <NavLink to="/signin" className="signin-btn">
             <img

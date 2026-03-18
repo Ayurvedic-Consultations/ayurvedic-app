@@ -192,9 +192,11 @@
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #fff; /* Works well for most statuses; small shadow helps on yellow */
+  color: #6b8e23; /* Works well for most statuses; small shadow helps on yellow */
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
   white-space: nowrap;
+
+    background-color: #c2c299;
 }
 
 /* ------------------------------

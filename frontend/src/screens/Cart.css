@@ -1,21 +1,4 @@
 :root {
-<<<<<<< HEAD
-	--primary: #4f46e5;
-	--primary-dark: #4338ca;
-	--success: #10b981;
-	--danger: #ef4444;
-	--gray-100: #f8fafc;
-	--gray-200: #e2e8f0;
-	--gray-300: #cbd5e0;
-	--gray-500: #718096;
-	--gray-700: #374151;
-	--gray-900: #111827;
-	--radius: 1rem;
-	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-	--shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
-	--transition: all 0.25s ease;
-=======
   --primary: #2f7d32;        /* Herbal green */
   --primary-dark: #1b5e20;   /* Deep neem green */
 
@@ -36,7 +19,6 @@
   --shadow-lg: 0 10px 30px rgba(31, 45, 36, 0.18);
 
   --transition: all 0.25s ease;
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 
@@ -150,15 +132,9 @@
 }
 
 .cart-details p {
-<<<<<<< HEAD
-	color: var(--primary);
-	font-weight: 700;
-	font-size: 1.2rem;
-=======
   color: #6b8e23;
   font-weight: 700;
   font-size: 1.2rem;
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 /* ─── Quantity Controls ─── */
@@ -173,28 +149,6 @@
 }
 
 .quantity-controls button {
-<<<<<<< HEAD
-	width: 40px;
-	height: 40px;
-	border: 2px solid var(--gray-300);
-	background: white;
-	color: var(--gray-700);
-	font-weight: bold;
-	font-size: 1.3rem;
-	border-radius: 0.75rem;
-	cursor: pointer;
-	transition: var(--transition);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.quantity-controls button:hover:not(:disabled) {
-	background: var(--primary);
-	color: white;
-	border-color: var(--primary);
-	transform: scale(1.05);
-=======
   width: 40px;
   height: 40px;
   border: 2px solid var(--gray-300);
@@ -217,7 +171,6 @@
   color: white;
   border-color: var(--color-white);
   transform: scale(1.05);
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 .quantity-controls button:disabled {
@@ -276,27 +229,6 @@
 }
 
 .cart-summary h2 {
-<<<<<<< HEAD
-	font-size: 2rem;
-	font-weight: 800;
-	color: var(--primary);
-	margin-bottom: 1.5rem;
-}
-
-.checkout-btn {
-	background: var(--primary);
-	color: white;
-	border: none;
-	padding: 1rem 2.5rem;
-	font-size: 1.15rem;
-	font-weight: 700;
-	border-radius: 0.75rem;
-	cursor: pointer;
-	width: 100%;
-	max-width: 420px;
-	transition: var(--transition);
-	box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
-=======
   font-size: 2rem;
   font-weight: 800;
   color: #6b8e23;
@@ -317,21 +249,14 @@
   max-width: 420px;
   transition: var(--transition);
   box-shadow: 0 6px 16px #6b8e23;
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 
 
 .checkout-btn:hover:not(:disabled) {
-<<<<<<< HEAD
-	background: var(--primary-dark);
-	transform: translateY(-3px);
-	box-shadow: 0 12px 24px rgba(79, 70, 229, 0.4);
-=======
   background:#91c921;
   transform: translateY(-3px);
   box-shadow: 0 12px 24px #6b8e23;
->>>>>>> a82322c (PrakritiAssessment and CSS changes)
 }
 
 .checkout-btn:disabled {
