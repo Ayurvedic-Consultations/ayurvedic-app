@@ -166,7 +166,7 @@ exports.sendNotification = async (req, res) => {
 exports.updateLanguage = async (req, res) => {
     try {
         const { patientId, language } = req.body;
-        const validLangs = ["en", "hi", "bn", "ta", "te"];
+        const validLangs = ["en", "hi", "bn", "ta", "te", "hinglish"];
         if (!validLangs.includes(language)) return res.status(400).json({ error: "Invalid language" });
         if (!isValidObjectId(patientId)) return res.status(400).json({ error: "Invalid Patient ID" });
 

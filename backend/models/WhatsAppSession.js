@@ -21,7 +21,7 @@ const whatsAppSessionSchema = new mongoose.Schema({
     },
     preferredLanguage: {
         type: String,
-        enum: ["en", "hi", "bn", "ta", "te"],
+        enum: ["en", "hi", "bn", "ta", "te", "hinglish"],
         default: "en",
     },
     conversationState: {

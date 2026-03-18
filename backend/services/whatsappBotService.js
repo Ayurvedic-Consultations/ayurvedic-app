@@ -5,13 +5,9 @@ const DoctorData = require("../models/DoctorData");
 const Booking = require("../models/Booking");
 const Patient = require("../models/Patient");
 const ytSearch = require("yt-search");
-const { translateToLanguage, detectAndTranslateToEnglish } = require("./translationService");
+const { translateToLanguage, analyzeIncomingMessage, LANGUAGE_NAMES } = require("./translationService");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-const LANGUAGE_NAMES = {
-    en: "English", hi: "Hindi", bn: "Bengali", ta: "Tamil", te: "Telugu",
-};
 
 /**
  * Process an incoming message from a WhatsApp user
@@ -34,21 +30,22 @@ const processMessage = async (whatsappNumber, messageText) => {
         // Update last message time
         session.lastMessageAt = new Date();
 
-        // Detect and translate incoming message to English for processing
-        const { translatedText, detectedLanguage } = await detectAndTranslateToEnglish(messageText);
+        // --- STEP 1: Analyze message (translation, lang detection, switch intent, core intent) in ONE call! ---
+        const analysis = await analyzeIncomingMessage(messageText);
+        const { translatedText, detectedLanguage, langSwitchRequest, intent } = analysis;
 
-        // Auto-update language preference if detected language is different
+        // If it was a language switch intent
+        if (langSwitchRequest) {
+            return await handleLanguageChange(session, langSwitchRequest);
+        }
+
+        // Auto-update language preference if user speaks a different language
         if (detectedLanguage !== "en" && detectedLanguage !== session.preferredLanguage) {
             session.preferredLanguage = detectedLanguage;
+            await session.save();
         }
 
         const lang = session.preferredLanguage;
-
-        // Check for language change command
-        const langChangeMatch = messageText.toLowerCase().match(/^(language|lang|भाषा)[\s:]+(.+)$/i);
-        if (langChangeMatch) {
-            return await handleLanguageChange(session, langChangeMatch[2].trim());
-        }
 
         // Check for special commands
         const lowerText = translatedText.toLowerCase().trim();
@@ -72,7 +69,7 @@ const processMessage = async (whatsappNumber, messageText) => {
         // Handle state machine flow
         switch (session.conversationState) {
             case "idle":
-                return await handleIdleState(session, translatedText, lowerText);
+                return await handleIdleState(session, translatedText, lowerText, intent);
             case "booking_flow":
             case "awaiting_doctor":
                 return await handleAwaitingDoctor(session, translatedText);
@@ -150,27 +147,32 @@ const handleLinkMessage = async (whatsappNumber, messageText) => {
 const handleLanguageChange = async (session, langInput) => {
     const langMap = {
         english: "en", en: "en",
-        hindi: "hi", hi: "hi", हिंदी: "hi", हिन्दी: "hi",
-        bengali: "bn", bn: "bn", বাংলা: "bn", bangla: "bn",
-        tamil: "ta", ta: "ta", தமிழ்: "ta",
-        telugu: "te", te: "te", తెలుగు: "te",
+        hindi: "hi", hi: "hi", "हिंदी": "hi", "हिन्दी": "hi",
+        bengali: "bn", bn: "bn", "বাংলা": "bn", bangla: "bn",
+        tamil: "ta", ta: "ta", "தமிழ்": "ta",
+        telugu: "te", te: "te", "తెలుగు": "te",
+        hinglish: "hinglish",
     };
 
-    const lang = langMap[langInput.toLowerCase()];
+    // If a valid code was already passed directly (from parseLanguageSwitchIntent)
+    const validCodes = ["en", "hi", "bn", "ta", "te", "hinglish"];
+    let lang = validCodes.includes(langInput) ? langInput : langMap[langInput.toLowerCase()];
+
     if (!lang) {
         return {
-            reply: "❌ Unsupported language. Supported: English, Hindi, Bengali, Tamil, Telugu.\n\nExample: *language: hindi*",
+            reply: "❌ Unsupported language. Supported: English, Hindi, Bengali, Tamil, Telugu, Hinglish.\n\nExample: *language: hindi* or say \"I want to talk in Bengali\"",
         };
     }
 
     session.preferredLanguage = lang;
     await session.save();
 
-    // Update patient too
+    // Update patient record too
     await Patient.findByIdAndUpdate(session.patientId, { preferredLanguage: lang });
 
-    const langName = LANGUAGE_NAMES[lang];
-    const reply = await translateToLanguage(`Language changed to ${langName}. All messages will now be in ${langName}.`, lang);
+    const langName = LANGUAGE_NAMES[lang] || lang;
+    const confirmMsg = `Language changed to ${langName}. All messages will now be in ${langName}. Type *menu* for options.`;
+    const reply = lang === "en" ? confirmMsg : await translateToLanguage(confirmMsg, lang);
     return { reply: `✅ ${reply}` };
 };
 
@@ -186,8 +188,10 @@ const sendMainMenu = async (session) => {
         `2️⃣ *My Appointments* — Check your booking status\n` +
         `3️⃣ *Change Language* — Switch your preferred language\n` +
         `4️⃣ *Help* — Get assistance\n\n` +
-        `Simply type the option number or describe what you need!\n\n` +
-        `_Current language: ${LANGUAGE_NAMES[lang]}_`;
+        `💡 *Health Advice* — Describe any health issue, and I'll find a helpful video for you!\n\n` +
+        `Simply type the option number or describe what you need!\n` +
+        `You can also say \"I want to converse in Bengali\" or \"Hinglish mein baat karo\" to switch language.\n\n` +
+        `_Current language: ${LANGUAGE_NAMES[lang] || lang}_`;
 
     if (lang !== "en") {
         menu = await translateToLanguage(menu, lang);
@@ -201,7 +205,7 @@ const sendMainMenu = async (session) => {
 /**
  * Handle idle state — detect user intent
  */
-const handleIdleState = async (session, text, lowerText) => {
+const handleIdleState = async (session, text, lowerText, aiIntent) => {
     const lang = session.preferredLanguage;
 
     // Intent detection using keywords and AI
@@ -218,37 +222,81 @@ const handleIdleState = async (session, text, lowerText) => {
     }
 
     if (langKeywords.some((k) => lowerText.includes(k)) || lowerText === "3") {
-        let reply = "Please type your preferred language.\n\nSupported: English, Hindi, Bengali, Tamil, Telugu\n\nExample: *language: hindi*";
+        let reply = "Please type your preferred language.\n\nSupported: English, Hindi, Bengali, Tamil, Telugu, Hinglish\n\nExample: *language: hindi* or simply say \"I want to talk in Bengali\"";
         if (lang !== "en") reply = await translateToLanguage(reply, lang);
         return { reply };
     }
 
-    // Use Gemini to understand natural language intent
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-        const prompt = `You are a WhatsApp chatbot for an Ayurvedic Consultation platform. The user said: "${text}"
-
-Classify the intent as one of:
-- BOOK_APPOINTMENT
-- CHECK_STATUS
-- CHANGE_LANGUAGE
-- GREETING
-- OTHER
-
-Respond with ONLY the intent label.`;
-
-        const result = await model.generateContent(prompt);
-        const intent = result.response.text().trim().toUpperCase();
-
-        if (intent === "BOOK_APPOINTMENT") return await startBookingFlow(session);
-        if (intent === "CHECK_STATUS") return await handleCheckStatus(session);
-        if (intent === "GREETING") return await sendMainMenu(session);
-    } catch (e) {
-        console.error("Intent detection error:", e.message);
+    // Use pre-computed AI intent to avoid a second API call
+    if (aiIntent) {
+        if (aiIntent === "BOOK_APPOINTMENT") return await startBookingFlow(session);
+        if (aiIntent === "CHECK_STATUS") return await handleCheckStatus(session);
+        if (aiIntent === "HEALTH_ADVICE") return await handleHealthAdvice(session, text);
+        if (aiIntent === "GREETING") return await sendMainMenu(session);
     }
 
     // Default: show menu
     return await sendMainMenu(session);
+};
+
+/**
+ * Handle health advice request — give a short advice and a video link
+ */
+const handleHealthAdvice = async (session, text) => {
+    const lang = session.preferredLanguage;
+    try {
+        // Get brief advice and a good youtube search query from Gemini
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const prompt = `The user is asking for health advice or a video for the following issue: "${text}"
+Respond with a JSON object containing:
+1. "advice": A very brief, comforting, 1-2 sentence Ayurvedic advice/tip.
+2. "searchQuery": A short YouTube search query (max 4-5 words) to find a good authoritative video about this (e.g., "ayurvedic cure for knee pain").
+
+JSON format:
+{
+  "advice": "...",
+  "searchQuery": "..."
+}`;
+
+        const result = await model.generateContent(prompt);
+        let jsonStr = result.response.text().trim();
+        if (jsonStr.startsWith("\`\`\`json")) {
+            jsonStr = jsonStr.replace(/^\`\`\`json/, "").replace(/\`\`\`$/, "").trim();
+        }
+
+        let adviceData;
+        try {
+            adviceData = JSON.parse(jsonStr);
+        } catch (e) {
+            adviceData = {
+                advice: "Here is a helpful video for your concern.",
+                searchQuery: text + " ayurvedic remedy"
+            };
+        }
+
+        // Search YouTube
+        const searchResults = await ytSearch(adviceData.searchQuery);
+        let videoInfo = "";
+        if (searchResults && searchResults.videos.length > 0) {
+            // Sort by views for authenticity
+            const videos = searchResults.videos.sort((a, b) => b.views - a.views);
+            const topVideo = videos[0];
+            videoInfo = `\n\n📺 *Helpful Video For Your Concern:*\nTitle: ${topVideo.title}\nLink: ${topVideo.url}`;
+        }
+
+        let reply = adviceData.advice + videoInfo + `\n\nIf you need a proper consultation, type *1* to book an appointment. Type *menu* for more options.`;
+
+        if (lang !== "en") {
+            reply = await translateToLanguage(reply, lang);
+        }
+
+        return { reply };
+    } catch (error) {
+        console.error("Health advice error:", error);
+        let reply = "Sorry, I couldn't find a video for that right now. Type *menu* to see other options.";
+        if (lang !== "en") reply = await translateToLanguage(reply, lang);
+        return { reply };
+    }
 };
 
 /**
