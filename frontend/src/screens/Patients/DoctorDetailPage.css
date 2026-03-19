@@ -163,7 +163,7 @@
 .availability-slots button,
 .book-appointment {
 	padding: 10px;
-	background-color: #4caf50;
+	background-color: #6b8e23;
 	color: white;
 	border: none;
 	border-radius: 5px;
@@ -181,7 +181,7 @@
 }
 
 .availability-slots button {
-	background-color: rgb(117, 255, 117);
+	background-color: #6b8e23;
 	border: 1px solid #ccc;
 	padding: 10px;
 	margin: 5px 0;

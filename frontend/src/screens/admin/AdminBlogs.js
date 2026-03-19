@@ -200,7 +200,7 @@ const AdminBlogs = () => {
 										<div className="blog-actions">
 											<button
 												onClick={() => handleUpdateClick(blog)}
-												className="delete-btn"
+												className="updatee-btn"
 												disabled={isLoading}
 											>
 												Update

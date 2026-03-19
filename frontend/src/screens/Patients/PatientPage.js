@@ -14,6 +14,7 @@ import medicineImage from "../../media/capsule.jpg";
 // import medicineImage from "../../media/medicine.png";
 import yogaImage from "../../media/yoga-diet.jpg";
 import { jwtDecode } from 'jwt-decode';
+import PrakritiAssessment from "./PrakritiAssessment";
 
 //import step1Icon from "../../media/step1.png"; // Import icons for steps
 //import step2Icon from "../../media/step2.png";
@@ -39,19 +40,23 @@ function PatientPage() {
 		}
 	}, []);
 
-	// Fetch Prakriti Determination data from the backend
-	useEffect(() => {
-		const fetchPrakritiData = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-						},
-					}
-				);
+	const goToPrakritiAssessment = () => {
+    navigate("/PrakritiAssessment");
+};
+
+  // Fetch Prakriti Determination data from the backend
+  useEffect(() => {
+    const fetchPrakritiData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
 				if (response.ok) {
 					const data = await response.json();
@@ -118,6 +123,11 @@ function PatientPage() {
 						<>
 							<button className="match-btn" onClick={handleOpenPrakritiForm}>
 								Prakriti Determination
+							</button>
+
+							<button className="match-btn" onClick={goToPrakritiAssessment}>
+								
+								Prakriti Assesment
 							</button>
 							<p>
 								Kindly complete the Prakriti Determination Form. This will enable

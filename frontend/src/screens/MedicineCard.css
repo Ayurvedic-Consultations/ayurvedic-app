@@ -77,7 +77,7 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #2b6cb0;
+  color: #526237;
 }
 
 /* Prescription badge */
@@ -116,7 +116,7 @@
 
 /* Add to Cart Button */
 .medicine-card__add-btn {
-  background: #3182ce;
+  background: #748556;
   color: white;
   border: none;
   border-radius: 8px;
@@ -129,7 +129,7 @@
 }
 
 .medicine-card__add-btn:hover {
-  background: #2c6fb8;
+  background: #4b5539;
 }
 
 /* Quantity Controls */

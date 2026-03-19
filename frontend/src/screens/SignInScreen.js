@@ -123,7 +123,7 @@ function SignInScreen() {
       <div className="signin-right">
         {!showReset ? (
           <>
-            <div className='signin-heading'>Sign in to your account</div>
+            <div className='signin-heading'>Login to your account</div>
             <p className='welcome'>Welcome Back! We're happy to see you again</p>
 
             {/* Form for sign-in, with onSubmit triggering handleSignIn */}
@@ -141,7 +141,7 @@ function SignInScreen() {
               </select>
 
               <a href="#" className="forgot-password" onClick={() => setShowReset(true)}>Forgot Password?</a>
-              <button type="submit" className="signin-btn">SIGN IN</button> {/* onSubmit handles this */}
+              <button type="submit" className="signin-btn">Login</button> {/* onSubmit handles this */}
             </form>
             <p>
               Don’t have an account?
