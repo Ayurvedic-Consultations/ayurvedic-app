@@ -143,6 +143,15 @@ const WhatsAppDashboard = () => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     };
 
+    const getFullName = (profile) => {
+        if (!profile) return 'Unknown User';
+        if (profile.fullName) return profile.fullName; // fallback for older data
+        const first = profile.firstName || '';
+        const last = profile.lastName || '';
+        const full = `${first} ${last}`.trim();
+        return full || 'Unknown User';
+    };
+
     const getFlowLabel = (flow) => {
         const labels = {
             'idle': 'Idle',
@@ -265,11 +274,11 @@ const WhatsAppDashboard = () => {
                                         id={`session-${session.phoneNumber}`}
                                     >
                                         <div className={`wa-session-avatar ${session.isRegistered ? 'registered' : ''}`}>
-                                            {session.profile?.fullName ? getInitials(session.profile.fullName) : '?'}
+                                            {getInitials(getFullName(session.profile))}
                                         </div>
                                         <div className="wa-session-info">
                                             <p className="wa-session-name">
-                                                {session.profile?.fullName || 'Unknown User'}
+                                                {getFullName(session.profile)}
                                             </p>
                                             <p className="wa-session-phone">{session.phoneNumber}</p>
                                         </div>
@@ -292,10 +301,10 @@ const WhatsAppDashboard = () => {
                                 <div className="wa-chat-header">
                                     <div className="wa-chat-header-info">
                                         <div className={`wa-session-avatar ${sessionDetail.isRegistered ? 'registered' : ''}`}>
-                                            {sessionDetail.profile?.fullName ? getInitials(sessionDetail.profile.fullName) : '?'}
+                                            {getInitials(getFullName(sessionDetail.profile))}
                                         </div>
                                         <div className="wa-chat-header-details">
-                                            <h3>{sessionDetail.profile?.fullName || 'Unknown User'}</h3>
+                                            <h3>{getFullName(sessionDetail.profile)}</h3>
                                             <p>
                                                 {sessionDetail.phoneNumber} • {getFlowLabel(sessionDetail.currentFlow)} • {sessionDetail.totalMessages} messages
                                             </p>
@@ -403,9 +412,9 @@ const WhatsAppDashboard = () => {
                         <div className="wa-profile-panel" style={{ gridColumn: '1 / -1' }}>
                             <div className="wa-profile-header">
                                 <div className="wa-profile-avatar">
-                                    {sessionDetail.profile?.fullName ? getInitials(sessionDetail.profile.fullName) : '?'}
+                                    {getInitials(getFullName(sessionDetail.profile))}
                                 </div>
-                                <h3>{sessionDetail.profile?.fullName || 'Unknown User'}</h3>
+                                <h3>{getFullName(sessionDetail.profile)}</h3>
                                 <p>{sessionDetail.phoneNumber}</p>
                             </div>
                             <div className="wa-profile-details">
@@ -424,12 +433,12 @@ const WhatsAppDashboard = () => {
                                     <span className="wa-profile-field-value">{sessionDetail.profile?.gender || 'N/A'}</span>
                                 </div>
                                 <div className="wa-profile-field">
-                                    <span className="wa-profile-field-label">Location</span>
-                                    <span className="wa-profile-field-value">{sessionDetail.profile?.location || 'N/A'}</span>
+                                    <span className="wa-profile-field-label">Location (Zip Code)</span>
+                                    <span className="wa-profile-field-value">{sessionDetail.profile?.zipCode || sessionDetail.profile?.location || 'N/A'}</span>
                                 </div>
                                 <div className="wa-profile-field">
-                                    <span className="wa-profile-field-label">Medical Conditions</span>
-                                    <span className="wa-profile-field-value">{sessionDetail.profile?.medicalConditions || 'N/A'}</span>
+                                    <span className="wa-profile-field-label">Email ID</span>
+                                    <span className="wa-profile-field-value">{sessionDetail.profile?.email || 'N/A'}</span>
                                 </div>
                                 <div className="wa-profile-field">
                                     <span className="wa-profile-field-label">Current Flow</span>

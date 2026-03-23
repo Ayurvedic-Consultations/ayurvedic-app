@@ -14,17 +14,19 @@ const whatsappSessionSchema = new mongoose.Schema({
     isRegistered: { type: Boolean, default: false },
     registrationStep: {
         type: String,
-        enum: ['none', 'ask_register', 'collect_name', 'collect_age', 'collect_gender', 'collect_location', 'collect_conditions', 'completed'],
+        enum: ['none', 'firstName', 'lastName', 'age', 'dob', 'gender', 'email', 'zipCode', 'password', 'completed'],
         default: 'none'
     },
-
-    // User profile collected via WhatsApp
+    // Temporarily holds registration info before creating actual Patient
     profile: {
-        fullName: { type: String, default: '' },
+        firstName: { type: String, default: '' },
+        lastName: { type: String, default: '' },
         age: { type: Number, default: null },
+        dob: { type: String, default: '' },
         gender: { type: String, default: '' },
-        location: { type: String, default: '' },
-        medicalConditions: { type: String, default: '' }
+        email: { type: String, default: '' },
+        zipCode: { type: String, default: '' },
+        password: { type: String, default: '' } // Raw password kept temporarily during setup, then wiped if needed
     },
 
     // Linked patient account (if registered on the platform)

@@ -10,6 +10,7 @@ const Booking = require('../models/Booking');
 const Patient = require('../models/Patient');
 const gemini = require('./geminiService');
 const whatsapp = require('./whatsappApiService');
+const bcrypt = require('bcrypt');
 
 /**
  * Main message handler - routes to appropriate flow
@@ -129,7 +130,7 @@ async function handleIdleState(session, message, intent) {
     // General conversation - use Gemini
     session.currentFlow = 'general_chat';
     const response = await gemini.generateResponse(message, session.conversationHistory, {
-        userName: session.profile.fullName,
+        userName: `${session.profile.firstName || ''} ${session.profile.lastName || ''}`.trim(),
         currentFlow: 'general_chat'
     });
     return response;
@@ -139,13 +140,13 @@ async function handleIdleState(session, message, intent) {
  * Handle greeting for new or returning users
  */
 function handleGreeting(session) {
-    if (session.isRegistered && session.profile.fullName) {
-        return `Welcome back, ${session.profile.fullName}! 🌿💚\n\nI'm AyurCare AI, your Ayurvedic health companion.\n\nHow can I help you today?\n\n• Tell me about any health concerns\n• Book a doctor consultation\n• Get Ayurvedic wellness tips\n• Check your appointment status\n\nJust type what's on your mind! 😊`;
+    if (session.isRegistered && session.profile.firstName) {
+        return `Welcome back, ${session.profile.firstName}! 🌿💚\n\nI'm Ayurvedic AI, your Ayurvedic health companion.\n\nHow can I help you today?\n\n• Tell me about any health concerns\n• Book a doctor consultation\n• Get Ayurvedic wellness tips\n• Check your appointment status\n\nJust type what's on your mind! 😊`;
     }
 
     session.currentFlow = 'registration';
     session.registrationStep = 'ask_register';
-    return `Namaste! 🙏🌿 Welcome to AyurCare AI!\n\nI'm your personal Ayurvedic health assistant on WhatsApp. I can help you with:\n\n• Understanding your health concerns\n• Getting Ayurvedic wellness guidance\n• Booking expert doctor consultations\n\nHave you already registered with us? If not, it only takes a minute! 😊`;
+    return `Namaste! 🙏🌿 Welcome to Ayurvedic AI!\n\nI'm your personal Ayurvedic health assistant on WhatsApp. I can help you with:\n\n• Understanding your health concerns\n• Getting Ayurvedic wellness guidance\n• Booking expert doctor consultations\n\nHave you already registered with us? If not, it only takes a minute! 😊`;
 }
 
 // ============================================================
@@ -165,66 +166,125 @@ async function handleRegistrationFlow(session, message, intent) {
         }
 
         if (intent.intent === 'register_no' || intent.intent === 'confirmation_no') {
-            session.registrationStep = 'collect_name';
-            return "No worries! Let's get you set up quickly. 😊\n\nCould you please share your full name?";
+            session.registrationStep = 'firstName';
+            return "No worries! Let's get you set up quickly on our platform so you can use both WhatsApp and our Website. 😊\n\nCould you please share your First Name?";
         }
 
-        // Default - ask to register
-        session.registrationStep = 'collect_name';
-        return "Let's get you registered quickly! It'll help me assist you better. 😊\n\nCould you please share your full name?";
+        session.registrationStep = 'firstName';
+        return "Let's get you registered quickly to our platform! It'll help me assist you better. 😊\n\nCould you please share your First Name?";
     }
 
-    if (step === 'collect_name') {
-        session.profile.fullName = message.trim();
-        session.registrationStep = 'collect_age';
-        return `Nice to meet you, ${session.profile.fullName}! 🌟\n\nCould you share your age?`;
+    if (step === 'firstName') {
+        session.profile.firstName = message.trim();
+        session.registrationStep = 'lastName';
+        return `Nice to meet you, ${session.profile.firstName}! 🌟\n\nNow, what is your Last Name?`;
     }
 
-    if (step === 'collect_age') {
+    if (step === 'lastName') {
+        session.profile.lastName = message.trim();
+        session.registrationStep = 'email';
+        return "Great! What is your Email ID?";
+    }
+
+    if (step === 'email') {
+        if (!message.includes('@') || !message.includes('.')) {
+            return "Hmm, that doesn't look like a valid email. Could you please provide a valid email address?";
+        }
+
+        const existingPatient = await Patient.findOne({ email: message.trim() });
+        if (existingPatient) {
+            return "This email is already registered on our platform. Would you like to use a different one or return to the main menu?";
+        }
+
+        session.profile.email = message.trim();
+        session.registrationStep = 'dob';
+        return "Perfect. Could you please provide your Date of Birth in DD-MM-YYYY format?";
+    }
+
+    if (step === 'dob') {
+        session.profile.dob = message.trim();
+        session.registrationStep = 'age';
+        return "Got it. And what is your Age? (Just enter the number)";
+    }
+
+    if (step === 'age') {
         const age = parseInt(message.trim());
         if (isNaN(age) || age < 1 || age > 150) {
             return "Hmm, that doesn't look like a valid age. Could you please enter your age as a number? (e.g., 28)";
         }
         session.profile.age = age;
-        session.registrationStep = 'collect_gender';
-        return "Got it! And what's your gender?\n\n• Male\n• Female\n• Other";
+        session.registrationStep = 'gender';
+        return "Got it! And what's your Gender?\n\n• Male\n• Female\n• Other";
     }
 
-    if (step === 'collect_gender') {
+    if (step === 'gender') {
         const gender = message.trim().toLowerCase();
         if (['male', 'female', 'other', 'm', 'f'].includes(gender)) {
             session.profile.gender = gender === 'm' ? 'Male' : gender === 'f' ? 'Female' : gender.charAt(0).toUpperCase() + gender.slice(1);
         } else {
             session.profile.gender = message.trim();
         }
-        session.registrationStep = 'collect_location';
-        return "Where are you located? Just your city name is fine! 📍";
+        session.registrationStep = 'zipCode';
+        return "Great. What is your Zip Code / Pincode?";
     }
 
-    if (step === 'collect_location') {
-        session.profile.location = message.trim();
-        session.registrationStep = 'collect_conditions';
-        return "Almost done! Do you have any known medical conditions I should be aware of?\n\n(You can type 'None' or 'Skip' if you prefer not to share)";
+    if (step === 'zipCode') {
+        session.profile.zipCode = message.trim();
+        session.registrationStep = 'password';
+        return "Almost done! Please choose a Password for your medical account.\n\n🔒 This password will let you securely log into our patient portal website later.\n(It should be a strong password)";
     }
 
-    if (step === 'collect_conditions') {
-        const lower = message.trim().toLowerCase();
-        if (lower === 'none' || lower === 'skip' || lower === 'no') {
-            session.profile.medicalConditions = 'None specified';
-        } else {
-            session.profile.medicalConditions = message.trim();
+    if (step === 'password') {
+        if (message.length < 5) {
+            return "For your security, please choose a password with at least 5 characters. Please try again.";
         }
 
-        session.registrationStep = 'completed';
-        session.isRegistered = true;
-        session.currentFlow = 'idle';
+        try {
+            const hashedPassword = await bcrypt.hash(message.trim(), 10);
 
-        return `You're all set, ${session.profile.fullName}! 🎉✨\n\nHere's what I have:\n• Name: ${session.profile.fullName}\n• Age: ${session.profile.age}\n• Gender: ${session.profile.gender}\n• Location: ${session.profile.location}\n\nNow, how can I help you today?\n\n• Tell me about any health concerns\n• Book a doctor consultation\n• Get Ayurvedic wellness tips`;
+            // Parse DOB
+            let dobDate;
+            const parts = session.profile.dob.split('-');
+            if (parts.length === 3) {
+                dobDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // Mongoose parses YYYY-MM-DD reliably
+            } else {
+                dobDate = new Date();
+            }
+
+            const newPatient = new Patient({
+                firstName: session.profile.firstName,
+                lastName: session.profile.lastName,
+                email: session.profile.email,
+                phone: session.phoneNumber,
+                dob: dobDate,
+                age: session.profile.age,
+                gender: session.profile.gender,
+                zipCode: session.profile.zipCode,
+                address: session.profile.zipCode,
+                password: hashedPassword,
+                role: 'patient'
+            });
+
+            await newPatient.save();
+
+            session.isRegistered = true;
+            session.patientId = newPatient._id;
+            session.registrationStep = 'completed';
+            session.currentFlow = 'idle';
+            session.profile.password = ''; // clear raw password
+
+            return `You're all set, ${session.profile.firstName}! 🎉✨\n\nYour account has been securely created and linked. You can log into our website anytime using your email and password.\n\nNow, how can I help you today?\n\n• Tell me about any health concerns\n• Book a doctor consultation\n• Get Ayurvedic wellness tips`;
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            if (error.code === 11000) {
+                return "It looks like an account with those details already exists! For now, how can I help with your health concern?";
+            }
+            return "I'm sorry, I encountered an error saving your profile. Let's try to continue for now. How can I help you with your health concern?";
+        }
     }
 
-    // Fallback
-    session.registrationStep = 'collect_name';
-    return "Let's start your registration! Could you please share your full name? 😊";
+    return "Let's start your registration! Could you please share your First Name? 😊";
 }
 
 // ============================================================
@@ -308,7 +368,7 @@ async function handleHealthConsultation(session, message, intent) {
 
     // Fallback to general conversation
     const response = await gemini.generateResponse(message, session.conversationHistory, {
-        userName: session.profile.fullName,
+        userName: `${session.profile.firstName || ''} ${session.profile.lastName || ''}`.trim(),
         healthData: session.healthData,
         currentFlow: 'health_consultation'
     });
@@ -568,7 +628,7 @@ async function createBookingFromWhatsApp(session) {
         // Try to find or create a patient link
         let patientId = session.patientId;
         let patientEmail = `whatsapp_${session.phoneNumber}@ayurvedic.app`;
-        let patientName = session.profile.fullName || 'WhatsApp User';
+        let patientName = `${session.profile.firstName || ''} ${session.profile.lastName || ''}`.trim() || 'WhatsApp User';
 
         if (!patientId) {
             // Check if patient exists by phone

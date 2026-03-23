@@ -7,7 +7,7 @@ const axios = require('axios');
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-const SYSTEM_PROMPT = `You are a warm, empathetic Ayurvedic AI health assistant on WhatsApp named "AyurCare AI".
+const SYSTEM_PROMPT = `You are a warm, empathetic Ayurvedic AI health assistant on WhatsApp named "Ayurvedic AI".
 
 PERSONALITY & TONE:
 - Speak in a warm, caring, and human-like tone
@@ -74,7 +74,7 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
         });
         contents.push({
             role: 'model',
-            parts: [{ text: 'I understand. I\'ll respond as AyurCare AI, a warm and empathetic Ayurvedic health assistant on WhatsApp. I\'ll keep my responses concise, WhatsApp-friendly, and follow all the guidelines provided.' }]
+            parts: [{ text: 'I understand. I\'ll respond as Ayurvedic AI, a warm and empathetic Ayurvedic health assistant on WhatsApp. I\'ll keep my responses concise, WhatsApp-friendly, and follow all the guidelines provided.' }]
         });
 
         // Add recent conversation history (last 10 messages for context)
