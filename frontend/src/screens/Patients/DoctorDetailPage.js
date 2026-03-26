@@ -50,6 +50,44 @@ function DoctorDetail() {
 			const email = localStorage.getItem("email");
 			const role = localStorage.getItem("role");
 
+			const convertTo24Hour = (timeStr) => {
+				let [time, modifier] = timeStr.split(" ");
+				let [hours, minutes] = time.split(":");
+
+				if (modifier === "PM" && hours !== "12") {
+					hours = parseInt(hours, 10) + 12;
+				}
+				if (modifier === "AM" && hours === "12") {
+					hours = "00";
+				}
+
+				return `${hours}:${minutes}`;
+			};
+
+			const time24 = convertTo24Hour(selectedTime);
+			const [year, month, day] = dateOfAppointment.split("-");
+			const [hours, minutes] = time24.split(":");
+
+			const appointmentDateTime = new Date(
+				year,
+				month - 1,
+				day,
+				hours,
+				minutes
+			);
+
+			const now = new Date();
+
+			const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+
+			if (appointmentDateTime <= oneHourLater) {
+				setStatusMessage({
+					message: "Please select a time at least 1 hour from now.",
+					type: "error"
+				});
+				return;
+			}
+
 			console.log(`Selected time: ${selectedTime}`);
 			console.log(`Patient Illness: ${patientIllness}`);
 			console.log(`User Email: ${email}`);
@@ -118,7 +156,10 @@ function DoctorDetail() {
 				console.error("Error booking appointment:", error);
 			}
 		} else {
-			console.log("No time slot selected");
+			setStatusMessage({
+				message: "Please fill all fields and select a time slot.",
+				type: "error"
+			});
 		}
 	};
 
@@ -190,6 +231,7 @@ function DoctorDetail() {
 						<input
 							type="date"
 							className="dateOfAppointment"
+							min={new Date().toISOString().split("T")[0]}
 							value={dateOfAppointment}
 							onChange={(e) => setDateOfAppointment(e.target.value)}
 							placeholder="dd/mm/yyyy"
@@ -226,6 +268,12 @@ function DoctorDetail() {
 					<button className="book-appointment" onClick={handleBookAppointment}>
 						Book Appointment
 					</button>
+
+					{statusMessage.message && (
+						<p className={statusMessage.type === "error" ? "error-msg" : "success-msg"}>
+							{statusMessage.message}
+						</p>
+					)}
 				</div>
 				<div>
 					<p>

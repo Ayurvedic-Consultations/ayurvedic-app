@@ -181,4 +181,36 @@ async function sendYogaPlans() {
 	}
 }
 
-module.exports = startScheduler;
+// ==========================================
+// Password Reset OTP
+// ==========================================
+async function sendOTPWhatsApp(phone, firstName, otp) {
+	try {
+		const components = [
+			{
+				type: "body",
+				parameters: [
+					{ type: "text", text: firstName }, // {{1}} User's Name
+					{ type: "text", text: otp }       // {{2}} The 5-digit OTP
+				]
+			}
+		];
+
+		await sendWhatsAppMessage(
+			phone,
+			// "password_reset_otp", 
+			"ayurvedic_score",
+			components
+		);
+		console.log(`✅ OTP sent to ${phone}`);
+	} catch (error) {
+		console.error("❌ WhatsApp OTP Error:", error);
+		throw new Error("Failed to send WhatsApp message");
+	}
+}
+
+
+module.exports = {
+	startScheduler,
+	sendOTPWhatsApp
+};

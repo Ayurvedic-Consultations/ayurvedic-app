@@ -4,6 +4,7 @@ const Retailer = require('../models/Retailer');
 const Patient = require('../models/Patient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { sendOTPWhatsApp } = require('../scheduler');
 
 // Helper function to generate JWT token
 const generateToken = (user) => {
@@ -136,7 +137,7 @@ exports.registerDoctor = async (req, res) => {
 			password: hashedPassword,
 			certificate,
 			qrCode,
-			role: 'doctor' 
+			role: 'doctor'
 		});
 		await doctor.save();
 		const token = generateToken(doctor);
@@ -161,7 +162,7 @@ exports.registerRetailer = async (req, res) => {
 	try {
 		console.log("Creating retailer:", firstName, lastName, BusinessName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer' ,email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
+		const retailer = new Retailer({ firstName, lastName, BusinessName, role: 'retailer', email, phone, dob, licenseNumber, age, gender, zipCode, password: hashedPassword, status: "active" });
 		await retailer.save();
 		const token = generateToken(retailer);
 		res.status(201).json({
@@ -184,7 +185,7 @@ exports.registerPatient = async (req, res) => {
 	try {
 		console.log("Registering patient:", firstName, lastName, email);
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient' ,age, gender, zipCode, password: hashedPassword });
+		const patient = new Patient({ firstName, lastName, email, phone, dob, role: 'patient', age, gender, zipCode, password: hashedPassword });
 		await patient.save();
 		const token = generateToken(patient);
 		console.log("Patient registered successfully:", patient);
@@ -199,5 +200,138 @@ exports.registerPatient = async (req, res) => {
 	} catch (error) {
 		console.error("Error registering patient:", error);
 		res.status(500).json({ error: 'Registration failed' });
+	}
+};
+
+
+// Password reset email verification and OTP generation
+const modelMap = {
+	patient: Patient,
+	doctor: Doctor,
+	retailer: Retailer
+};
+exports.handleForgotPassword = async (req, res) => {
+	try {
+		const { email, role } = req.body;
+
+		// 1. Select the correct model based on role
+		const Model = modelMap[role];
+		if (!Model) {
+			return res.status(400).json({ message: "Invalid role selected." });
+		}
+
+		// 2. Check if email exists
+		const user = await Model.findOne({ email });
+		if (!user) {
+			return res.status(404).json({ message: "No account found with that email address." });
+		}
+
+		// 3. Generate 5-digit Numeric OTP
+		const otp = Math.floor(10000 + Math.random() * 90000).toString();
+
+		// 4. Save to Database with 15-minute expiry
+		user.resetPasswordOTP = otp;
+		user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000; // 15 mins
+		user.isOTPVerified = false;
+		await user.save();
+
+		// 5. Trigger WhatsApp Message
+		const userPhone = user.phone.toString();
+
+		// await sendOTPWhatsApp(userPhone, user.firstName, otp);
+
+		return res.status(200).json({
+			message: "Success! OTP sent to WhatsApp.",
+		});
+
+	} catch (error) {
+		console.error("Forgot Password Controller Error:", error);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+// OTP verification for password reset
+exports.verifyOTP = async (req, res) => {
+	try {
+		const { email, role, otp } = req.body;
+
+		// 1. Identify the correct collection
+		const Model = modelMap[role];
+		if (!Model) {
+			return res.status(400).json({ message: "Invalid role provided." });
+		}
+
+		// 2. Find the user
+		const user = await Model.findOne({ email });
+		if (!user) {
+			return res.status(404).json({ message: "User not found." });
+		}
+
+		// 3. Check if OTP exists and matches
+		if (!user.resetPasswordOTP || user.resetPasswordOTP !== otp) {
+			return res.status(400).json({ message: "Invalid OTP. Please check your WhatsApp." });
+		}
+
+		// 4. Check if OTP has expired (Current time > Expiry time)
+		if (new Date() > user.resetPasswordOTPExpires) {
+			return res.status(400).json({ message: "OTP has expired. Please request a new one." });
+		}
+
+		// 5. Success! "Unlock" the password change permission
+		user.isOTPVerified = true;
+		// Optional: You can clear the OTP now or wait until the password is changed
+		await user.save();
+
+		return res.status(200).json({
+			message: "OTP verified successfully. You can now reset your password."
+		});
+
+	} catch (error) {
+		console.error("Verify OTP Error:", error);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+// Final password reset after OTP verification
+exports.resetPassword = async (req, res) => {
+	try {
+		const { email, role, newPassword } = req.body;
+
+		const Model = modelMap[role];
+		if (!Model) return res.status(400).json({ message: "Invalid role." });
+
+		// 1. Find user and check the verification flag
+		const user = await Model.findOne({ email });
+
+		if (!user) {
+			return res.status(404).json({ message: "User not found." });
+		}
+
+		// CRITICAL SECURITY CHECK
+		if (!user.isOTPVerified) {
+			return res.status(403).json({
+				message: "Security violation: OTP was not verified for this account."
+			});
+		}
+
+		// 2. Hash the new password
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+		// 3. Update the user and CLEAR ALL RESET FIELDS
+		user.password = hashedPassword;
+		user.resetPasswordOTP = null;
+		user.resetPasswordOTPExpires = null;
+		user.isOTPVerified = false;
+
+		await user.save();
+
+		return res.status(200).json({
+			message: "Success! Your password has been updated. You can now log in."
+		});
+
+	} catch (error) {
+		console.error("Final Reset Error:", error);
+		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };

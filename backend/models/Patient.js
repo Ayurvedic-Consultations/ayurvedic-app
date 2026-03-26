@@ -11,7 +11,19 @@ const PatientSchema = new mongoose.Schema({
   zipCode: { type: String, required: true },
   address: { type: String },
   password: { type: String, required: true },
-  role: { type: String, default: 'patient' }
-});
+  role: { type: String, default: 'patient' },
+  resetPasswordOTP: {
+    type: String,
+    default: null
+  },
+  resetPasswordOTPExpires: {
+    type: Date,
+    default: null
+  },
+  isOTPVerified: {
+    type: Boolean,
+    default: false
+  }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Patient', PatientSchema);
