@@ -14,7 +14,7 @@ const whatsappSessionSchema = new mongoose.Schema({
     isRegistered: { type: Boolean, default: false },
     registrationStep: {
         type: String,
-        enum: ['none', 'firstName', 'lastName', 'age', 'dob', 'gender', 'email', 'zipCode', 'password', 'completed'],
+        enum: ['none', 'ask_register', 'firstName', 'lastName', 'age', 'dob', 'gender', 'email', 'zipCode', 'password', 'completed'],
         default: 'none'
     },
     // Temporarily holds registration info before creating actual Patient
@@ -26,7 +26,7 @@ const whatsappSessionSchema = new mongoose.Schema({
         gender: { type: String, default: '' },
         email: { type: String, default: '' },
         zipCode: { type: String, default: '' },
-        password: { type: String, default: '' } // Raw password kept temporarily during setup, then wiped if needed
+        password: { type: String, default: '' }
     },
 
     // Linked patient account (if registered on the platform)
@@ -35,7 +35,7 @@ const whatsappSessionSchema = new mongoose.Schema({
     // Current conversation flow state
     currentFlow: {
         type: String,
-        enum: ['idle', 'registration', 'health_consultation', 'doctor_matching', 'booking', 'general_chat'],
+        enum: ['idle', 'registration', 'health_consultation', 'doctor_matching', 'booking', 'general_chat', 'follow_up'],
         default: 'idle'
     },
 
@@ -49,12 +49,15 @@ const whatsappSessionSchema = new mongoose.Schema({
         currentMedications: { type: String, default: '' },
         consultationStep: {
             type: String,
-            enum: ['none', 'ask_symptoms', 'ask_duration', 'ask_severity', 'ask_lifestyle', 'ask_history', 'ask_medications', 'analysis_complete'],
+            enum: ['none', 'ask_symptoms', 'ask_duration', 'ask_severity', 'ask_lifestyle', 'ask_history', 'ask_medications', 'quick_assessment', 'awaiting_more_info', 'analysis_complete'],
             default: 'none'
         },
         aiAnalysis: { type: String, default: '' },
         identifiedCategory: { type: String, default: '' }
     },
+
+    // Persistent health context for proactive recommendations
+    lastHealthTopic: { type: String, default: '' },
 
     // Doctor matching state
     doctorMatching: {
@@ -72,6 +75,7 @@ const whatsappSessionSchema = new mongoose.Schema({
     bookingData: {
         selectedSlot: { type: String, default: '' },
         selectedDate: { type: String, default: '' },
+        availableSlots: [{ type: String }],
         bookingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking', default: null },
         bookingStep: {
             type: String,
