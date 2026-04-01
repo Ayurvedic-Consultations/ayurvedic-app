@@ -54,12 +54,23 @@ async function handleIncomingMessage(phoneNumber, messageText, messageId) {
             session.currentFlow,
             session.conversationHistory
         );
-        console.log(`📩 [${phoneNumber}] Intent: ${intent.intent} (${intent.confidence}) | Flow: ${session.currentFlow}`);
+        console.log(`📩 [${phoneNumber}] Intent: ${intent.intent} (${intent.confidence}) | Lang: ${intent.language || 'en'} | Flow: ${session.currentFlow}`);
+
+        // Update language preference
+        if (intent.language) {
+            session.language = intent.language;
+        }
 
         let responseText = '';
 
         // Route based on current flow and detected intent
         responseText = await routeMessage(session, messageText, intent);
+
+        // Translate response if user prefers another language
+        // (Bypass for general_chat because it natively replies in user's language)
+        if (session.language && session.language.toLowerCase() !== 'english' && session.language.toLowerCase() !== 'en' && session.currentFlow !== 'general_chat') {
+            responseText = await gemini.translateMessage(responseText, session.language);
+        }
 
         // Add assistant response to history
         session.conversationHistory.push({
