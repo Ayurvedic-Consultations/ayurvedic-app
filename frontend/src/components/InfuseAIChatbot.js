@@ -12,17 +12,21 @@ import './InfuseAIChatbot.css';
 
 /* ── InfuseAI SDK imports ─────────────────────────────────── */
 import {
+    InfuseProvider,
+    useInfuse,
     useInfuseSession,
-    useInfuseThread,
     useInfuseThreadInput,
 } from 'infuseai-sdk';
 
 /* ── Config ──────────────────────────────────────────────── */
+// The SDK uses config.credentials.{ clientId, apiKey } for app-key auth
 const INFUSE_CONFIG = {
     baseUrl: process.env.REACT_APP_INFUSEAI_URL || 'https://www.infuseai.in',
-    clientId: process.env.REACT_APP_INFUSEAI_CLIENT_ID,
     appId: process.env.REACT_APP_INFUSEAI_APP_ID,
-    apiKey: process.env.REACT_APP_INFUSEAI_API_KEY,
+    credentials: {
+        clientId: process.env.REACT_APP_INFUSEAI_CLIENT_ID,
+        apiKey: process.env.REACT_APP_INFUSEAI_API_KEY,
+    },
 };
 
 const SUGGESTIONS = [
@@ -45,32 +49,71 @@ function generateUserId(auth) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   Inner chat panel — uses InfuseAI hooks after Provider mounts
+   ChatPanel — must be mounted INSIDE InfuseProvider
+   Uses SDK hooks: useInfuse, useInfuseSession, useInfuseThreadInput
    ════════════════════════════════════════════════════════════ */
-function ChatPanel({ onClose, auth }) {
-    const [inputVal, setInputVal] = useState('');
-    const [messages, setMessages] = useState([]);
-    const [isTyping, setIsTyping] = useState(false);
-    const [error, setError] = useState(null);
+function ChatPanel({ onClose, auth, userId }) {
+    const [localMessages, setLocalMessages] = useState([]);
     const [showSugs, setShowSugs] = useState(true);
+    const [error, setError] = useState(null);
+    const [initialized, setInitialized] = useState(false);
+
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
 
     /* SDK hooks */
-    const { session, loading: sessionLoading } = useInfuseSession();
-    const { thread, loading: threadLoading } = useInfuseThread();
-    const { sendMessage } = useInfuseThreadInput();
+    const { thread, isWaiting, isStreaming, messages: sdkMessages, startNewThread } = useInfuse();
+    const { session, createSession } = useInfuseSession();
+    const { value, setValue, submit, isPending } = useInfuseThreadInput();
 
-    const isReady = !sessionLoading && !threadLoading && !!session && !!thread;
+    const isTyping = isWaiting || isStreaming || isPending;
+    const isReady = initialized && !!thread;
 
-    /* Scroll to bottom on new messages */
+    /* ── Init: create session + thread once on mount ── */
+    useEffect(() => {
+        let cancelled = false;
+        async function init() {
+            try {
+                if (!session) {
+                    await createSession(userId);
+                }
+                if (!thread) {
+                    await startNewThread({ title: 'Ayurveda Chat' });
+                }
+                if (!cancelled) setInitialized(true);
+            } catch (err) {
+                console.error('[InfuseAI] init error:', err);
+                if (!cancelled) setError('Could not connect to AI. Please try again later.');
+            }
+        }
+        init();
+        return () => { cancelled = true; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /* ── Sync SDK messages → local display messages ── */
+    useEffect(() => {
+        if (!sdkMessages?.length) return;
+        const mapped = sdkMessages
+            .filter(m => m.role === 'user' || m.role === 'assistant')
+            .filter(m => m.content)
+            .map(m => ({
+                id: m._id || m.messageId || Math.random(),
+                role: m.role === 'assistant' ? 'bot' : 'user',
+                text: m.content,
+                time: m.createdAt ? new Date(m.createdAt) : new Date(),
+            }));
+        setLocalMessages(mapped);
+    }, [sdkMessages]);
+
+    /* Scroll to bottom */
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isTyping]);
+    }, [localMessages, isTyping]);
 
     /* Auto-resize textarea */
-    const handleInput = (e) => {
-        setInputVal(e.target.value);
+    const handleTextareaInput = (e) => {
+        setValue(e.target.value);
         const ta = textareaRef.current;
         if (ta) {
             ta.style.height = 'auto';
@@ -78,58 +121,48 @@ function ChatPanel({ onClose, auth }) {
         }
     };
 
-    /* Send a message */
-    const handleSend = useCallback(async (text) => {
-        const msg = (text || inputVal).trim();
-        if (!msg || !isReady) return;
+    /* Send message */
+    const handleSend = useCallback(async (overrideText) => {
+        if (!isReady) return;
+        const text = overrideText || value;
+        if (!text?.trim()) return;
 
         setShowSugs(false);
-        setInputVal('');
-        if (textareaRef.current) textareaRef.current.style.height = 'auto';
         setError(null);
 
-        /* Optimistic user bubble */
-        setMessages(prev => [...prev, {
+        // Add optimistic user bubble immediately
+        setLocalMessages(prev => [...prev, {
             id: Date.now(),
             role: 'user',
-            text: msg,
+            text: text.trim(),
             time: new Date(),
         }]);
 
-        setIsTyping(true);
+        if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
         try {
-            const response = await sendMessage(msg);
-
-            /* Extract text from InfuseAI OpenAI-compatible response */
-            let botText = '';
-            if (response?.choices?.[0]?.message?.content) {
-                botText = response.choices[0].message.content;
-            } else if (typeof response === 'string') {
-                botText = response;
-            } else {
-                botText = "I'm here to help with your Ayurvedic wellness journey! 🌿";
-            }
-
-            setMessages(prev => [...prev, {
-                id: Date.now() + 1,
-                role: 'bot',
-                text: botText,
-                time: new Date(),
-            }]);
+            await submit(text.trim());
         } catch (err) {
-            console.error('[InfuseAI] sendMessage error:', err);
-            setError('Connection issue. Please try again.');
-        } finally {
-            setIsTyping(false);
+            console.error('[InfuseAI] submit error:', err);
+            setError('Failed to send message. Please try again.');
+            // Remove the optimistic bubble on error
+            setLocalMessages(prev => prev.slice(0, -1));
         }
-    }, [inputVal, isReady, sendMessage]);
+    }, [isReady, value, submit]);
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
         }
+    };
+
+    const statusText = () => {
+        if (error) return 'Error — tap to retry';
+        if (!initialized) return 'Connecting to AI…';
+        if (!thread) return 'Starting session…';
+        if (isTyping) return 'Thinking…';
+        return 'Online — Ask me anything';
     };
 
     return (
@@ -140,14 +173,8 @@ function ChatPanel({ onClose, auth }) {
                 <div className="infuse-header-info">
                     <div className="infuse-header-name">Ayur AI Assistant</div>
                     <div className="infuse-header-status">
-                        <div className="infuse-status-dot" />
-                        <span>
-                            {sessionLoading || threadLoading
-                                ? 'Connecting…'
-                                : isReady
-                                    ? 'Online — Ask me anything'
-                                    : 'Starting up…'}
-                        </span>
+                        {!error && <div className="infuse-status-dot" />}
+                        <span>{statusText()}</span>
                     </div>
                 </div>
                 <button className="infuse-header-close" onClick={onClose} title="Close">✕</button>
@@ -160,16 +187,18 @@ function ChatPanel({ onClose, auth }) {
                     <span className="infuse-welcome-emoji">🌺</span>
                     <h3>Namaste{auth?.user?.firstName ? `, ${auth.user.firstName}` : ''}!</h3>
                     <p>
-                        I'm your AI wellness companion, powered by ancient Ayurvedic wisdom
-                        and modern intelligence. How can I help you today?
+                        I'm your AI wellness companion, powered by ancient Ayurvedic
+                        wisdom and modern AI. How can I help you today?
                     </p>
                 </div>
 
-                {/* Chat messages */}
-                {messages.map(m => (
+                {/* Messages */}
+                {localMessages.map(m => (
                     <div key={m.id} className={`infuse-msg-row ${m.role}`}>
                         <div className="infuse-msg-avatar">
-                            {m.role === 'bot' ? '🌿' : (auth?.user?.firstName?.[0]?.toUpperCase() || '👤')}
+                            {m.role === 'bot'
+                                ? '🌿'
+                                : (auth?.user?.firstName?.[0]?.toUpperCase() || '👤')}
                         </div>
                         <div>
                             <div className="infuse-bubble">
@@ -204,7 +233,7 @@ function ChatPanel({ onClose, auth }) {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* ── Suggestion chips ── */}
+            {/* ── Suggestion chips (shown until first message) ── */}
             {showSugs && (
                 <div className="infuse-suggestions">
                     {SUGGESTIONS.map(s => (
@@ -225,17 +254,21 @@ function ChatPanel({ onClose, auth }) {
                 <textarea
                     ref={textareaRef}
                     className="infuse-textarea"
-                    value={inputVal}
-                    onChange={handleInput}
+                    value={value}
+                    onChange={handleTextareaInput}
                     onKeyDown={handleKeyDown}
-                    placeholder={isReady ? 'Ask about Ayurveda, health, bookings…' : 'Connecting…'}
-                    disabled={!isReady}
+                    placeholder={
+                        !isReady
+                            ? 'Connecting…'
+                            : 'Ask about Ayurveda, health, bookings…'
+                    }
+                    disabled={!isReady || isTyping}
                     rows={1}
                 />
                 <button
                     className="infuse-send-btn"
                     onClick={() => handleSend()}
-                    disabled={!isReady || !inputVal.trim()}
+                    disabled={!isReady || isTyping || !value.trim()}
                     title="Send"
                 >
                     <svg viewBox="0 0 24 24">
@@ -247,33 +280,22 @@ function ChatPanel({ onClose, auth }) {
 
             {/* ── Branding ── */}
             <div className="infuse-footer-brand">
-                Powered by <a href="https://www.infuseai.in" target="_blank" rel="noreferrer">InfuseAI</a>
+                Powered by{' '}
+                <a href="https://www.infuseai.in" target="_blank" rel="noreferrer">
+                    InfuseAI
+                </a>
             </div>
         </>
     );
 }
 
 /* ════════════════════════════════════════════════════════════
-   Top-level wrapper — mounts InfuseProvider + FAB toggle
+   Root component — FAB toggle + InfuseProvider wrapper
    ════════════════════════════════════════════════════════════ */
 export default function InfuseAIChatbot() {
     const { auth } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(false);
     const [closing, setClosing] = useState(false);
-    const [Provider, setProvider] = useState(null);
-    const [providerError, setProviderError] = useState(false);
-
-    /* Lazy-load InfuseProvider so we can handle import errors gracefully */
-    useEffect(() => {
-        import('infuseai-sdk')
-            .then(mod => {
-                setProvider(() => mod.InfuseProvider);
-            })
-            .catch(err => {
-                console.error('[InfuseAI] SDK load error:', err);
-                setProviderError(true);
-            });
-    }, []);
 
     const userId = generateUserId(auth);
 
@@ -284,23 +306,10 @@ export default function InfuseAIChatbot() {
     };
     const toggleChat = () => (isOpen ? handleClose() : handleOpen());
 
-    /* Fallback: if SDK fails, show a simple error bubble */
-    if (providerError) {
-        return (
-            <div className="infuse-fab" style={{ cursor: 'default', opacity: 0.6 }} title="AI Chatbot unavailable">
-                <img
-                    className="infuse-fab-icon"
-                    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E"
-                    alt="chat"
-                />
-            </div>
-        );
-    }
-
-    /* Chat SVG icon */
-    const ChatIcon = ({ open }) => (
+    /* SVG icons */
+    const ChatBubbleIcon = () => (
         <svg
-            className={`infuse-fab-icon${open ? ' open' : ''}`}
+            className="infuse-fab-icon"
             viewBox="0 0 24 24"
             fill="none"
             stroke="white"
@@ -308,41 +317,53 @@ export default function InfuseAIChatbot() {
             strokeLinecap="round"
             strokeLinejoin="round"
         >
-            {open ? (
-                /* X icon when open */
-                <>
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                </>
-            ) : (
-                /* Chat bubble icon when closed */
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            )}
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+    );
+
+    const CloseIcon = () => (
+        <svg
+            className="infuse-fab-icon open"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+        >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
     );
 
     return (
         <>
             {/* Floating action button */}
-            <button className="infuse-fab" onClick={toggleChat} title="AI Ayurveda Assistant">
+            <button
+                id="infuse-chatbot-fab"
+                className="infuse-fab"
+                onClick={toggleChat}
+                title="Chat with Ayur AI Assistant"
+                aria-label="Open AI chat assistant"
+            >
                 {!isOpen && <div className="infuse-fab-pulse" />}
-                <ChatIcon open={isOpen} />
+                {isOpen ? <CloseIcon /> : <ChatBubbleIcon />}
             </button>
 
-            {/* Chat window */}
-            {isOpen && Provider && (
-                <div className={`infuse-window${closing ? ' closing' : ''}`}>
-                    <Provider
-                        config={{
-                            baseUrl: INFUSE_CONFIG.baseUrl,
-                            clientId: INFUSE_CONFIG.clientId,
-                            appId: INFUSE_CONFIG.appId,
-                            apiKey: INFUSE_CONFIG.apiKey,
-                        }}
-                        userId={userId}
-                    >
-                        <ChatPanel onClose={handleClose} auth={auth} />
-                    </Provider>
+            {/* Chat window — only mounted when open */}
+            {isOpen && (
+                <div
+                    id="infuse-chatbot-window"
+                    className={`infuse-window${closing ? ' closing' : ''}`}
+                    role="dialog"
+                    aria-label="AI Ayurveda Assistant"
+                >
+                    <InfuseProvider config={INFUSE_CONFIG}>
+                        <ChatPanel
+                            onClose={handleClose}
+                            auth={auth}
+                            userId={userId}
+                        />
+                    </InfuseProvider>
                 </div>
             )}
         </>
