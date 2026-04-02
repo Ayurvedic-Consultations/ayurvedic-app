@@ -125,6 +125,30 @@ const SanjeevaniChatbot = () => {
                         </div>
                     )}
 
+                    {msg.metadata && msg.metadata.type === 'doctors_list' && (
+                        <div className="sanjeevani-doctors-list">
+                            {msg.metadata.reason && <p className="sanjeevani-doc-reason">💡 {msg.metadata.reason}</p>}
+                            {msg.metadata.doctors?.map((doc, i) => (
+                                <div key={i} className="sanjeevani-doc-card">
+                                    <div className="sanjeevani-doc-header">
+                                        <strong>{doc.name}</strong>
+                                        <span className="sanjeevani-doc-exp">{doc.experience} Yrs Exp.</span>
+                                    </div>
+                                    <div className="sanjeevani-doc-spec">{doc.specialization}</div>
+                                    <div className="sanjeevani-doc-price">Consultation Fee: ₹{doc.price}</div>
+                                    <button
+                                        className="sanjeevani-primary-btn sanjeevani-book-btn"
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                            navigate('/profile/doctor/' + doc.id);
+                                        }}>
+                                        View & Book
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     {msg.metadata && msg.metadata.type === 'videos' && (
                         <div className="sanjeevani-videos">
                             {msg.metadata.videos.map((vid, i) => (

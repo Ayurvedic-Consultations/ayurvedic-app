@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const WebChatSession = require('../models/WebChatSession');
 const nativeAi = require('../services/nativeAiService');
+const Doctor = require('../models/Doctor');
+const DoctorData = require('../models/DoctorData');
 
 // Handles incoming messages from the frontend Sanjeevani AI chatbot
 router.post('/message', async (req, res) => {
@@ -68,8 +70,35 @@ router.post('/message', async (req, res) => {
                     // Trigger doctor search
                     session.currentFlow = 'doctor_matching';
                     responseText = "Let me find the best Ayurvedic specialists for your condition... 🩺";
-                    // Simulate doctor fetching
-                    responseMetadata = { type: 'action_fetch_doctors', category: session.healthData.identifiedCategory };
+
+                    try {
+                        const doctors1 = await Doctor.find().lean();
+                        const doctors2 = await DoctorData.find().lean();
+                        const allDocs = [...doctors1, ...doctors2].map(d => ({
+                            id: d._id.toString(),
+                            name: `Dr. ${d.firstName || d.firstname} ${d.lastName || d.lastname}`,
+                            specialization: d.specialization?.toString(),
+                            experience: d.experience || 0,
+                            price: d.price || d.fee || 0
+                        }));
+
+                        if (allDocs.length > 0) {
+                            const ranking = await nativeAi.rankDoctorsForCondition(allDocs, session.healthData.identifiedCategory, session.healthData.symptoms);
+                            const topDoctors = ranking.rankedIndices.slice(0, 3).map(idx => allDocs[idx]).filter(Boolean);
+
+                            responseMetadata = {
+                                type: 'doctors_list',
+                                category: session.healthData.identifiedCategory,
+                                reason: ranking.topPickReason,
+                                doctors: topDoctors
+                            };
+                        } else {
+                            responseMetadata = { type: 'action_fetch_doctors', category: session.healthData.identifiedCategory };
+                        }
+                    } catch (e) {
+                        responseMetadata = { type: 'action_fetch_doctors', category: session.healthData.identifiedCategory };
+                    }
+
                 } else if (intent.intent === 'youtube_request' || message.includes('Videos') || message === '2') {
                     const vids = await nativeAi.getYouTubeRecommendations(session.healthData.identifiedCategory);
                     responseText = "Here are some helpful Ayurvedic wellness videos curated just for you: 🧘";
@@ -87,7 +116,32 @@ router.post('/message', async (req, res) => {
         }
         else if (intent.intent === 'book_doctor' || session.currentFlow === 'doctor_matching') {
             session.currentFlow = 'doctor_matching';
-            responseText = "I can help you find a doctor! What kind of specialist are you looking for or what is your concern? 🩺";
+            responseText = "I've pulled up the best available Ayurvedic specialists for you. 🩺";
+
+            try {
+                const doctors1 = await Doctor.find().lean();
+                const doctors2 = await DoctorData.find().lean();
+                const allDocs = [...doctors1, ...doctors2].map(d => ({
+                    id: d._id.toString(),
+                    name: `Dr. ${d.firstName || d.firstname} ${d.lastName || d.lastname}`,
+                    specialization: d.specialization?.toString(),
+                    experience: d.experience || 0,
+                    price: d.price || d.fee || 0
+                }));
+
+                const category = intent.extractedData || session.healthData.identifiedCategory || 'General';
+                const ranking = await nativeAi.rankDoctorsForCondition(allDocs, category, message);
+                const topDoctors = ranking.rankedIndices.slice(0, 3).map(idx => allDocs[idx]).filter(Boolean);
+
+                responseMetadata = {
+                    type: 'doctors_list',
+                    category: category,
+                    reason: ranking.topPickReason,
+                    doctors: topDoctors
+                };
+            } catch (e) {
+                // Fallback
+            }
         }
         else if (intent.intent === 'youtube_request') {
             const vids = await nativeAi.getYouTubeRecommendations(message);

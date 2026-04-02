@@ -221,6 +221,70 @@
     width: 100%;
 }
 
+.sanjeevani-doc-reason {
+    font-size: 12px;
+    color: #1b5e20;
+    background: #e8f5e9;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    display: flex;
+    font-weight: 500;
+}
+
+.sanjeevani-doctors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.sanjeevani-doc-card {
+    background: #f9fbe7;
+    border: 1px solid #c8e6c9;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.sanjeevani-doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.sanjeevani-doc-header strong {
+    color: #2e7d32;
+    font-size: 14px;
+}
+
+.sanjeevani-doc-exp {
+    font-size: 11px;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    color: #555;
+}
+
+.sanjeevani-doc-spec {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.sanjeevani-doc-price {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.sanjeevani-book-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
 .sanjeevani-videos {
     display: flex;
     flex-direction: column;
