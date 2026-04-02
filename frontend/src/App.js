@@ -8,7 +8,7 @@ import NavBar from './screens/Navbar';
 import PatientNavBar from './screens/Patients/PatientNavBar';  // Patient specific navbar
 import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific navbar
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
-import InfuseAIChatbot from './components/InfuseAIChatbot';
+import SanjeevaniChatbot from './components/SanjeevaniChatbot';
 
 // import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
@@ -177,7 +177,7 @@ function App() {
         </Route>
       </Routes>
       <Footer />
-      <InfuseAIChatbot />
+      <SanjeevaniChatbot />
     </Router>
   );
 }
