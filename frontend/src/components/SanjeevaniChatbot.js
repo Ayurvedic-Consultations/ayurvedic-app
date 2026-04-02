@@ -23,26 +23,28 @@ const SanjeevaniChatbot = () => {
             localStorage.setItem('sanjeevani_chat_id', id);
         }
 
-        // Check if real user
-        if (token && role === 'patient') {
-            const fetchProfile = async () => {
-                try {
-                    // Could fetch exact details here if needed
-                    setUserId(id);
-                } catch (e) { }
-            }
-            fetchProfile();
-        } else {
-            setUserId(id);
-        }
+        setUserId(id);
 
-        // Initial greeting
-        setMessages([
-            {
-                role: 'assistant',
-                content: `Namaste 🙏 I am Sanjeevani AI, your personal Ayurvedic health assistant. \n\nHow can I help you today? You can ask me for wellness tips, tell me about any symptoms, or ask me to find a doctor for you.`
+        // Initial check with backend to get dynamic greeting
+        const initChat = async () => {
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/chat/message`, {
+                    userId: id,
+                    message: 'INIT_CHAT_EVENT',
+                    isRegistered: !!token,
+                    userRole: role
+                });
+
+                const { response: aiText, metadata } = response.data;
+                if (aiText) {
+                    setMessages([{ role: 'assistant', content: aiText, metadata }]);
+                }
+            } catch (e) {
+                setMessages([{ role: 'assistant', content: "Namaste 🙏 I am Sanjeevani AI. How can I assist you today?" }]);
             }
-        ]);
+        };
+
+        initChat();
     }, []);
 
     const scrollToBottom = () => {
@@ -104,8 +106,16 @@ const SanjeevaniChatbot = () => {
                     {msg.metadata && msg.metadata.type === 'options' && (
                         <div className="sanjeevani-options">
                             {msg.metadata.options.map((opt, i) => (
-                                <button key={i} onClick={() => handleSend(opt)} className="sanjeevani-opt-btn">
-                                    {opt}
+                                <button key={i} onClick={() => {
+                                    const label = typeof opt === 'string' ? opt : opt.label;
+                                    if (opt.action) {
+                                        setIsOpen(false);
+                                        navigate(opt.action);
+                                    } else {
+                                        handleSend(label);
+                                    }
+                                }} className="sanjeevani-opt-btn">
+                                    {typeof opt === 'string' ? opt : opt.label}
                                 </button>
                             ))}
                         </div>
