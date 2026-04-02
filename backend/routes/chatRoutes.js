@@ -81,15 +81,23 @@ router.post('/message', async (req, res) => {
                 intent = { intent: 'want_login' };
             } else if (/^(hi|hello|hey|namaste|good\s*(morning|evening|afternoon))/i.test(message)) {
                 intent = { intent: 'greeting' };
+            } else if (/video|youtube/i.test(message)) {
+                intent = { intent: 'youtube_request' };
             }
 
             console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow}`);
 
-            // Break out of sticky flows if user just says Hi again
-            if (intent.intent === 'greeting') {
+            // Break out of sticky flows if user explicitly changes topic natively
+            if (intent.intent === 'greeting' || intent.intent === 'youtube_request') {
                 session.currentFlow = 'idle';
-                session.healthData = {};
-                session.doctorMatching = {};
+                if (intent.intent === 'greeting') {
+                    session.healthData = {};
+                    session.doctorMatching = {};
+                }
+            } else if (intent.intent === 'book_doctor') {
+                session.currentFlow = 'doctor_matching';
+            } else if (intent.intent === 'want_registration' || intent.intent === 'want_login') {
+                session.currentFlow = 'idle';
             }
 
             // 3. Routing engine (Simplified extraction of the whatsapp logic)
