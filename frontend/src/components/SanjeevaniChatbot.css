@@ -87,6 +87,7 @@
     margin: 0;
     font-size: 18px;
     font-weight: 600;
+    color: #ffffff;
 }
 
 .sanjeevani-status {
@@ -176,7 +177,7 @@
 
 .sanjeevani-options {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
     margin-top: 12px;
 }

@@ -44,15 +44,27 @@ router.post('/message', async (req, res) => {
         // ----- INTERCEPT INIT_CHAT_EVENT -----
         if (message === 'INIT_CHAT_EVENT') {
             if (req.body.isRegistered) {
-                const roleText = req.body.userRole || 'User';
-                responseText = `Namaste 🙏 Welcome back! I am Sanjeevani AI your virtual Ayurvedic assistant.\n\nHow can I help you today? You can search for doctors or ask me health-related questions.`;
+                const role = req.body.userRole || 'patient';
+                const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
+
+                if (role === 'admin') {
+                    responseText = `Namaste 🙏 Welcome back Administrator${name}! I am Sanjeevani AI. How can I assist you with platform management today?`;
+                } else if (role === 'doctor') {
+                    responseText = `Namaste 🙏 Welcome back Dr.${name}! I am Sanjeevani AI. Would you like to check your appointments or update your profile?`;
+                } else if (role === 'retailer') {
+                    responseText = `Namaste 🙏 Welcome back Retailer${name}! I am Sanjeevani AI. Do you need to manage your medicine inventory today?`;
+                } else {
+                    responseText = `Namaste 🙏 Welcome back${name}! I am Sanjeevani AI. How can I help you today? You can search for doctors or ask me health-related questions.`;
+                }
             } else {
-                responseText = `Namaste 🙏 I am Sanjeevani AI.\n\nAre you already registered on our platform, or would you like me to help you sign in / sign up?`;
+                responseText = `Namaste 🙏 I am Sanjeevani AI.\n\nAre you already registered on our platform, or would you like me to help you sign in or sign up?`;
                 responseMetadata = {
                     type: 'options',
                     options: [
-                        'Log in',
-                        'Register as Patient',
+                        { label: 'Log in', action: '/signin' },
+                        { label: 'Register as Patient', action: '/signup-patient' },
+                        { label: 'Register as Doctor', action: '/signup-doctor' },
+                        { label: 'Register as Retailer', action: '/signup-retailer' },
                         'Continue as Guest'
                     ]
                 };
@@ -84,7 +96,31 @@ router.post('/message', async (req, res) => {
             // Check for hard resets
             if (/^(menu|start over|reset)$/i.test(message.trim()) || intent.intent === 'greeting') {
                 session.currentFlow = 'idle';
-                responseText = `Namaste 🙏 I am Sanjeevani AI. How can I help you today?\n\n• Tell me about any health concerns\n• Search for a doctor\n• Get wellness tips`;
+                if (req.body.isRegistered || session.isRegistered) {
+                    const role = req.body.userRole || 'patient';
+                    const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
+                    if (role === 'admin') {
+                        responseText = `Namaste 🙏 Welcome back Administrator${name}! How can I assist you with platform management today?`;
+                    } else if (role === 'doctor') {
+                        responseText = `Namaste 🙏 Welcome back Dr.${name}! Would you like to check your appointments or update your profile?`;
+                    } else if (role === 'retailer') {
+                        responseText = `Namaste 🙏 Welcome back Retailer${name}! Do you need to manage your medicine inventory today?`;
+                    } else {
+                        responseText = `Namaste 🙏 Welcome back${name}! How can I help you today?\n\n• Tell me about any health concerns\n• Search for a doctor\n• Get wellness tips`;
+                    }
+                } else {
+                    responseText = `Namaste 🙏 I am Sanjeevani AI.\n\nAre you already registered on our platform, or would you like me to help you sign in or sign up?`;
+                    responseMetadata = {
+                        type: 'options',
+                        options: [
+                            { label: 'Log in', action: '/signin' },
+                            { label: 'Register as Patient', action: '/signup-patient' },
+                            { label: 'Register as Doctor', action: '/signup-doctor' },
+                            { label: 'Register as Retailer', action: '/signup-retailer' },
+                            'Continue as Guest'
+                        ]
+                    };
+                }
             }
             else if (intent.intent === 'want_registration') {
                 session.currentFlow = 'register_patient';
