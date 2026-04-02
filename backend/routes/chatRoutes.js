@@ -316,23 +316,28 @@ router.post('/message', async (req, res) => {
                 responseText = await nativeAi.translateMessage(responseText, intent.language);
             }
 
-            // Add assistant response to history
-            session.conversationHistory.push({
-                role: 'assistant',
-                content: responseText,
-                metadata: responseMetadata,
-                timestamp: new Date()
-            });
-
-            await session.save();
+            // Add assistant response to history ONLY if it's not an init event
+            if (message !== 'INIT_CHAT_EVENT') {
+                session.conversationHistory.push({
+                    role: 'assistant',
+                    content: responseText,
+                    metadata: responseMetadata,
+                    timestamp: new Date()
+                });
+                await session.save();
+            } else {
+                // Also save any profile matching or state from login, but no need to push chat message
+                await session.save();
+            }
 
             res.json({
                 success: true,
                 response: responseText,
                 metadata: responseMetadata,
-                flow: session.currentFlow
+                flow: session.currentFlow,
+                history: message === 'INIT_CHAT_EVENT' ? session.conversationHistory : undefined
             });
-        } // close the INIT_CHAT_EVENT else block
+        }
 
     } catch (error) {
         console.error('Chat API Error:', error);

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import './SanjeevaniChatbot.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const SanjeevaniChatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ const SanjeevaniChatbot = () => {
     const [userId, setUserId] = useState('');
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();
+    const { auth } = useContext(AuthContext);
 
     // Create a unique guest ID or use logged in user's ID
     useEffect(() => {
@@ -18,34 +20,46 @@ const SanjeevaniChatbot = () => {
         const token = localStorage.getItem('token');
         const role = localStorage.getItem('role');
 
-        if (!id) {
+        // Dynamically associate chat session to the permanent logged in ID
+        if (auth && auth.user && auth.user._id) {
+            id = auth.user._id;
+        } else if (!id) {
             id = 'user_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('sanjeevani_chat_id', id);
         }
 
         setUserId(id);
 
-        // Initial check with backend to get dynamic greeting
+        // Initial check with backend to get dynamic greeting and fetch HISTORY
         const initChat = async () => {
             try {
                 const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/chat/message`, {
                     userId: id,
                     message: 'INIT_CHAT_EVENT',
                     isRegistered: !!token,
-                    userRole: role
+                    userRole: role,
+                    fetchHistory: true
                 });
 
-                const { response: aiText, metadata } = response.data;
+                const { response: aiText, metadata, history } = response.data;
+                const pastMessages = (history || []).map(h => ({
+                    role: h.role,
+                    content: h.content,
+                    metadata: h.metadata
+                }));
+
                 if (aiText) {
-                    setMessages([{ role: 'assistant', content: aiText, metadata }]);
+                    setMessages([...pastMessages, { role: 'assistant', content: aiText, metadata }]);
                 }
             } catch (e) {
                 setMessages([{ role: 'assistant', content: "Namaste 🙏 I am Sanjeevani AI. How can I assist you today?" }]);
             }
         };
 
-        initChat();
-    }, []);
+        if (id) {
+            initChat();
+        }
+    }, [auth]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -68,7 +82,8 @@ const SanjeevaniChatbot = () => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/chat/message`, {
                 userId,
-                message: textToSend
+                message: textToSend,
+                isRegistered: !!localStorage.getItem('token')
             });
 
             const { response: aiText, metadata } = response.data;
