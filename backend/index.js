@@ -22,6 +22,7 @@ const patientRoutes = require("./routes/patientRoutes");
 const retailerRoutes = require("./routes/retailerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const whatsappRoutes = require("./routes/whatsappRoutes");
+const knowledgeBaseRoutes = require("./routes/knowledgeBaseRoutes");
 const scheduler = require("./scheduler");
 
 
@@ -72,7 +73,7 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/retailers", retailerRoutes);
 app.use("/api/patient-records", getAllRecords);
 app.use("/api/whatsapp", whatsappRoutes);
-
+app.use("/api/knowledge-base", knowledgeBaseRoutes);
 
 // Start the scheduler
 scheduler();
