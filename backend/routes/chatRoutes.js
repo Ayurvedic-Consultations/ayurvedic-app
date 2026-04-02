@@ -51,9 +51,8 @@ router.post('/message', async (req, res) => {
                 responseMetadata = {
                     type: 'options',
                     options: [
-                        { label: 'Sign In', action: '/signin' },
-                        { label: 'Register as Patient', action: '/signup-patient' },
-                        { label: 'Register as Doctor', action: '/signup-doctor' },
+                        'Log in',
+                        'Register as Patient',
                         'Continue as Guest'
                     ]
                 };
@@ -63,39 +62,107 @@ router.post('/message', async (req, res) => {
             // 2. Detect Intent via our Native Groq AI
             let intent = await nativeAi.detectIntent(message, session.currentFlow, session.conversationHistory);
 
-            // Check for manual registration terms matching
+            // Context overrides
             if (/sign.?up|register|create account/i.test(message)) {
                 intent = { intent: 'want_registration' };
-            }
-            if (/sign.?in|log.?in/i.test(message)) {
+            } else if (/sign.?in|log.?in/i.test(message)) {
                 intent = { intent: 'want_login' };
+            } else if (/^(hi|hello|hey|namaste|good\s*(morning|evening|afternoon))/i.test(message)) {
+                intent = { intent: 'greeting' };
             }
 
             console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow}`);
 
+            // Break out of sticky flows if user just says Hi again
+            if (intent.intent === 'greeting') {
+                session.currentFlow = 'idle';
+                session.healthData = {};
+                session.doctorMatching = {};
+            }
+
             // 3. Routing engine (Simplified extraction of the whatsapp logic)
             // Check for hard resets
-            if (/^(menu|start over|reset)$/i.test(message.trim())) {
+            if (/^(menu|start over|reset)$/i.test(message.trim()) || intent.intent === 'greeting') {
                 session.currentFlow = 'idle';
-                responseText = `I've reset our conversation. 🌿 How can I help you today?\n\n• Tell me about any health concerns\n• Search for a doctor\n• Get wellness tips`;
+                responseText = `Namaste 🙏 I am Sanjeevani AI. How can I help you today?\n\n• Tell me about any health concerns\n• Search for a doctor\n• Get wellness tips`;
             }
             else if (intent.intent === 'want_registration') {
-                responseText = "I can take you directly to the registration page. Which account type would you like to create?";
-                responseMetadata = {
-                    type: 'options',
-                    options: [
-                        { label: 'Patient Account', action: '/signup-patient' },
-                        { label: 'Doctor Account', action: '/signup-doctor' },
-                        { label: 'Retailer Account', action: '/signup-retailer' }
-                    ]
-                };
+                session.currentFlow = 'register_patient';
+                session.healthData.consultationStep = 'ask_firstname';
+                responseText = "I can definitely help you register as a new patient right here! 🌿\n\nTo start, what is your First Name?";
             }
             else if (intent.intent === 'want_login') {
-                responseText = "Certainly. Click below to go to the login page.";
-                responseMetadata = {
-                    type: 'options',
-                    options: [{ label: 'Go to Sign In', action: '/signin' }]
-                };
+                session.currentFlow = 'login_user';
+                session.healthData.consultationStep = 'ask_email';
+                responseText = "Welcome back! To sign in, please provide your registered email address.";
+            }
+            else if (session.currentFlow === 'register_patient') {
+                const step = session.healthData.consultationStep;
+                if (step === 'ask_firstname') {
+                    session.profile.firstName = message.trim();
+                    session.healthData.consultationStep = 'ask_lastname';
+                    responseText = "Nice to meet you! And what is your Last Name?";
+                } else if (step === 'ask_lastname') {
+                    session.healthData.identifiedCategory = message.trim(); // using as temp storage for lastName
+                    session.healthData.consultationStep = 'ask_email';
+                    responseText = "Got it. What is your Email Address?";
+                } else if (step === 'ask_email') {
+                    if (!message.includes('@')) {
+                        responseText = "Please provide a valid email format.";
+                    } else {
+                        session.profile.email = message.trim();
+                        session.healthData.consultationStep = 'ask_password';
+                        responseText = "Great! Finally, choose a secure Password for your account.";
+                    }
+                } else if (step === 'ask_password') {
+                    const password = message.trim();
+                    const Patient = require('../models/Patient');
+                    const bcrypt = require('bcryptjs');
+                    try {
+                        const hashedPassword = await bcrypt.hash(password, 10);
+                        const newPatient = new Patient({
+                            firstName: session.profile.firstName,
+                            lastName: session.healthData.identifiedCategory,
+                            email: session.profile.email,
+                            password: hashedPassword,
+                            age: 20, gender: 'Not specified', zipCode: 0,
+                            role: 'patient'
+                        });
+                        await newPatient.save();
+                        session.isRegistered = true;
+                        session.currentFlow = 'idle';
+                        responseText = "Registration successful! You are now officially registered on our platform. 🎉\n\nHow can I help you with your health today?";
+                    } catch (err) {
+                        session.currentFlow = 'idle';
+                        responseText = "It looks like this email is already registered. Please say 'sign in' if you would like to log in, or tell me your health concerns as a guest! 🌿";
+                    }
+                }
+            }
+            else if (session.currentFlow === 'login_user') {
+                const step = session.healthData.consultationStep;
+                if (step === 'ask_email') {
+                    session.profile.email = message.trim();
+                    session.healthData.consultationStep = 'ask_password';
+                    responseText = "Thank you. Now, please enter your Password.";
+                } else if (step === 'ask_password') {
+                    const Patient = require('../models/Patient');
+                    const bcrypt = require('bcryptjs');
+                    try {
+                        const user = await Patient.findOne({ email: session.profile.email });
+                        if (user && await bcrypt.compare(message.trim(), user.password)) {
+                            session.isRegistered = true;
+                            session.profile.firstName = user.firstName;
+                            session.currentFlow = 'idle';
+                            responseText = `Login successful! Welcome back, ${user.firstName}. 🙏\n\nHow can I assist you today?`;
+                        } else {
+                            session.currentFlow = 'idle';
+                            responseText = "Incorrect password or account not found. You are now in Guest mode. You can try logging in again by saying 'sign in'.";
+                        }
+                    } catch (e) {
+                        session.currentFlow = 'idle';
+                        responseText = "An error occurred. You are still in Guest mode.";
+                    }
+                }
             }
             else if (message === 'Continue as Guest') {
                 responseText = "Welcome! As a guest, you can still ask me health questions or search for doctors. What's on your mind? 🌿";
