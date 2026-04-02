@@ -23,6 +23,7 @@
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "googleapis": "^144.0.0",
+    "infuseai-sdk": "^2.1.2",
     "joi": "^17.13.3",
     "jsdom": "^27.0.0",
     "jsonwebtoken": "^9.0.2",

@@ -1,51 +1,24 @@
 /**
- * Groq AI Service for Ayurvedic WhatsApp Bot
- * Uses Groq Cloud API (OpenAI-compatible) with LLaMA models
+ * AI Service for Ayurvedic WhatsApp Bot
+ * Powered by InfuseAI SDK
  * Handles all AI-powered conversation intelligence
  */
-const axios = require('axios');
+const { InfuseRestClient } = require('infuseai-sdk');
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+// Configuration from env
+const INFUSE_CONFIG = {
+    baseUrl: process.env.REACT_APP_INFUSEAI_URL || 'https://www.infuseai.in',
+    appId: process.env.REACT_APP_INFUSEAI_APP_ID || process.env.INFUSEAI_APP_ID,
+    credentials: {
+        clientId: process.env.REACT_APP_INFUSEAI_CLIENT_ID || process.env.INFUSEAI_CLIENT_ID,
+        apiKey: process.env.REACT_APP_INFUSEAI_API_KEY || process.env.INFUSEAI_API_KEY,
+    },
+};
 
-// Model selection — llama-3.3-70b-versatile is best for complex reasoning
-const MODEL_FAST = 'llama-3.3-70b-versatile';    // For intent detection (fast + accurate)
-const MODEL_CHAT = 'llama-3.3-70b-versatile';     // For conversations & health analysis
+// Create a singleton client for server-to-server calls
+const infuseClient = new InfuseRestClient(INFUSE_CONFIG);
 
-/**
- * Helper: Make a Groq API call with error handling
- */
-async function groqChat(messages, options = {}) {
-    const {
-        temperature = 0.7,
-        maxTokens = 500,
-        jsonMode = false
-    } = options;
-
-    const requestBody = {
-        model: options.model || MODEL_CHAT,
-        messages,
-        temperature,
-        max_tokens: maxTokens,
-    };
-
-    if (jsonMode) {
-        requestBody.response_format = { type: 'json_object' };
-    }
-
-    const response = await axios.post(GROQ_API_URL, requestBody, {
-        headers: {
-            'Authorization': `Bearer ${GROQ_API_KEY}`,
-            'Content-Type': 'application/json'
-        }
-    });
-
-    return response.data?.choices?.[0]?.message?.content;
-}
-
-// ============================================================
-// SYSTEM PROMPT - The core personality & behavior rules
-// ============================================================
+// System prompt injected into the stateless stateless calls when necessary
 const SYSTEM_PROMPT = `You are "Ayurvedic AI", a deeply knowledgeable and compassionate Ayurvedic health assistant on WhatsApp. You work for an Ayurvedic telemedicine platform that connects patients with certified Ayurvedic doctors.
 
 PERSONALITY & TONE:
@@ -62,7 +35,7 @@ MULTILINGUAL SUPPORT:
 - If the user messages in Hindi, reply entirely in Hindi. If Tamil, reply in Tamil, etc.
 - Keep the same warm, empathetic tone in all languages.
 
-CORE CAPABILITIES (what you help with):
+CORE CAPABILITIES:
 1. Health Assessment — Listen to symptoms, understand the concern, give preliminary Ayurvedic perspective
 2. Doctor Recommendations — Help find the right specialist based on their condition
 3. Appointment Booking — Guide through selecting doctor & time slot
@@ -77,20 +50,43 @@ CRITICAL MEDICAL RULES:
 - Always recommend consulting a qualified doctor for serious or persistent concerns
 - If someone describes EMERGENCY symptoms (chest pain, difficulty breathing, severe bleeding, stroke signs), IMMEDIATELY tell them to go to a hospital
 
-AYURVEDIC KNOWLEDGE:
-- The three doshas: Vata, Pitta, Kapha
-- Common Ayurvedic herbs: Ashwagandha, Triphala, Tulsi, Turmeric, Brahmi, Shatavari, etc.
-- Ayurvedic dietary principles and yoga
-
 RESPONSE FORMAT:
 - Keep responses concise, warm, and actionable
 - Use line breaks for readability on WhatsApp
 - Do NOT use markdown (no **, ##, etc.) — plain text only
-- Use bullet points with "•" when listing
-- Always end with a clear next step or gentle question`;
+- Use bullet points with "•" when listing`;
+
+/**
+ * Helper to make stateless completion calls to InfuseAI
+ */
+async function statelessCompletion(messages, options = {}) {
+    const result = await infuseClient.chatCompletions({
+        messages,
+        temperature: options.temperature || 0.7,
+        max_tokens: options.maxTokens || 500
+    });
+
+    const content = result.choices?.[0]?.message?.content;
+    if (!content) return "";
+
+    // Handle JSON mode manually since groq supported it natively but Infuse might just return JSON string
+    if (options.jsonMode) {
+        try {
+            // Find json boundaries if the model wraps it in markdown (e.g. \`\`\`json { ... } \`\`\`)
+            const match = content.match(/{(?:[^{}])*}/) || content;
+            const cleanContent = match[0] || content;
+            return JSON.parse(cleanContent.replace(/```json|```/g, "").trim());
+        } catch (e) {
+            // If parsing fails, just return raw string, let caller handle
+            return content;
+        }
+    }
+
+    return content;
+}
 
 // ============================================================
-// INTENT DETECTION - Understand what the user wants
+// INTENT DETECTION
 // ============================================================
 async function detectIntent(message, currentFlow, conversationHistory = []) {
     const recentContext = (conversationHistory || []).slice(-4).map(m =>
@@ -108,58 +104,54 @@ USER MESSAGE: "${message}"
 
 INTENT CATEGORIES (pick the BEST match):
 - "greeting": Hello, hi, hey, namaste, starting conversation
-- "health_concern": Describing ANY health issue, symptom, pain, discomfort, illness, or medical condition (e.g., "my knees hurt", "I have headache", "feeling stressed", "skin problem", "can't sleep", "stomach issues")
-- "book_doctor": Wants to book/consult/see a doctor, wants appointment, wants to meet a doctor, asking for available doctors (e.g., "book appointment", "I want a doctor", "show me doctors", "who can help me", "give me doctor")
+- "health_concern": Describing ANY health issue, symptom, pain, discomfort, illness, or medical condition
+- "book_doctor": Wants to book/consult/see a doctor, wants appointment
 - "check_booking": Wants to check existing appointment status
-- "youtube_request": Asking for videos, tips, or visual content about health/yoga/ayurveda
-- "want_recommendations": Asking for health tips, remedies, diet advice, lifestyle suggestions, yoga poses
-- "register_yes": Affirming they want to register or that they are already registered (yes, I'm registered, I have account)
-- "register_no": Saying they haven't registered (no, not yet, I'm new)
-- "confirmation_yes": Confirming/agreeing to something (yes, sure, ok, confirm, go ahead, please, do it)
-- "confirmation_no": Declining/saying no (no, cancel, not now, maybe later, nah)
-- "select_option": Selecting a numbered option or making a specific choice (1, 2, 3, first one, etc.)
-- "general_question": General question about Ayurveda, health, wellness, platform features
-- "farewell": Bye, thank you, goodbye, talk later
+- "youtube_request": Asking for videos, tips, or visual content
+- "want_recommendations": Asking for health tips, remedies, diet advice
+- "register_yes": Affirming they want to register or already registered
+- "register_no": Saying they haven't registered
+- "confirmation_yes": Confirming/agreeing to something
+- "confirmation_no": Declining/saying no
+- "select_option": Selecting a numbered option
+- "general_question": General question
+- "farewell": Bye, thank you, goodbye
 
 IMPORTANT CLASSIFICATION RULES:
 1. If the user mentions ANY body part + discomfort OR ANY health symptom → "health_concern"
 2. If the user asks for doctor/appointment/booking in ANY way → "book_doctor"
 3. If the user says "yes"/"sure"/"ok" in response to a suggestion → "confirmation_yes"
-4. If user asks "who can help", "give me doctor", "find specialist" → "book_doctor"
-5. If user mentions wanting remedies/tips/advice → "want_recommendations"
-6. Context matters: if the bot just offered to find doctors and user says "yes" → "confirmation_yes"
 
 Respond ONLY with valid JSON (no extra text):
 {
   "intent": "the_intent",
-  "extractedData": "any relevant symptoms, condition, or selection extracted",
-  "confidence": 0.0 to 1.0,
-  "language": "full language name in English (e.g., English, Hindi, Bengali, Tamil, Telugu, Marathi)"
+  "extractedData": "relevant extracted text",
+  "confidence": 0.9,
+  "language": "English"
 }`;
 
     try {
-        const text = await groqChat([
+        const result = await statelessCompletion([
             { role: 'user', content: prompt }
         ], {
-            model: MODEL_FAST,
             temperature: 0.1,
             maxTokens: 200,
             jsonMode: true
         });
 
-        return JSON.parse(text);
+        // if parsing didn't happen in helper
+        if (typeof result === 'string') {
+            return JSON.parse(result.replace(/```json|```/g, "").trim());
+        }
+        return result;
     } catch (error) {
-        console.error('Intent Detection Error:', error.response?.data || error.message);
+        console.error('Intent Detection Error:', error);
         return fallbackIntentDetection(message, currentFlow);
     }
 }
 
-/**
- * Fallback intent detection using keywords when Groq is unavailable
- */
 function fallbackIntentDetection(message, currentFlow) {
     const msg = message.toLowerCase().trim();
-
     if (/^(hi|hello|hey|namaste|good\s*(morning|evening|afternoon))/.test(msg)) {
         return { intent: 'greeting', extractedData: '', confidence: 0.8, language: 'English' };
     }
@@ -172,56 +164,26 @@ function fallbackIntentDetection(message, currentFlow) {
     if (/\b(video|youtube|watch|tutorial|yoga\s*video)\b/.test(msg)) {
         return { intent: 'youtube_request', extractedData: '', confidence: 0.8, language: 'English' };
     }
-    if (/\b(tip|remedy|suggest|recommend|advice|diet|lifestyle|home\s*remedy)\b/.test(msg)) {
-        return { intent: 'want_recommendations', extractedData: '', confidence: 0.7, language: 'English' };
-    }
-    if (/\b(status|check|my\s*appointment|my\s*booking)\b/.test(msg)) {
-        return { intent: 'check_booking', extractedData: '', confidence: 0.8, language: 'English' };
-    }
-    if (/^(yes|yeah|sure|ok|okay|confirm|go\s*ahead|please|do\s*it|yep|yup|haan|ha)\b/.test(msg)) {
-        return { intent: 'confirmation_yes', extractedData: '', confidence: 0.8, language: 'English' };
-    }
-    if (/^(no|nah|nope|cancel|not\s*now|later|na|nahi)\b/.test(msg)) {
-        return { intent: 'confirmation_no', extractedData: '', confidence: 0.8, language: 'English' };
-    }
-    if (/^\d+$/.test(msg)) {
-        return { intent: 'select_option', extractedData: msg, confidence: 0.9, language: 'English' };
-    }
-    if (/\b(bye|goodbye|thank|thanks|talk\s*later)\b/.test(msg)) {
-        return { intent: 'farewell', extractedData: '', confidence: 0.8, language: 'English' };
-    }
-
     return { intent: 'general_question', extractedData: '', confidence: 0.5, language: 'English' };
 }
 
 // ============================================================
-// CONVERSATIONAL RESPONSE - Natural, context-aware replies
+// CONVERSATIONAL RESPONSE
 // ============================================================
 async function generateResponse(userMessage, conversationHistory = [], contextInfo = {}) {
     try {
         const contextParts = [];
 
-        if (contextInfo.userName) {
-            contextParts.push(`Patient's name: ${contextInfo.userName}`);
-        }
-        if (contextInfo.healthData) {
-            contextParts.push(`Known health information: ${JSON.stringify(contextInfo.healthData)}`);
-        }
-        if (contextInfo.currentFlow) {
-            contextParts.push(`Current conversation flow: ${contextInfo.currentFlow}`);
-        }
-        if (contextInfo.lastHealthTopic) {
-            contextParts.push(`Patient's recent health concern: ${contextInfo.lastHealthTopic}`);
-        }
-        if (contextInfo.customInstruction) {
-            contextParts.push(`Special instruction: ${contextInfo.customInstruction}`);
-        }
+        if (contextInfo.userName) contextParts.push(`Patient: ${contextInfo.userName}`);
+        if (contextInfo.healthData) contextParts.push(`Health Info: ${JSON.stringify(contextInfo.healthData)}`);
+        if (contextInfo.currentFlow) contextParts.push(`Flow: ${contextInfo.currentFlow}`);
+        if (contextInfo.lastHealthTopic) contextParts.push(`Last Topic: ${contextInfo.lastHealthTopic}`);
+        if (contextInfo.customInstruction) contextParts.push(`Instruction: ${contextInfo.customInstruction}`);
 
         const contextString = contextParts.length > 0
             ? `\n\nCURRENT CONTEXT:\n${contextParts.join('\n')}`
             : '';
 
-        // Build messages array for Groq (OpenAI format)
         const messages = [
             {
                 role: 'system',
@@ -229,7 +191,7 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
             }
         ];
 
-        // Add recent conversation history (last 10 messages)
+        // Add recent conversation history
         const recentHistory = conversationHistory.slice(-10);
         for (const msg of recentHistory) {
             messages.push({
@@ -238,30 +200,22 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
             });
         }
 
-        // Add current message
-        messages.push({
-            role: 'user',
-            content: userMessage
-        });
+        messages.push({ role: 'user', content: userMessage });
 
-        const text = await groqChat(messages, {
+        const text = await statelessCompletion(messages, {
             temperature: 0.75,
             maxTokens: 400
         });
 
-        if (!text) {
-            throw new Error('No response generated from Groq');
-        }
-
         return cleanForWhatsApp(text.trim());
     } catch (error) {
-        console.error('Groq API Error:', error.response?.data || error.message);
+        console.error('API Error:', error);
         return "I'm having a little trouble right now. Could you try again in a moment? 🙏";
     }
 }
 
 // ============================================================
-// QUICK HEALTH ASSESSMENT - Immediate helpful response
+// QUICK HEALTH ASSESSMENT
 // ============================================================
 async function quickHealthAssessment(symptoms, userName = '') {
     const prompt = `A patient${userName ? ` named ${userName}` : ''} on our Ayurvedic health WhatsApp bot has shared this health concern:
@@ -271,27 +225,23 @@ async function quickHealthAssessment(symptoms, userName = '') {
 Provide a QUICK, empathetic Ayurvedic health response that includes:
 1. Acknowledge their concern with empathy (1 line)
 2. A brief Ayurvedic perspective on what might be happening (2-3 lines)  
-3. 2-3 immediate things they can try at home (quick Ayurvedic tips — herbs, diet, lifestyle)
-4. End by recommending they consult an Ayurvedic specialist for proper guidance
-
-**CRITICAL LANGUAGE RULE: You MUST write the "quickAdvice" in the EXACT SAME LANGUAGE that the user used (e.g., Hindi, Tamil, Telugu, Marathi). Keep it natural.**
+3. 2-3 immediate things they can try at home (quick tips)
+4. End by recommending they consult a specialist
 
 Keep it SHORT, warm, and WhatsApp-friendly. NO markdown. Use "•" for bullet points.
 DO NOT diagnose. Say "from an Ayurvedic perspective" or "traditionally".
 
-Also determine the health category and suggested doctor specialization.
-
 Respond ONLY with valid JSON:
 {
   "quickAdvice": "Your warm, helpful response text here",
-  "category": "Health category (e.g., Joint/Musculoskeletal, Digestive, Respiratory, Skin, Stress/Mental, Sleep, Immunity, Women's Health, General Wellness)",
+  "category": "Health category (e.g., Joint/Musculoskeletal, Digestive, Respiratory, Skin...)",
   "suggestedSpecialization": "Most relevant Ayurvedic specialization",
-  "doshaImbalance": "Likely dosha imbalance (Vata/Pitta/Kapha)",
+  "doshaImbalance": "Likely dosha imbalance",
   "severity": "low/medium/high"
 }`;
 
     try {
-        const text = await groqChat([
+        const result = await statelessCompletion([
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: prompt }
         ], {
@@ -300,12 +250,12 @@ Respond ONLY with valid JSON:
             jsonMode: true
         });
 
-        if (!text) throw new Error('No response from quick assessment');
-        return JSON.parse(text);
+        if (typeof result === "string") return JSON.parse(result.replace(/```json|```/g, "").trim());
+        return result;
     } catch (error) {
-        console.error('Quick Health Assessment Error:', error.response?.data || error.message);
+        console.error('Quick Health Assessment Error:', error);
         return {
-            quickAdvice: `I understand you're dealing with "${symptoms}". From an Ayurvedic perspective, your body is signaling that something needs attention.\n\nHere are a few things you can try:\n• Warm water with turmeric and ginger can help reduce inflammation\n• Gentle stretching or yoga can improve circulation\n• Ensure you're getting adequate rest\n\nI'd recommend consulting with one of our Ayurvedic specialists for personalized guidance.`,
+            quickAdvice: `I understand you're dealing with "${symptoms}". From an Ayurvedic perspective, your body is signaling that something needs attention.\n\nHere are a few things you can try:\n• Warm water with turmeric and ginger\n• Gentle stretching or yoga\n• Ensure adequate rest\n\nI'd recommend consulting with a specialist.`,
             category: 'General Wellness',
             suggestedSpecialization: 'General Ayurveda',
             doshaImbalance: 'To be determined by doctor',
@@ -315,7 +265,7 @@ Respond ONLY with valid JSON:
 }
 
 // ============================================================
-// DETAILED HEALTH ANALYSIS - Full consultation analysis
+// DETAILED HEALTH ANALYSIS
 // ============================================================
 async function analyzeHealthConcern(healthData) {
     const prompt = `Based on the following comprehensive health information shared by a patient, provide a detailed Ayurvedic health assessment:
@@ -331,26 +281,21 @@ Patient Information:
 Provide:
 1. An empathetic Ayurvedic perspective on their condition (NOT a diagnosis)
 2. The likely dosha imbalance
-3. 3-4 specific Ayurvedic wellness suggestions (diet changes, herbs for general wellness, lifestyle adjustments, yoga poses)
+3. 3-4 specific Ayurvedic wellness suggestions
 4. Which Ayurvedic specialization would be most relevant
-
-**CRITICAL LANGUAGE RULE: You MUST write the "analysis", "dietSuggestions", and "yogaSuggestions" in the EXACT SAME LANGUAGE that the user used to describe their symptoms (e.g., Hindi, Tamil, Telugu, Marathi). Keep it natural.**
-
-Keep the response WhatsApp-friendly (clear, with line breaks). Use "•" for bullet points.
-DO NOT diagnose. Frame everything as traditional Ayurvedic wisdom.
 
 Respond ONLY with valid JSON:
 {
   "analysis": "Your detailed empathetic explanation with suggestions",
   "category": "Health category",
-  "suggestedSpecialization": "The relevant doctor specialization",
-  "doshaImbalance": "The likely dosha imbalance",
-  "dietSuggestions": "Brief diet recommendations",
-  "yogaSuggestions": "Relevant yoga/pranayama practices"
+  "suggestedSpecialization": "Specialization",
+  "doshaImbalance": "Dosha imbalance",
+  "dietSuggestions": "Diet recommendations",
+  "yogaSuggestions": "Yoga practices"
 }`;
 
     try {
-        const text = await groqChat([
+        const result = await statelessCompletion([
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: prompt }
         ], {
@@ -359,23 +304,23 @@ Respond ONLY with valid JSON:
             jsonMode: true
         });
 
-        if (!text) throw new Error('No response from Groq health analysis');
-        return JSON.parse(text);
+        if (typeof result === "string") return JSON.parse(result.replace(/```json|```/g, "").trim());
+        return result;
     } catch (error) {
-        console.error('Groq Health Analysis Error:', error.response?.data || error.message);
+        console.error('Health Analysis Error:', error);
         return {
-            analysis: "Based on what you've shared, your body seems to be asking for some attention and care. From an Ayurvedic perspective, balancing your daily routine, diet, and incorporating gentle practices can make a real difference.\n\nI'd strongly recommend consulting with one of our Ayurvedic specialists who can provide personalized guidance for your specific situation. 🌿",
+            analysis: "Based on what you've shared, your body seems to be asking for care. I'd strongly recommend consulting with one of our specialists. 🌿",
             category: 'General Wellness',
             suggestedSpecialization: 'General Ayurveda',
-            doshaImbalance: 'To be determined by doctor',
-            dietSuggestions: 'Warm, freshly cooked foods. Avoid processed and cold foods.',
-            yogaSuggestions: 'Gentle stretching, deep breathing (Pranayama)'
+            doshaImbalance: 'Unknown',
+            dietSuggestions: 'Warm, cooked foods',
+            yogaSuggestions: 'Gentle stretching'
         };
     }
 }
 
 // ============================================================
-// SMART DOCTOR RANKING - AI-powered doctor matching
+// SMART DOCTOR RANKING
 // ============================================================
 async function rankDoctorsForCondition(doctors, healthCategory, symptoms) {
     if (!doctors || doctors.length === 0) return [];
@@ -391,77 +336,54 @@ async function rankDoctorsForCondition(doctors, healthCategory, symptoms) {
 Here are available Ayurvedic doctors:
 ${doctorList}
 
-Rank these doctors by relevance to the patient's condition. Consider:
-1. Specialization match to the health category (most important)
-2. Experience level
-3. Overall suitability
-
-Return ONLY valid JSON:
+Rank these doctors by relevance. Return ONLY valid JSON:
 {
   "rankedIndices": [0, 2, 1],
-  "topPickReason": "Brief 1-line reason why the #1 doctor is the best match"
+  "topPickReason": "Brief reason"
 }`;
 
     try {
-        const text = await groqChat([
+        const result = await statelessCompletion([
             { role: 'user', content: prompt }
         ], {
-            model: MODEL_FAST,
             temperature: 0.3,
             maxTokens: 200,
             jsonMode: true
         });
 
-        return JSON.parse(text);
+        if (typeof result === "string") return JSON.parse(result.replace(/```json|```/g, "").trim());
+        return result;
     } catch (error) {
-        console.error('Doctor Ranking Error:', error.message);
         return { rankedIndices: doctors.map((_, i) => i), topPickReason: '' };
     }
 }
 
 // ============================================================
-// YOUTUBE RECOMMENDATIONS - Find relevant wellness videos
+// YOUTUBE RECOMMENDATIONS
 // ============================================================
 async function getYouTubeRecommendations(healthTopic) {
-    const prompt = `A patient on our Ayurvedic health platform needs video recommendations for: "${healthTopic}"
+    const prompt = `A patient needs video recommendations for: "${healthTopic}"
 
 Suggest exactly 3 YouTube video recommendations:
-1. One educational video about understanding this condition from Ayurvedic perspective
-2. One practical home remedy / treatment video 
-3. One yoga/exercise video that helps with this condition
-
-Requirements:
-- Must be Ayurvedic or holistic wellness content
-- Must be from well-known Ayurvedic channels or yoga channels
-- Generate realistic, specific search queries that will find real, helpful videos
+1. One educational video (Ayurvedic perspective)
+2. One practical home remedy
+3. One yoga/exercise video
 
 Respond ONLY with valid JSON:
 {
   "videos": [
     {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description of what patient will learn",
+      "title": "Title",
+      "description": "Description",
       "type": "educational",
-      "searchQuery": "specific youtube search query"
-    },
-    {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description",
-      "type": "remedy",
-      "searchQuery": "specific youtube search query"
-    },
-    {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description",
-      "type": "yoga",
-      "searchQuery": "specific youtube search query"
+      "searchQuery": "youtube search query"
     }
   ],
-  "topicSummary": "One line summary of the health topic for context"
+  "topicSummary": "Summary"
 }`;
 
     try {
-        const text = await groqChat([
+        const result = await statelessCompletion([
             { role: 'user', content: prompt }
         ], {
             temperature: 0.7,
@@ -469,21 +391,15 @@ Respond ONLY with valid JSON:
             jsonMode: true
         });
 
-        const result = JSON.parse(text);
+        const parsedResult = typeof result === "string" ? JSON.parse(result.replace(/```json|```/g, "").trim()) : result;
 
-        // Generate YouTube search URLs
-        result.videos = result.videos.map(video => ({
+        parsedResult.videos = parsedResult.videos.filter(Boolean).map(video => ({
             ...video,
             link: `https://www.youtube.com/results?search_query=${encodeURIComponent(video.searchQuery)}`
         }));
-
-        return result;
+        return parsedResult;
     } catch (error) {
-        console.error('YouTube Recommendation Error:', error.message);
-        return {
-            videos: [],
-            topicSummary: healthTopic
-        };
+        return { videos: [], topicSummary: healthTopic };
     }
 }
 
@@ -500,34 +416,16 @@ function cleanForWhatsApp(text) {
         .trim();
 }
 
-// ============================================================
-// MULTILINGUAL TRANSLATION - Translate orchestrator messages
-// ============================================================
 async function translateMessage(text, targetLanguage) {
     if (!targetLanguage || targetLanguage.toLowerCase() === 'en') return text;
-
-    const prompt = `Translate the following message into language code/name: ${targetLanguage}. 
-Some parts of the message might ALREADY be in the target language. 
-Your job is to ensure the ENTIRE text is in ${targetLanguage}.
-Maintain exactly the same formatting, bullet points, numbering, emojis, and line breaks.
-Keep the warm, helpful tone. DO NOT add any extra conversational filler. 
-
-Message:
-"${text}"`;
-
+    const prompt = `Translate to ${targetLanguage}. Keep exactly same formatting. Message:\n"${text}"`;
     try {
-        const translatedText = await groqChat([
+        const result = await statelessCompletion([
             { role: 'user', content: prompt }
-        ], {
-            model: MODEL_FAST,
-            temperature: 0.1,
-            maxTokens: 500
-        });
-
-        return translatedText.replace(/^"|"$/g, '').trim();
+        ], { temperature: 0.1, maxTokens: 500 });
+        return typeof result === "string" ? result.replace(/^"|"$/g, '').trim() : text;
     } catch (error) {
-        console.error('Translation Error:', error.message);
-        return text; // Fallback to English
+        return text;
     }
 }
 
