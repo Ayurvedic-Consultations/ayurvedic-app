@@ -21,6 +21,9 @@ const getAllRecords = require("./routes/patientRecordsRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const retailerRoutes = require("./routes/retailerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const knowledgeBaseRoutes = require("./routes/knowledgeBaseRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+const scheduler = require("./scheduler");
 const { startScheduler : scheduler} = require('./scheduler');
 
 
@@ -70,7 +73,8 @@ app.use("/api/webhook", generateBlogRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/retailers", retailerRoutes);
 app.use("/api/patient-records", getAllRecords);
-
+app.use("/api/knowledge-base", knowledgeBaseRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Start the scheduler
 scheduler();
