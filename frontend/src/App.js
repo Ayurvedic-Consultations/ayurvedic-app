@@ -47,7 +47,6 @@ import AdminRetailers from './screens/admin/Retailer/AdminRetailers';
 import AdminNavBar from './screens/admin/AdminNavbar';
 import AdminBlogs from './screens/admin/AdminBlogs';
 import AdminBlogsUpdate from './screens/admin/AdminBlogsUpdate';
-import WhatsAppDashboard from './screens/admin/WhatsAppDashboard';
 
 import RetailerDashboard from './screens/Retailers/RetailerDashboard';
 import ManageProducts from './screens/Retailers/ManageProducts';
@@ -124,7 +123,6 @@ function App() {
         <Route path="/admin/consultations" element={<DoctorList />} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
         <Route path="/admin/blogs/update/:id" element={<AdminBlogsUpdate />} />
-        <Route path="/admin/whatsapp" element={<WhatsAppDashboard />} />
         <Route path="/patients/:id" element={<Patientprofile />} />
         <Route path="/admin/consultations/:id" element={<DoctorFullDetails />} />
         <Route path="/admin/transactions" element={<Transactions />} />
