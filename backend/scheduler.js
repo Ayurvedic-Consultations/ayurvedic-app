@@ -1,6 +1,5 @@
 const cron = require('node-cron');
 const mongoose = require('mongoose');
-const { sendWhatsAppMessage } = require('./controllers/whatsappController');
 
 // Models
 const Booking = require('./models/Booking');
@@ -66,21 +65,9 @@ async function sendAppointmentReminders(start, end) {
 				? booking.meetLink
 				: "Link will be shared shortly";
 
-			await sendWhatsAppMessage(
-				booking.patientId.phone,
-				"appointment_reminder",
-				[
-					{
-						type: "body",
-						parameters: [
-							{ type: "text", text: realPatientName }, // {{1}} From Patient Table
-							{ type: "text", text: booking.timeSlot },    // {{2}} From Booking Table
-							{ type: "text", text: realDoctorName },  // {{3}} From Doctor Table
-							{ type: "text", text: linkToSend }           // {{4}} From Booking Table
-						]
-					}
-				]
-			);
+			// WhatsApp has been disabled on this branch. 
+			// In the future, send an email or in-app notification here.
+			console.log(`   -> [Notification Placeholder] Appointment Reminder scheduled for ${realPatientName}`);
 		}
 	}
 }
@@ -109,20 +96,9 @@ async function sendDietPlans(tomorrowDate) {
 
 			console.log(`   -> Sending ${tomorrowDayName} diet to ${realPatientName}...`);
 
-			await sendWhatsAppMessage(
-				plan.patient.phone,
-				"daily_diet_update",
-				[
-					{
-						type: "body",
-						parameters: [
-							{ type: "text", text: realPatientName },
-							{ type: "text", text: tomorrowDayName.charAt(0).toUpperCase() + tomorrowDayName.slice(1) },
-							{ type: "text", text: dietSummary }
-						]
-					}
-				]
-			);
+			// WhatsApp has been disabled on this branch. 
+			// In the future, send an email or in-app notification here.
+			console.log(`   -> [Notification Placeholder] Diet plan sent to ${realPatientName}`);
 		}
 	}
 }
@@ -164,19 +140,9 @@ async function sendYogaPlans() {
 			const realPatientName = `${plan.patient.firstName} ${plan.patient.lastName}`;
 			console.log(`   -> Sending Yoga routine to ${realPatientName}...`);
 
-			await sendWhatsAppMessage(
-				plan.patient.phone,
-				"daily_yoga_update",
-				[
-					{
-						type: "body",
-						parameters: [
-							{ type: "text", text: realPatientName },
-							{ type: "text", text: yogaMessage }
-						]
-					}
-				]
-			);
+			// WhatsApp has been disabled on this branch. 
+			// In the future, send an email or in-app notification here.
+			console.log(`   -> [Notification Placeholder] Yoga plan sent to ${realPatientName}`);
 		}
 	}
 }
