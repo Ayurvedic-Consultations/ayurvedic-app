@@ -57,9 +57,8 @@ PERSONALITY & TONE:
 - Be proactive — suggest next steps, don't wait for the user to ask
 
 MULTILINGUAL SUPPORT:
-- You support English, Hindi, Tamil, Telugu, and Marathi.
-- **CRITICAL**: You MUST respond in the EXACT SAME LANGUAGE that the user is speaking.
-- If the user messages in Hindi, reply entirely in Hindi. If Tamil, reply in Tamil, etc.
+- You natively support English, Hindi, Tamil, Telugu, Marathi, and **Hinglish** (a natural blend of Hindi and English written in the Latin alphabet).
+- **CRITICAL**: You MUST respond in the EXACT SAME LANGUAGE that the user is speaking, especially Hinglish.
 - Keep the same warm, empathetic tone in all languages.
 
 CORE CAPABILITIES (what you help with):
@@ -111,8 +110,10 @@ INTENT CATEGORIES (pick the BEST match):
 - "health_concern": Describing ANY health issue, symptom, pain, discomfort, illness, or medical condition (e.g., "my knees hurt", "I have headache", "feeling stressed", "skin problem", "can't sleep", "stomach issues")
 - "book_doctor": Wants to book/consult/see a doctor, wants appointment, wants to meet a doctor, asking for available doctors (e.g., "book appointment", "I want a doctor", "show me doctors", "who can help me", "give me doctor")
 - "check_booking": Wants to check existing appointment status
-- "youtube_request": Asking for videos, tips, or visual content about health/yoga/ayurveda
-- "want_recommendations": Asking for health tips, remedies, diet advice, lifestyle suggestions, yoga poses
+- "youtube_request": Asking for videos, tutorials
+- "diet_plan": Asking what to eat, daily diet plan, food recommendations, recipes, foods to avoid
+- "yoga_plan": Asking for a yoga routine, exercise plan, physical activities, poses
+- "want_recommendations": Asking for general health tips, remedies, lifestyle suggestions
 - "register_yes": Affirming they want to register or that they are already registered (yes, I'm registered, I have account)
 - "register_no": Saying they haven't registered (no, not yet, I'm new)
 - "confirmation_yes": Confirming/agreeing to something (yes, sure, ok, confirm, go ahead, please, do it)
@@ -134,7 +135,7 @@ Respond ONLY with valid JSON (no extra text):
   "intent": "the_intent",
   "extractedData": "any relevant symptoms, condition, or selection extracted",
   "confidence": 0.0 to 1.0,
-  "language": "full language name in English (e.g., English, Hindi, Bengali, Tamil, Telugu, Marathi)"
+  "language": "full language name in English (e.g., English, Hindi, Bengali, Tamil, Telugu, Marathi, Hinglish)"
 }`;
 
     try {
@@ -169,7 +170,13 @@ function fallbackIntentDetection(message, currentFlow) {
     if (/\b(pain|hurt|ache|problem|issue|symptom|sick|fever|cough|cold|headache|stomach|skin|sleep|stress|anxiety|tired|weak|joint|knee|back|digest|breath|allerg)\b/.test(msg)) {
         return { intent: 'health_concern', extractedData: msg, confidence: 0.7, language: 'English' };
     }
-    if (/\b(video|youtube|watch|tutorial|yoga\s*video)\b/.test(msg)) {
+    if (/\b(diet|eat|food|meal|recipe|nutrition)\b/.test(msg)) {
+        return { intent: 'diet_plan', extractedData: '', confidence: 0.8, language: 'English' };
+    }
+    if (/\b(yoga|exercise|workout|asana|pranayama|pose)\b/.test(msg)) {
+        return { intent: 'yoga_plan', extractedData: '', confidence: 0.8, language: 'English' };
+    }
+    if (/\b(video|youtube|watch|tutorial)\b/.test(msg)) {
         return { intent: 'youtube_request', extractedData: '', confidence: 0.8, language: 'English' };
     }
     if (/\b(tip|remedy|suggest|recommend|advice|diet|lifestyle|home\s*remedy)\b/.test(msg)) {
@@ -488,9 +495,29 @@ Respond ONLY with valid JSON:
 }
 
 // ============================================================
+// CUSTOM PLAN GENERATORS
+// ============================================================
+async function generateDietPlan(message, userName, healthData) {
+    const prompt = `Generate a customized 1-day Ayurvedic diet plan (Breakfast, Lunch, Dinner, Snacks) for a patient${userName ? ` named ${userName}` : ''}.
+Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
+
+Format it clearly with dot points. Keep it warm, WhatsApp-friendly. Emphasize it's an Ayurvedic perspective. End by asking if they need a doctor consultation.`;
+    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
+}
+
+async function generateYogaPlan(message, userName, healthData) {
+    const prompt = `Generate a customized Ayurvedic Yoga & Pranayama routine (3-4 specific poses/exercises) for a patient${userName ? ` named ${userName}` : ''}.
+Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
+
+Explain briefly how each pose helps. Format it clearly with dot points. Keep it warm, WhatsApp-friendly.`;
+    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
+}
+
+// ============================================================
 // HELPER: Clean text for WhatsApp
 // ============================================================
 function cleanForWhatsApp(text) {
+    if (!text) return '';
     return text
         .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold markdown
         .replace(/__(.*?)__/g, '$1')       // Remove underline markdown
@@ -504,11 +531,16 @@ function cleanForWhatsApp(text) {
 // MULTILINGUAL TRANSLATION - Translate orchestrator messages
 // ============================================================
 async function translateMessage(text, targetLanguage) {
-    if (!targetLanguage || targetLanguage.toLowerCase() === 'en') return text;
+    if (!targetLanguage || targetLanguage.toLowerCase() === 'en' || targetLanguage.toLowerCase() === 'english') return text;
 
-    const prompt = `Translate the following message into language code/name: ${targetLanguage}. 
+    let languageDirective = `language code/name: ${targetLanguage}`;
+    if (targetLanguage.toLowerCase() === 'hinglish') {
+        languageDirective = `Hinglish (a natural, conversational blend of Hindi and English written using the English/Latin alphabet. Example: "Aapko din mein 2 baar warm water peena chahiye.")`;
+    }
+
+    const prompt = `Translate the following message into ${languageDirective}. 
 Some parts of the message might ALREADY be in the target language. 
-Your job is to ensure the ENTIRE text is in ${targetLanguage}.
+Your job is to ensure the ENTIRE text is translated smoothly and naturally.
 Maintain exactly the same formatting, bullet points, numbering, emojis, and line breaks.
 Keep the warm, helpful tone. DO NOT add any extra conversational filler. 
 
@@ -524,7 +556,8 @@ Message:
             maxTokens: 500
         });
 
-        return translatedText.replace(/^"|"$/g, '').trim();
+        const cleaned = translatedText.replace(/^"|"$/g, '').trim();
+        return cleaned || text;
     } catch (error) {
         console.error('Translation Error:', error.message);
         return text; // Fallback to English
@@ -538,5 +571,7 @@ module.exports = {
     detectIntent,
     getYouTubeRecommendations,
     rankDoctorsForCondition,
-    translateMessage
+    translateMessage,
+    generateDietPlan,
+    generateYogaPlan
 };

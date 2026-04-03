@@ -83,12 +83,17 @@ router.post('/message', async (req, res) => {
                 intent = { intent: 'greeting' };
             } else if (/video|youtube/i.test(message)) {
                 intent = { intent: 'youtube_request' };
+            } else if (/diet|eat|food|recipe/i.test(message)) {
+                intent = { intent: 'diet_plan' };
+            } else if (/yoga|exercise|workout|asana/i.test(message)) {
+                intent = { intent: 'yoga_plan' };
             }
 
-            console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow}`);
+            console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow} | Lang: ${intent.language}`);
 
             // Break out of sticky flows if user explicitly changes topic natively
-            if (intent.intent === 'greeting' || intent.intent === 'youtube_request') {
+            const nonStickyIntents = ['greeting', 'youtube_request', 'diet_plan', 'yoga_plan', 'want_registration', 'want_login'];
+            if (nonStickyIntents.includes(intent.intent)) {
                 session.currentFlow = 'idle';
                 if (intent.intent === 'greeting') {
                     session.healthData = {};
@@ -96,8 +101,6 @@ router.post('/message', async (req, res) => {
                 }
             } else if (intent.intent === 'book_doctor') {
                 session.currentFlow = 'doctor_matching';
-            } else if (intent.intent === 'want_registration' || intent.intent === 'want_login') {
-                session.currentFlow = 'idle';
             }
 
             // 3. Routing engine (Simplified extraction of the whatsapp logic)
@@ -304,6 +307,14 @@ router.post('/message', async (req, res) => {
                 } catch (e) {
                     // Fallback
                 }
+            }
+            else if (intent.intent === 'diet_plan') {
+                const plan = await nativeAi.generateDietPlan(message, session.profile.firstName, session.healthData);
+                responseText = plan || "Here is your personalized Ayurvedic diet plan:\n• Eat fresh, warm meals\n• Include ginger and turmeric\n• Avoid excessively cold foods";
+            }
+            else if (intent.intent === 'yoga_plan') {
+                const routine = await nativeAi.generateYogaPlan(message, session.profile.firstName, session.healthData);
+                responseText = routine || "Here are some safe Yoga recommendations:\n• Deep breathing (Pranayama)\n• Gentle stretching\n• Avoid heavy strain";
             }
             else if (intent.intent === 'youtube_request') {
                 const vids = await nativeAi.getYouTubeRecommendations(message);
