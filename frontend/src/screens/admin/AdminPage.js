@@ -10,7 +10,7 @@ const AdminDashboard = () => {
 		{ name: 'Retailer Management', path: '/admin/medicine-orders' },
 		{ name: 'Transactions', path: '/admin/transactions' },
 		{ name: 'Blogs', path: '/admin/blogs' },
-		{ name: '💬 WhatsApp AI Bot', path: '/admin/whatsapp' }
+		{ name: 'Sanjeevani AI Chat', path: '/admin/chat-sessions' }
 	];
 
 	return (
