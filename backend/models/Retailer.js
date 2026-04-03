@@ -18,6 +18,18 @@ const RetailerSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-});
+  resetPasswordOTP: {
+    type: String,
+    default: null
+  },
+  resetPasswordOTPExpires: {
+    type: Date,
+    default: null
+  },
+  isOTPVerified: {
+    type: Boolean,
+    default: false
+  }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Retailer', RetailerSchema);

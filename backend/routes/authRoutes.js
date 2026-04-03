@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const auth = require("../middleware/auth");
 const Admin = require("../models/Admin");
-const { registerDoctor, registerRetailer, registerPatient, loginUser } = require("../controllers/authController");
+const { registerDoctor, registerRetailer, registerPatient, loginUser, handleForgotPassword, verifyOTP, resetPassword } = require("../controllers/authController");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Patient = require("../models/Patient"); // Import the Patient model
@@ -114,8 +114,8 @@ router.post("/admin/login", async (req, res) => {
 router.get("/user", auth, async (req, res) => {
   try {
     console.log("loggging in user , auth middleware - after :")
-    const user = req.user; 
-    console.log(user, ">>>>>>>>>>",user.role)
+    const user = req.user;
+    console.log(user, ">>>>>>>>>>", user.role)
 
     res.status(200).json({
       user: {
@@ -261,18 +261,13 @@ const findUserAndUpdatePassword = async (email, newPassword) => {
   return null;
 };
 
-//  Reset Password Route
-router.post("/reset-password", async (req, res) => {
-  const { email, newPassword } = req.body;
+// forgot password - email verification
+router.post("/forgot-password", handleForgotPassword);
 
-  try {
-    const message = await findUserAndUpdatePassword(email, newPassword);
-    if (!message) return res.status(404).json({ message: "User not found" });
+// verify OTP
+router.post("/verify-otp", verifyOTP);
 
-    res.json({ message });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating password", error });
-  }
-});
+// reset password
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

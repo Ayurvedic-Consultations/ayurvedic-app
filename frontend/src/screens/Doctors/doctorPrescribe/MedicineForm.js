@@ -220,7 +220,7 @@ export function MedicineForm({ bookingId, patientId, doctorId }) {
 
 						{/* --- Reason --- */}
 						<div className="form-group">
-							<label className="form-label" htmlFor="reason">Reason for Prescription *</label>
+							<label className="form-label" htmlFor="reason">Diesease Diagnosed *</label>
 							<input
 								id="reason"
 								name="reason"

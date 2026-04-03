@@ -41,25 +41,34 @@ function PatientPage() {
 	}, []);
 
 	const goToPrakritiAssessment = () => {
-    navigate("/PrakritiAssessment");
-};
+		navigate("/PrakritiAssessment");
+	};
 
-  // Fetch Prakriti Determination data from the backend
-  useEffect(() => {
-    const fetchPrakritiData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/${auth.user?.email}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+	const viewPrakritiResult = () => {
+		// We navigate and pass a state 'viewResult: true'
+		navigate("/PrakritiAssessment", { state: { viewResult: true } });
+	};
+
+	// Fetch Prakriti Determination data from the backend
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const fetchPrakritiData = async () => {
+			try {
+				const response = await fetch(
+					`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/prakriti/assessment/getall`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`
+						},
+						body: JSON.stringify({ patientEmail: auth.user?.email }), // Send email in the request body
+					}
+				);
 
 				if (response.ok) {
 					const data = await response.json();
+					console.log("Prakriti Determination data:", data);
 					if (data) {
 						setIsPrakritiFilled(true); // Prakriti form is filled
 					}
@@ -114,26 +123,22 @@ function PatientPage() {
 				<div className="match-section">
 					{isPrakritiFilled ? (
 						<>
-							<p>
-								Thank you filling the prakriti determination  form.
-								Now Let us find the perfect Ayurvedic doctor for you based on your needs.
-							</p>
+							<p style={{ textAlign: "center" }}> Thank you for filling the prakriti determination form.</p>
+							<button className="match-btn" onClick={viewPrakritiResult}>
+								View Your Prakriti Result
+							</button>
+
 						</>
 					) : (
 						<>
-							<button className="match-btn" onClick={handleOpenPrakritiForm}>
-								Prakriti Determination
-							</button>
-
-							<button className="match-btn" onClick={goToPrakritiAssessment}>
-								
-								Prakriti Assesment
-							</button>
-							<p>
+							<p style={{ textAlign: "center" }}>
 								Kindly complete the Prakriti Determination Form. This will enable
 								us to automatically identify the most suitable doctor for your
 								needs.
 							</p>
+							<button className="match-btn" onClick={goToPrakritiAssessment}>
+								Prakriti Assesment
+							</button>
 						</>
 					)}
 				</div>

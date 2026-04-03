@@ -52,8 +52,20 @@ const doctorSchema = new mongoose.Schema({
     role: { type: String, default: 'doctor' },
     razorpayAccountId: {
         type: String,
-        default: null 
+        default: null
     },
-});
+    resetPasswordOTP: {
+        type: String,
+        default: null
+    },
+    resetPasswordOTPExpires: {
+        type: Date,
+        default: null
+    },
+    isOTPVerified: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

@@ -32,6 +32,7 @@ function BlogsVideosScreen() {
 			.then((data) => {
 				if (data.blogs) {
 					setBlogs(data.blogs);
+					console.log("Fetched blogs:", data.blogs);
 					console.log(data.blogs);
 				}
 				setLoading(false);
@@ -188,8 +189,8 @@ function BlogsVideosScreen() {
 							? rawHtmlContent.replace(/<[^>]*>/g, "").slice(0, 120)
 							: "No content available...";
 
-						const imageUrl =
-							item.image || item.content?.images?.[0]?.url || null;
+						// Image URL
+						const imageUrl = item.url || item.content?.images?.[0]?.url || null;
 
 						const itemTags = isNormalBlog
 							? item.category
