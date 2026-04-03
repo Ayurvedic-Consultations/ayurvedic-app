@@ -152,23 +152,45 @@ const SanjeevaniChatbot = () => {
 
                     {msg.metadata && msg.metadata.type === 'doctors_list' && (
                         <div className="sanjeevani-doctors-list">
-                            {msg.metadata.reason && <p className="sanjeevani-doc-reason">💡 {msg.metadata.reason}</p>}
+                            {msg.metadata.reason && (
+                                <p className="sanjeevani-doc-reason">💡 {msg.metadata.reason}</p>
+                            )}
                             {msg.metadata.doctors?.map((doc, i) => (
                                 <div key={i} className="sanjeevani-doc-card">
                                     <div className="sanjeevani-doc-header">
                                         <strong>{doc.name}</strong>
-                                        <span className="sanjeevani-doc-exp">{doc.experience} Yrs Exp.</span>
+                                        <div className="sanjeevani-doc-badges">
+                                            {doc.experience > 0 && (
+                                                <span className="sanjeevani-doc-exp">{doc.experience} Yrs</span>
+                                            )}
+                                            {doc.rating && (
+                                                <span className="sanjeevani-doc-rating">⭐ {Number(doc.rating).toFixed(1)}</span>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="sanjeevani-doc-spec">{doc.specialization}</div>
-                                    <div className="sanjeevani-doc-price">Consultation Fee: ₹{doc.price}</div>
-                                    <button
-                                        className="sanjeevani-primary-btn sanjeevani-book-btn"
-                                        onClick={() => {
-                                            setIsOpen(false);
-                                            navigate('/profile/doctor/' + doc.id);
-                                        }}>
-                                        View & Book
-                                    </button>
+                                    <div className="sanjeevani-doc-spec">🌿 {doc.specialization}</div>
+                                    {doc.location && (
+                                        <div className="sanjeevani-doc-location">📍 {doc.location}</div>
+                                    )}
+                                    {doc.languages && (
+                                        <div className="sanjeevani-doc-langs">🗣️ {doc.languages}</div>
+                                    )}
+                                    {doc.about && (
+                                        <div className="sanjeevani-doc-about">
+                                            {doc.about.slice(0, 90)}{doc.about.length > 90 ? '…' : ''}
+                                        </div>
+                                    )}
+                                    <div className="sanjeevani-doc-footer">
+                                        <span className="sanjeevani-doc-price">₹{doc.price} / consult</span>
+                                        <button
+                                            className="sanjeevani-book-btn"
+                                            onClick={() => {
+                                                setIsOpen(false);
+                                                navigate('/profile/doctor/' + doc.id);
+                                            }}>
+                                            View &amp; Book →
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

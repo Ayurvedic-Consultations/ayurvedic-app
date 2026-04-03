@@ -7,18 +7,29 @@ const DoctorData = require('../models/DoctorData');
 const bcrypt = require('bcryptjs');
 const Patient = require('../models/Patient');
 
-// ─── Utility: Fetch doctors and rank them ────────────────────────────────────
+// ─── Utility: Fetch doctors from DB and rank by AI for given condition ────────
 async function getTopDoctors(category, symptoms) {
     const [doctors1, doctors2] = await Promise.all([Doctor.find().lean(), DoctorData.find().lean()]);
-    const allDocs = [...doctors1, ...doctors2].map(d => ({
+
+    const normalize = (d) => ({
         id: d._id.toString(),
         name: `Dr. ${d.firstName || d.firstname || ''} ${d.lastName || d.lastname || ''}`.trim(),
-        specialization: Array.isArray(d.specialization) ? d.specialization.join(', ') : (d.specialization || 'General Ayurveda'),
-        experience: d.experience || 0,
-        price: d.price || d.fee || 0
-    })).filter(d => d.name !== 'Dr.');
+        specialization: Array.isArray(d.specialization)
+            ? d.specialization.join(', ')
+            : (d.specialization || 'General Ayurveda'),
+        experience: d.experience || d.yearsOfExperience || 0,
+        price: d.price || d.fee || d.consultationFee || 0,
+        rating: d.rating || d.averageRating || null,
+        location: d.city || d.location || d.state || '',
+        languages: Array.isArray(d.languages) ? d.languages.join(', ') : (d.language || ''),
+        about: d.about || d.bio || d.description || ''
+    });
+
+    const allDocs = [...doctors1.map(normalize), ...doctors2.map(normalize)]
+        .filter(d => d.name && d.name !== 'Dr.' && d.name !== 'Dr. ');
 
     if (allDocs.length === 0) return { doctors: [], reason: '' };
+
     const ranking = await nativeAi.rankDoctorsForCondition(allDocs, category || 'General', symptoms || '');
     const topDoctors = (ranking.rankedIndices || []).slice(0, 3).map(idx => allDocs[idx]).filter(Boolean);
     return { doctors: topDoctors, reason: ranking.topPickReason || '' };
@@ -217,22 +228,19 @@ router.post('/message', async (req, res) => {
                 };
 
             } else if (intent.intent === 'book_doctor') {
-                // Only run doctor search when AI explicitly says user wants a doctor
+                // Fetch from real DB, rank by AI, show actual cards
                 session.currentFlow = 'doctor_matching';
                 const category = intent.extractedData || session.healthData?.identifiedCategory || '';
                 const symptoms = session.healthData?.symptoms || message;
                 const { doctors, reason } = await getTopDoctors(category, symptoms);
+
                 if (doctors.length > 0) {
-                    responseText = await nativeAi.generateResponse(
-                        `User wants to find a doctor. Category: ${category || 'General'}. Introduce these doctors warmly and briefly.`,
-                        session.conversationHistory, { userName: session.profile?.firstName }
-                    );
+                    const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
+                    const catLabel = category ? ` for ${category}` : '';
+                    responseText = `Here are the best matched Ayurvedic specialists${catLabel} available on our platform${name} 🩺`;
                     responseMetadata = { type: 'doctors_list', category, reason, doctors };
                 } else {
-                    responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
-                        userName: session.profile?.firstName,
-                        customInstruction: 'No doctors found in database. Apologize warmly and suggest visiting the doctors page.'
-                    });
+                    responseText = `I couldn't find any doctors listed right now. Please visit our Doctors page to browse all available specialists.`;
                     responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
                 }
 
