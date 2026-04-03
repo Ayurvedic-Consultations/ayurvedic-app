@@ -535,16 +535,18 @@ async function translateMessage(text, targetLanguage) {
 
     let languageDirective = `language code/name: ${targetLanguage}`;
     if (targetLanguage.toLowerCase() === 'hinglish') {
-        languageDirective = `Hinglish (a natural, conversational blend of Hindi and English written using the English/Latin alphabet. Example: "Aapko din mein 2 baar warm water peena chahiye.")`;
+        languageDirective = `Hinglish (a natural, warm, and friendly blend of Hindi and English written using the English/Latin alphabet. Tone should be like a caring friend or an empathetic Ayurvedic consultant. Example: "Aapko din mein 2 baar warm water peena chahiye.")`;
     }
 
-    const prompt = `Translate the following message into ${languageDirective}. 
-Some parts of the message might ALREADY be in the target language. 
-Your job is to ensure the ENTIRE text is translated smoothly and naturally.
-Maintain exactly the same formatting, bullet points, numbering, emojis, and line breaks.
-Keep the warm, helpful tone. DO NOT add any extra conversational filler. 
+    const prompt = `Translate the following exact message into ${languageDirective}. 
 
-Message:
+CRITICAL RULES:
+1. ONLY return the translated text. 
+2. DO NOT include any conversational filler, explanations, or quotes.
+3. If the message is ALREADY in the target language, just return the exact message as is. DO NOT say "This is already in Hindi" or anything similar. Just output the text.
+4. Maintain exactly the same formatting, bullet points, numbering, emojis, and line breaks.
+
+Message to translate:
 "${text}"`;
 
     try {
@@ -556,7 +558,12 @@ Message:
             maxTokens: 500
         });
 
-        const cleaned = translatedText.replace(/^"|"$/g, '').trim();
+        // Strip any trailing filler the LLM might hallucinate
+        let cleaned = translatedText.replace(/^"|"$/g, '').trim();
+        if (cleaned.toLowerCase().includes("no translation is needed") || cleaned.toLowerCase().includes("already in")) {
+            // Failsafe in case it hallucinates despite strict instructions
+            return text;
+        }
         return cleaned || text;
     } catch (error) {
         console.error('Translation Error:', error.message);
