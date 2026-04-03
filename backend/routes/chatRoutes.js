@@ -216,23 +216,23 @@ router.post('/message', async (req, res) => {
                     options: ['🩺 Find a Specialist', '🧘 Yoga Plan', '🥗 Diet Plan', '📺 Wellness Videos']
                 };
 
-            } else if (session.currentFlow === 'health_consultation' && intent.intent === 'confirmation_yes') {
-                // User said yes after health assessment → find doctors
-                session.currentFlow = 'doctor_matching';
-                responseText = `Let me find the best specialist for you... 🩺`;
-                const { doctors, reason } = await getTopDoctors(session.healthData?.identifiedCategory, session.healthData?.symptoms);
-                responseMetadata = { type: 'doctors_list', reason, doctors };
-
-            } else if (intent.intent === 'book_doctor' || session.currentFlow === 'doctor_matching') {
+            } else if (intent.intent === 'book_doctor') {
+                // Only run doctor search when AI explicitly says user wants a doctor
                 session.currentFlow = 'doctor_matching';
                 const category = intent.extractedData || session.healthData?.identifiedCategory || '';
                 const symptoms = session.healthData?.symptoms || message;
-                responseText = `Here are the best Ayurvedic specialists I found for you 🩺`;
                 const { doctors, reason } = await getTopDoctors(category, symptoms);
                 if (doctors.length > 0) {
+                    responseText = await nativeAi.generateResponse(
+                        `User wants to find a doctor. Category: ${category || 'General'}. Introduce these doctors warmly and briefly.`,
+                        session.conversationHistory, { userName: session.profile?.firstName }
+                    );
                     responseMetadata = { type: 'doctors_list', category, reason, doctors };
                 } else {
-                    responseText = await nativeAi.generateResponse(message, session.conversationHistory, { userName: session.profile?.firstName, currentFlow: 'doctor_matching' });
+                    responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                        userName: session.profile?.firstName,
+                        customInstruction: 'No doctors found in database. Apologize warmly and suggest visiting the doctors page.'
+                    });
                     responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
                 }
 
@@ -280,13 +280,13 @@ router.post('/message', async (req, res) => {
                 });
 
             } else {
-                // General / platform questions / anything else — let AI handle fully with platform context
-                session.currentFlow = session.currentFlow === 'doctor_matching' || session.currentFlow === 'health_consultation'
-                    ? session.currentFlow : 'idle';
+                // General question / platform info / anything else
+                // ALWAYS clear sticky flows here so old context never leaks
+                session.currentFlow = 'idle';
                 responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
                     userName: session.profile?.firstName,
                     healthData: session.healthData,
-                    currentFlow: session.currentFlow
+                    currentFlow: 'idle'
                 });
             }
 
