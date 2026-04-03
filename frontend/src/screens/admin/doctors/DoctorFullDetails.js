@@ -59,37 +59,37 @@ const DoctorFullDetails = () => {
 	}, [doctorId]);
 
 	// Function to handle the API call
-    const handleUpdateProfile = async (updatedData) => {
-        try {
-            const res = await fetch(
-                `${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/updateDoctor/${doctorId}`,
-                {
-                    method: "PUT", // Assuming your route uses PUT for updates
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(updatedData),
-                }
-            );
+	const handleUpdateProfile = async (updatedData) => {
+		try {
+			const res = await fetch(
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/doctors/updateDoctor/${doctorId}`,
+				{
+					method: "PUT", // Assuming your route uses PUT for updates
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(updatedData),
+				}
+			);
 
-            const data = await res.json();
+			const data = await res.json();
 
-            if (res.ok && data.success) {
-                // 1. Update the local state so the UI reflects changes immediately
-                setDoctor(data.data);
-                
-                // 2. Return true to signal success to the modal
-                return true;
-            } else {
-                alert(data.message || "Failed to update profile");
-                return false;
-            }
-        } catch (error) {
-            console.error("Error updating doctor:", error);
-            alert("An error occurred while updating.");
-            return false;
-        }
-    };
+			if (res.ok && data.success) {
+				// 1. Update the local state so the UI reflects changes immediately
+				setDoctor(data.data);
+
+				// 2. Return true to signal success to the modal
+				return true;
+			} else {
+				alert(data.message || "Failed to update profile");
+				return false;
+			}
+		} catch (error) {
+			console.error("Error updating doctor:", error);
+			alert("An error occurred while updating.");
+			return false;
+		}
+	};
 
 	const tabs = [
 		{ name: "Details", icon: Briefcase },
@@ -155,14 +155,14 @@ const DoctorFullDetails = () => {
 		};
 
 		const handleSubmit = async (e) => {
-            e.preventDefault();
-            
-            const success = await onUpdate(formData);
-            
-            if (success) {
-                onClose();
-            }
-        };
+			e.preventDefault();
+
+			const success = await onUpdate(formData);
+
+			if (success) {
+				onClose();
+			}
+		};
 
 		return (
 			<div className="update_box_overlay" onClick={onClose}>
@@ -429,7 +429,7 @@ const DoctorFullDetails = () => {
 						<div className="info">
 							<p><Mail size={16} /> {doctor.email || "Not specified"}</p>
 							<p><Phone size={16} /> {doctor.phone || "Not specified"}</p>
-							<p><MapPin size={16} /> {doctor.zipCode || "Not specified"}</p>
+							<p><MapPin size={16} /> {typeof doctor.zipCode === 'object' ? (doctor.zipCode?.pincode || doctor.zipCode?.specific || "Not specified") : (doctor.zipCode || "Not specified")}</p>
 						</div>
 
 						<div className="stats">

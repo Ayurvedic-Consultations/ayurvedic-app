@@ -162,18 +162,17 @@ const RetailerManagement = () => {
 										</td>
 										<td>
 											<span
-												className={`rm-status-pill ${
-													(retailer.status || "").toLowerCase() === "active"
+												className={`rm-status-pill ${(retailer.status || "").toLowerCase() === "active"
 														? "rm-active"
 														: "rm-inactive"
-												}`}
+													}`}
 											>
 												{retailer.status}
 											</span>
 										</td>
 										<td>{retailer.email}</td>
 										<td>{retailer.phone}</td>
-										<td>{retailer.zipCode}</td>
+										<td>{typeof retailer.zipCode === 'object' ? (retailer.zipCode?.pincode || retailer.zipCode?.specific) : retailer.zipCode}</td>
 										<td>
 											<button
 												className="rm-edit-btn"

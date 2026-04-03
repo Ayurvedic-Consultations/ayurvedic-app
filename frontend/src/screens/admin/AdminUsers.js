@@ -138,7 +138,7 @@ const AdminUsers = () => {
                   <td style={{ padding: "0px 10px" }}>{patient.phone}</td>
                   <td style={{ padding: "0px 10px" }}>{patient.gender}</td>
                   <td style={{ padding: "0px 10px" }}>{patient.age}</td>
-                  <td style={{ padding: "0px 10px" }}>{patient.zipCode}</td>
+                  <td style={{ padding: "0px 10px" }}>{typeof patient.zipCode === 'object' ? (patient.zipCode?.pincode || patient.zipCode?.specific) : patient.zipCode}</td>
                   <td style={{ padding: "0px 10px" }}>
                     <button
                       onClick={(e) => {

@@ -57,7 +57,7 @@ const RetailerProfileTab = ({ retailer }) => {
         </p>
         <p>
           <span className="label"><MapPin size={14} /> Address</span>
-          <span className="value">{retailer.zipCode}</span>
+          <span className="value">{typeof retailer.zipCode === 'object' ? (retailer.zipCode?.pincode || retailer.zipCode?.specific) : retailer.zipCode}</span>
         </p>
       </div>
     </div>

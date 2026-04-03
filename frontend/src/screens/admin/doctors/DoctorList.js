@@ -213,14 +213,14 @@ const DoctorManagement = () => {
 
 									<td data-label="Specialization">
 										{Array.isArray(doctor.specialization) &&
-										doctor.specialization.length > 0
+											doctor.specialization.length > 0
 											? (() => {
-													const specStr =
-														doctor.specialization.join(", ");
-													return specStr.length > 45
-														? specStr.slice(0, 45) + "..."
-														: specStr;
-											  })()
+												const specStr =
+													doctor.specialization.join(", ");
+												return specStr.length > 45
+													? specStr.slice(0, 45) + "..."
+													: specStr;
+											})()
 											: "Not specified"}
 									</td>
 
@@ -228,7 +228,7 @@ const DoctorManagement = () => {
 										{doctor.experience} years
 									</td>
 
-									<td data-label="Location">{doctor.zipCode}</td>
+									<td data-label="Location">{typeof doctor.zipCode === 'object' ? (doctor.zipCode?.pincode || doctor.zipCode?.specific) : doctor.zipCode}</td>
 
 									<td
 										data-label="Actions"
