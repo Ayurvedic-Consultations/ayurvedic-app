@@ -8,7 +8,7 @@ import NavBar from './screens/Navbar';
 import PatientNavBar from './screens/Patients/PatientNavBar';  // Patient specific navbar
 import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific navbar
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
-import SanjeevaniChatbot from './components/SanjeevaniChatbot';
+import ChatbotWidget from './components/ChatbotWidget';
 
 // import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
@@ -47,7 +47,6 @@ import AdminRetailers from './screens/admin/Retailer/AdminRetailers';
 import AdminNavBar from './screens/admin/AdminNavbar';
 import AdminBlogs from './screens/admin/AdminBlogs';
 import AdminBlogsUpdate from './screens/admin/AdminBlogsUpdate';
-import WhatsAppDashboard from './screens/admin/WhatsAppDashboard';
 
 import RetailerDashboard from './screens/Retailers/RetailerDashboard';
 import ManageProducts from './screens/Retailers/ManageProducts';
@@ -124,7 +123,6 @@ function App() {
         <Route path="/admin/consultations" element={<DoctorList />} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
         <Route path="/admin/blogs/update/:id" element={<AdminBlogsUpdate />} />
-        <Route path="/admin/whatsapp" element={<WhatsAppDashboard />} />
         <Route path="/patients/:id" element={<Patientprofile />} />
         <Route path="/admin/consultations/:id" element={<DoctorFullDetails />} />
         <Route path="/admin/transactions" element={<Transactions />} />
@@ -135,7 +133,7 @@ function App() {
         <Route path="/profile/doctor/:id" element={<DoctorFullDetails />} />
         <Route path="/profile/retailer/:id" element={<RetailerFullDetails />} />
         <Route path="/profile/patient/:id" element={<Patientprofile />} />
-        <Route path="/prakritiassessment" element={<PrakritiAssessment />} />
+        <Route path="/prakritiassessment" element={<PrakritiAssessment/>} />
 
 
 
@@ -177,7 +175,7 @@ function App() {
         </Route>
       </Routes>
       <Footer />
-      <SanjeevaniChatbot />
+      <ChatbotWidget />
     </Router>
   );
 }
