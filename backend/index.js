@@ -23,7 +23,7 @@ const retailerRoutes = require("./routes/retailerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const knowledgeBaseRoutes = require("./routes/knowledgeBaseRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const scheduler = require("./scheduler");
+const { startScheduler } = require("./scheduler");
 
 
 mongoose.set('debug', true);
@@ -76,7 +76,7 @@ app.use("/api/knowledge-base", knowledgeBaseRoutes);
 app.use("/api/chat", chatRoutes);
 
 // Start the scheduler
-scheduler();
+startScheduler();
 
 // Start the server
 app.listen(PORT, () => {
