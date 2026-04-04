@@ -124,7 +124,7 @@ const RetailerFullDetails = () => {
 							<Phone size={16} /> {retailer.phone}
 						</p>
 						<p>
-							<MapPin size={16} /> ZipCode - {typeof retailer.zipCode === 'object' ? (retailer.zipCode?.pincode || retailer.zipCode?.specific) : retailer.zipCode}
+							<MapPin size={16} /> ZipCode - {retailer.zipCode}
 						</p>
 					</div>
 

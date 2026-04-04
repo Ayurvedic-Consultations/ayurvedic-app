@@ -475,7 +475,7 @@ const PatientProfile = () => {
 					<div className="info">
 						<p><Mail size={16} /> {patientData.email}</p>
 						<p><Phone size={16} /> {patientData.phone}</p>
-						<p><MapPin size={16} /> {typeof patientData.zipCode === 'object' ? (patientData.zipCode?.pincode || patientData.zipCode?.specific) : patientData.zipCode}</p>
+						<p><MapPin size={16} /> {patientData.zipCode}</p>
 						<p><CalendarDays size={16} />{` DOB: ${formatDOB(patientData.dob)}`}</p>
 					</div>
 

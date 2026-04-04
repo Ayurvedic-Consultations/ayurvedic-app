@@ -63,7 +63,9 @@ const DetailsTab = ({ doctor }) => {
 						</p>
 						<p>
 							<span className="label">Zip Code:</span>{" "}
-							{typeof doctor.zipCode === 'object' ? (doctor.zipCode?.pincode || doctor.zipCode?.specific || "Not specified") : (doctor.zipCode || "Not specified")}
+							{typeof doctor.zipCode === "object" && doctor.zipCode !== null
+								? (doctor.zipCode.specific || doctor.zipCode.pincode || "Not specified")
+								: (doctor.zipCode || "Not specified")}
 						</p>
 					</div>
 

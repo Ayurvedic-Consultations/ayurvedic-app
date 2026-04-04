@@ -140,7 +140,7 @@ const AdminRetailers = () => {
                                     <td style={{ padding: '0px 10px' }}>{retailer.phone}</td>
                                     <td style={{ padding: '0px 10px' }}>{retailer.age}</td>
                                     <td style={{ padding: '0px 10px' }}>{retailer.gender}</td>
-                                    <td style={{ padding: '0px 10px' }}>{typeof retailer.zipCode === 'object' ? (retailer.zipCode?.pincode || retailer.zipCode?.specific) : retailer.zipCode}</td>
+                                    <td style={{ padding: '0px 10px' }}>{retailer.zipCode}</td>
                                     <td style={{ padding: '0px 10px' }}>
 
                                         <button

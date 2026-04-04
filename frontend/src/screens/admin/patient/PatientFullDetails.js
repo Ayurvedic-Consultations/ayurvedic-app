@@ -111,7 +111,7 @@ const PatientManagement = () => {
                                     <td>{patient.email}</td>
                                     <td>{patient.phone}</td>
                                     <td>{patient.gender}</td>
-                                    <td>{typeof patient.zipCode === 'object' ? (patient.zipCode?.pincode || patient.zipCode?.specific) : patient.zipCode}</td>
+                                    <td>{patient.zipCode}</td>
                                     <td>{patient.age || "N/A"}</td>
                                     <td className="patfull-action-buttons">
                                         <button

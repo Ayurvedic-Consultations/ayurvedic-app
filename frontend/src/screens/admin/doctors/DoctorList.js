@@ -228,7 +228,9 @@ const DoctorManagement = () => {
 										{doctor.experience} years
 									</td>
 
-									<td data-label="Location">{typeof doctor.zipCode === 'object' ? (doctor.zipCode?.pincode || doctor.zipCode?.specific) : doctor.zipCode}</td>
+									<td data-label="Location">{typeof doctor.zipCode === "object" && doctor.zipCode !== null
+										? (doctor.zipCode.specific || doctor.zipCode.pincode || "N/A")
+										: (doctor.zipCode || "N/A")}</td>
 
 									<td
 										data-label="Actions"
@@ -359,7 +361,9 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 						<input
 							type="text"
 							name="zipCode"
-							value={formData.zipCode}
+							value={typeof formData.zipCode === "object" && formData.zipCode !== null
+								? (formData.zipCode.specific || formData.zipCode.pincode || "")
+								: (formData.zipCode || "")}
 							onChange={handleChange}
 						/>
 					</div>

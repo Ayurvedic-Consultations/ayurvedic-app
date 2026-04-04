@@ -398,7 +398,9 @@ const DoctorFullDetails = () => {
 						gender: doctor.gender,
 						specialization: doctor.specialization,
 						address: doctor.address,
-						pincode: doctor.zipCode,
+						pincode: typeof doctor.zipCode === "object" && doctor.zipCode !== null
+							? (doctor.zipCode.specific || doctor.zipCode.pincode || "")
+							: (doctor.zipCode || ""),
 						profileImage:
 							"https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=400&auto=format&fit=crop",
 					}}
@@ -429,7 +431,9 @@ const DoctorFullDetails = () => {
 						<div className="info">
 							<p><Mail size={16} /> {doctor.email || "Not specified"}</p>
 							<p><Phone size={16} /> {doctor.phone || "Not specified"}</p>
-							<p><MapPin size={16} /> {typeof doctor.zipCode === 'object' ? (doctor.zipCode?.pincode || doctor.zipCode?.specific || "Not specified") : (doctor.zipCode || "Not specified")}</p>
+							<p><MapPin size={16} /> {typeof doctor.zipCode === "object" && doctor.zipCode !== null
+								? (doctor.zipCode.specific || doctor.zipCode.pincode || "Not specified")
+								: (doctor.zipCode || "Not specified")}</p>
 						</div>
 
 						<div className="stats">

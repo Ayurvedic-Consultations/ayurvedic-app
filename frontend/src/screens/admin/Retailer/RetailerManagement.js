@@ -172,7 +172,7 @@ const RetailerManagement = () => {
 										</td>
 										<td>{retailer.email}</td>
 										<td>{retailer.phone}</td>
-										<td>{typeof retailer.zipCode === 'object' ? (retailer.zipCode?.pincode || retailer.zipCode?.specific) : retailer.zipCode}</td>
+										<td>{retailer.zipCode}</td>
 										<td>
 											<button
 												className="rm-edit-btn"
