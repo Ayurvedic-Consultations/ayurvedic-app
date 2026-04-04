@@ -6,6 +6,7 @@ const Doctor = require('../models/Doctor');
 const DoctorData = require('../models/DoctorData');
 const bcrypt = require('bcryptjs');
 const Patient = require('../models/Patient');
+const Booking = require('../models/Booking');
 
 // ─── Utility: Fetch doctors from DB and rank by AI for given condition ────────
 async function getTopDoctors(category, symptoms) {
@@ -228,20 +229,32 @@ router.post('/message', async (req, res) => {
                 };
 
             } else if (intent.intent === 'book_doctor') {
-                // Fetch from real DB, rank by AI, show actual cards
-                session.currentFlow = 'doctor_matching';
-                const category = intent.extractedData || session.healthData?.identifiedCategory || '';
-                const symptoms = session.healthData?.symptoms || message;
-                const { doctors, reason } = await getTopDoctors(category, symptoms);
-
-                if (doctors.length > 0) {
-                    const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
-                    const catLabel = category ? ` for ${category}` : '';
-                    responseText = `Here are the best matched Ayurvedic specialists${catLabel} available on our platform${name} 🩺`;
-                    responseMetadata = { type: 'doctors_list', category, reason, doctors };
+                if (!(session.isRegistered || isRegistered)) {
+                    session.currentFlow = 'idle';
+                    responseText = `You need to log in to our platform to book a consultation with doctors. Since you haven't logged in yet, would you like to log in now?`;
+                    responseMetadata = {
+                        type: 'options',
+                        options: [
+                            { label: '🔑 Log in', action: '/signin' },
+                            { label: '🌿 Register as Patient', action: '/signup-patient' }
+                        ]
+                    };
                 } else {
-                    responseText = `I couldn't find any doctors listed right now. Please visit our Doctors page to browse all available specialists.`;
-                    responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
+                    // Fetch from real DB, rank by AI, show actual cards
+                    session.currentFlow = 'doctor_matching';
+                    const category = intent.extractedData || session.healthData?.identifiedCategory || '';
+                    const symptoms = session.healthData?.symptoms || message;
+                    const { doctors, reason } = await getTopDoctors(category, symptoms);
+
+                    if (doctors.length > 0) {
+                        const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
+                        const catLabel = category ? ` for ${category}` : '';
+                        responseText = `Here are the best matched Ayurvedic specialists${catLabel} available on our platform${name} 🩺`;
+                        responseMetadata = { type: 'doctors_list', category, reason, doctors };
+                    } else {
+                        responseText = `I couldn't find any doctors listed right now. Please visit our Doctors page to browse all available specialists.`;
+                        responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
+                    }
                 }
 
             } else if (intent.intent === 'diet_plan') {
@@ -260,12 +273,39 @@ router.post('/message', async (req, res) => {
                 responseMetadata = { type: 'videos', videos: vids.videos };
 
             } else if (intent.intent === 'check_booking') {
-                responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
-                    userName: session.profile?.firstName,
-                    currentFlow: 'check_booking',
-                    customInstruction: 'Tell the user they can check their appointments by going to their dashboard. Offer to navigate them there.'
-                });
-                responseMetadata = { type: 'options', options: [{ label: '📅 Go to Appointments', action: '/patient/appointments' }] };
+                session.currentFlow = 'idle';
+                if (!(session.isRegistered || isRegistered)) {
+                    responseText = `To check your bookings, you must be logged in. Would you like to log in now?`;
+                    responseMetadata = {
+                        type: 'options',
+                        options: [
+                            { label: '🔑 Log in', action: '/signin' },
+                            { label: '🌿 Register as Patient', action: '/signup-patient' }
+                        ]
+                    };
+                } else {
+                    let bookedStr = "You have no recent bookings.";
+                    try {
+                        const recents = await Booking.find({ $or: [{ patientId: userId }, { patientEmail: session.profile?.email }] }).sort({ createdAt: -1 }).limit(1);
+                        if (recents && recents.length > 0) {
+                            const b = recents[0];
+                            const dName = b.doctorName || "Doctor";
+                            const dDate = new Date(b.dateOfAppointment).toLocaleDateString();
+                            const timeSlot = b.timeSlot || "Scheduled Time";
+                            const status = b.requestAccept || "Pending";
+                            let statusText = status;
+                            if (status === 'accepted') statusText = '✅ Accepted — ' + (b.meetLink && b.meetLink !== 'no' ? b.meetLink : 'Link to be provided');
+                            else if (status === 'rejected') statusText = '❌ Rejected';
+                            else statusText = '⏳ Pending Approval';
+
+                            bookedStr = `Your last booking is with **Dr. ${dName}** on **${dDate}** at **${timeSlot}**.\n\nStatus: ${statusText}`;
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                    responseText = bookedStr;
+                    responseMetadata = { type: 'options', options: [{ label: '📅 Go to Appointments Dashboard', action: '/patient/appointments' }] };
+                }
 
             } else if (intent.intent === 'want_recommendations') {
                 session.currentFlow = 'idle';
