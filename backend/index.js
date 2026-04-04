@@ -24,7 +24,6 @@ const cartRoutes = require("./routes/cartRoutes");
 const knowledgeBaseRoutes = require("./routes/knowledgeBaseRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const scheduler = require("./scheduler");
-const { startScheduler : scheduler} = require('./scheduler');
 
 
 mongoose.set('debug', true);
