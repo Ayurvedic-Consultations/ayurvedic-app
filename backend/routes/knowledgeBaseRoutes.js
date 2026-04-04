@@ -25,7 +25,7 @@ router.get('/export', async (req, res) => {
         markdown += `The Ayurvedic Platform is a comprehensive telemedicine and wellness application that connects patients with certified Ayurvedic doctors, provides AI-driven health evaluations, manages appointments, and offers curated wellness content.\n\n`;
 
         markdown += `### Key Features:\n`;
-        markdown += `- **AI Health Assistant:** An InfuseAI-powered chatbot (available on Web and WhatsApp) that provides empathy-driven preliminary health assessments.\n`;
+        markdown += `- **AI Health Assistant:** Sanjeevani AI — a native chatbot that provides empathy-driven preliminary health assessments.\n`;
         markdown += `- **Doctor Consultations:** Patients can view, filter, and book appointments with specialized Ayurvedic practitioners.\n`;
         markdown += `- **Wellness Resources:** Provides curated yoga, diet tips, and related YouTube wellness videos based on health conditions.\n`;
         markdown += `- **Ecommerce / Medicines:** Supports adding prescribed Ayurvedic medications to a cart and placing orders securely.\n`;

@@ -1,5 +1,5 @@
 /**
- * Groq AI Service for Ayurvedic WhatsApp Bot
+ * Groq AI Service for Sanjeevani AI Chatbot
  * Uses Groq Cloud API (OpenAI-compatible) with LLaMA models
  * Handles all AI-powered conversation intelligence
  */
@@ -114,7 +114,7 @@ async function detectIntent(message, currentFlow, conversationHistory = []) {
         `${m.role}: ${m.content}`
     ).join('\n');
 
-    const prompt = `You are an intent classifier for an Ayurvedic health WhatsApp bot. Analyze the user's message in context and classify their intent.
+    const prompt = `You are an intent classifier for the Sanjeevani AI health assistant. Analyze the user's message in context and classify their intent.
 
 RECENT CONVERSATION CONTEXT:
 ${recentContext || 'No prior context'}
@@ -258,7 +258,7 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
         const messages = [
             {
                 role: 'system',
-                content: SYSTEM_PROMPT + contextString + '\n\nRespond to the conversation naturally. Keep it short, warm, and WhatsApp-friendly. Always suggest a helpful next step.'
+                content: SYSTEM_PROMPT + contextString + '\n\nRespond to the conversation naturally. Keep it short, warm, and chat-friendly. Always suggest a helpful next step.'
             }
         ];
 
@@ -286,7 +286,7 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
             throw new Error('No response generated from Groq');
         }
 
-        return cleanForWhatsApp(text.trim());
+        return cleanForChat(text.trim());
     } catch (error) {
         console.error('Groq API Error:', error.response?.data || error.message);
         return "I'm having a little trouble right now. Could you try again in a moment? 🙏";
@@ -368,7 +368,7 @@ Provide:
 
 **CRITICAL LANGUAGE RULE: You MUST write the "analysis", "dietSuggestions", and "yogaSuggestions" in the EXACT SAME LANGUAGE that the user used to describe their symptoms (e.g., Hindi, Tamil, Telugu, Marathi). Keep it natural.**
 
-Keep the response WhatsApp-friendly (clear, with line breaks). Use "•" for bullet points.
+Keep the response chat-friendly (clear, with line breaks). Use "•" for bullet points.
 DO NOT diagnose. Frame everything as traditional Ayurvedic wisdom.
 
 Respond ONLY with valid JSON:
@@ -526,7 +526,7 @@ async function generateDietPlan(message, userName, healthData) {
     const prompt = `Generate a customized 1-day Ayurvedic diet plan (Breakfast, Lunch, Dinner, Snacks) for a patient${userName ? ` named ${userName}` : ''}.
 Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
 
-Format it clearly with dot points. Keep it warm, WhatsApp-friendly. Emphasize it's an Ayurvedic perspective. End by asking if they need a doctor consultation.`;
+Format it clearly with dot points. Keep it warm and chat-friendly. Emphasize it's an Ayurvedic perspective. End by asking if they need a doctor consultation.`;
     return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
 }
 
@@ -534,14 +534,14 @@ async function generateYogaPlan(message, userName, healthData) {
     const prompt = `Generate a customized Ayurvedic Yoga & Pranayama routine (3-4 specific poses/exercises) for a patient${userName ? ` named ${userName}` : ''}.
 Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
 
-Explain briefly how each pose helps. Format it clearly with dot points. Keep it warm, WhatsApp-friendly.`;
+Explain briefly how each pose helps. Format it clearly with dot points. Keep it warm and chat-friendly.`;
     return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
 }
 
 // ============================================================
-// HELPER: Clean text for WhatsApp
+// HELPER: Clean text for chat display
 // ============================================================
-function cleanForWhatsApp(text) {
+function cleanForChat(text) {
     if (!text) return '';
     return text
         .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold markdown
