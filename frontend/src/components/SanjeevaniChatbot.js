@@ -170,7 +170,7 @@ const SanjeevaniChatbot = () => {
                                     </div>
                                     <div className="sanjeevani-doc-spec">🌿 {doc.specialization}</div>
                                     {doc.location && (
-                                        <div className="sanjeevani-doc-location">📍 {doc.location}</div>
+                                        <div className="sanjeevani-doc-location">📍 {typeof doc.location === 'object' ? (doc.location.specific || doc.location.pincode || '') : doc.location}</div>
                                     )}
                                     {doc.languages && (
                                         <div className="sanjeevani-doc-langs">🗣️ {doc.languages}</div>

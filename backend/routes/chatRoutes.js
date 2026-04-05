@@ -21,7 +21,11 @@ async function getTopDoctors(category, symptoms) {
         experience: d.experience || d.yearsOfExperience || 0,
         price: d.price || d.fee || d.consultationFee || 0,
         rating: d.rating || d.averageRating || null,
-        location: d.city || d.location || d.state || '',
+        location: (() => {
+            const loc = d.city || d.location || d.zipCode || d.state || '';
+            if (typeof loc === 'object' && loc !== null) return loc.specific || loc.pincode || '';
+            return loc;
+        })(),
         languages: Array.isArray(d.languages) ? d.languages.join(', ') : (d.language || ''),
         about: d.about || d.bio || d.description || ''
     });
