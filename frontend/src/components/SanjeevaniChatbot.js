@@ -14,18 +14,21 @@ const SanjeevaniChatbot = () => {
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext);
 
-    // Create a unique guest ID or use logged in user's ID
+    // Dynamically associate chat session to the permanent logged in ID
     useEffect(() => {
-        let id = localStorage.getItem('sanjeevani_chat_id');
+        let id;
         const token = localStorage.getItem('token');
         const role = localStorage.getItem('role');
 
-        // Dynamically associate chat session to the permanent logged in ID
-        if (auth && auth.user && auth.user._id) {
+        // Cleanup any old hardcoded guest caches
+        localStorage.removeItem('sanjeevani_chat_id');
+
+        // If officially logged into the platform, sync the Chatbot memory to their DB Profile
+        if (token && auth && auth.user && auth.user._id) {
             id = auth.user._id;
-        } else if (!id) {
-            id = 'user_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('sanjeevani_chat_id', id);
+        } else {
+            // Fresh ID every time the component loads (refresh causes complete wipe for guests!)
+            id = 'guest_' + Math.random().toString(36).substr(2, 9);
         }
 
         setUserId(id);

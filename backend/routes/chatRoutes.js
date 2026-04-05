@@ -104,248 +104,192 @@ router.post('/message', async (req, res) => {
         let responseText = '';
         let responseMetadata = null;
 
-        // 4. If inside a multi-step wizard (registration/login), handle it without calling AI intent
-        if (session.currentFlow === 'register_patient') {
-            const step = session.healthData?.consultationStep;
-            if (step === 'ask_firstname') {
-                session.profile.firstName = message.trim();
-                session.healthData.consultationStep = 'ask_lastname';
-                responseText = `Nice name! 😊 And what's your Last Name?`;
-            } else if (step === 'ask_lastname') {
-                session.healthData.tempLastName = message.trim();
-                session.healthData.consultationStep = 'ask_email';
-                responseText = `Got it! Now, what's your Email Address?`;
-            } else if (step === 'ask_email') {
-                if (!message.includes('@')) {
-                    responseText = `Hmm, that doesn't look right. Please enter a valid email address (e.g. name@email.com).`;
-                } else {
-                    session.profile.email = message.trim();
-                    session.healthData.consultationStep = 'ask_password';
-                    responseText = `Perfect! Finally, choose a strong Password for your account 🔒`;
-                }
-            } else if (step === 'ask_password') {
-                try {
-                    const hashedPassword = await bcrypt.hash(message.trim(), 10);
-                    const newPatient = new Patient({
-                        firstName: session.profile.firstName,
-                        lastName: session.healthData.tempLastName || '',
-                        email: session.profile.email,
-                        password: hashedPassword,
-                        age: 18, gender: 'Not specified', zipCode: 0, role: 'patient'
-                    });
-                    await newPatient.save();
-                    session.isRegistered = true;
-                    session.currentFlow = 'idle';
-                    responseText = `🎉 You're all set! Welcome to the platform, ${session.profile.firstName}!\n\nNow, how can I help you with your health today?`;
-                } catch (err) {
-                    session.currentFlow = 'idle';
-                    responseText = `This email seems to already be registered. Try saying "log in" instead, or continue as a guest.`;
-                }
+        // 4. ── AI-FIRST INTENT DETECTION ──────────────────────────────────────
+        const intent = await nativeAi.detectIntent(message, session.currentFlow, session.conversationHistory);
+        const lang = intent.language || 'English';
+
+        console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow} | Lang: ${lang} | Confidence: ${intent.confidence}`);
+
+        // ── Route based purely on AI intent ──────────────────────────────────
+
+        if (intent.intent === 'greeting') {
+            session.currentFlow = 'idle';
+            session.healthData = {};
+            if (session.isRegistered || isRegistered) {
+                const ctxInfo = { userName: session.profile?.firstName, currentFlow: 'greeting', isReturning: true };
+                responseText = await nativeAi.generateResponse(message, session.conversationHistory, ctxInfo);
             } else {
-                session.currentFlow = 'idle';
-                responseText = `Let me start fresh. How can I help you today?`;
+                responseText = `Namaste 🙏 Myself Sanjeevani AI.\n\nAre you registered on our platform?`;
+                responseMetadata = {
+                    type: 'options',
+                    options: [
+                        { label: '🔑 Log in', action: '/signin' },
+                        { label: '🌿 Register as Patient', action: '/signup-patient' },
+                        { label: '⚕️ Register as Doctor', action: '/signup-doctor' },
+                        { label: '🏪 Register as Retailer', action: '/signup-retailer' },
+                        'Continue as Guest'
+                    ]
+                };
             }
 
-        } else if (session.currentFlow === 'login_user') {
-            const step = session.healthData?.consultationStep;
-            if (step === 'ask_email') {
-                session.profile.email = message.trim();
-                session.healthData.consultationStep = 'ask_password';
-                responseText = `Got it. Now please enter your Password.`;
-            } else if (step === 'ask_password') {
-                const user = await Patient.findOne({ email: session.profile.email });
-                if (user && await bcrypt.compare(message.trim(), user.password)) {
-                    session.isRegistered = true;
-                    session.profile.firstName = user.firstName;
-                    session.currentFlow = 'idle';
-                    responseText = `Welcome back, ${user.firstName}! 🙏 Great to see you. How can I assist you today?`;
-                } else {
-                    session.currentFlow = 'idle';
-                    responseText = `Hmm, that email or password doesn't match. You can continue as a guest, or try again by saying "log in".`;
-                }
-            } else {
+        } else if (intent.intent === 'want_registration') {
+            session.currentFlow = 'idle';
+            responseText = `Sure thing! You can register securely via our official portals. What type of account do you need?`;
+            responseMetadata = {
+                type: 'options',
+                options: [
+                    { label: '🌿 Register as Patient', action: '/signup-patient' },
+                    { label: '⚕️ Register as Doctor', action: '/signup-doctor' },
+                    { label: '🏪 Register as Retailer', action: '/signup-retailer' }
+                ]
+            };
+
+        } else if (intent.intent === 'want_login') {
+            session.currentFlow = 'idle';
+            responseText = `Sure! Please log in securely through the portal to access your full profile and book consultations.`;
+            responseMetadata = {
+                type: 'options',
+                options: [
+                    { label: '🔑 Go to Login', action: '/signin' }
+                ]
+            };
+
+        } else if (message === 'Continue as Guest' || intent.intent === 'register_no') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(
+                "The user wants to continue as a guest. Greet them warmly and let them know they can ask health questions or explore the platform.",
+                [], { currentFlow: 'idle' }
+            );
+
+        } else if (intent.intent === 'health_concern') {
+            session.currentFlow = 'health_consultation';
+            const symptoms = intent.extractedData || message;
+            if (!session.healthData) session.healthData = {};
+            session.healthData.symptoms = symptoms;
+
+            const assessment = await nativeAi.quickHealthAssessment(symptoms, session.profile?.firstName, lang);
+            session.healthData.identifiedCategory = assessment.category;
+            session.healthData.consultationStep = 'quick_assessment';
+
+            responseText = assessment.quickAdvice;
+            responseMetadata = {
+                type: 'options',
+                options: ['🩺 Find a Specialist', '🧘 Yoga Plan', '🥗 Diet Plan', '📺 Wellness Videos']
+            };
+
+        } else if (intent.intent === 'book_doctor') {
+            if (!(session.isRegistered || isRegistered)) {
                 session.currentFlow = 'idle';
-                responseText = `Let me know how I can help you!`;
+                responseText = `You need to log in to our platform to book a consultation with doctors. Since you haven't logged in yet, would you like to log in now?`;
+                responseMetadata = {
+                    type: 'options',
+                    options: [
+                        { label: '🔑 Log in', action: '/signin' },
+                        { label: '🌿 Register as Patient', action: '/signup-patient' }
+                    ]
+                };
+            } else {
+                // Fetch from real DB, rank by AI, show actual cards
+                session.currentFlow = 'doctor_matching';
+                const category = intent.extractedData || session.healthData?.identifiedCategory || '';
+                const symptoms = session.healthData?.symptoms || message;
+                const { doctors, reason } = await getTopDoctors(category, symptoms);
+
+                if (doctors.length > 0) {
+                    const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
+                    const catLabel = category ? ` for ${category}` : '';
+                    responseText = `Here are the best matched Ayurvedic specialists${catLabel} available on our platform${name} 🩺`;
+                    responseMetadata = { type: 'doctors_list', category, reason, doctors };
+                } else {
+                    responseText = `I couldn't find any doctors listed right now. Please visit our Doctors page to browse all available specialists.`;
+                    responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
+                }
             }
+
+        } else if (intent.intent === 'diet_plan') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateDietPlan(message, session.profile?.firstName, session.healthData);
+
+        } else if (intent.intent === 'yoga_plan') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateYogaPlan(message, session.profile?.firstName, session.healthData);
+
+        } else if (intent.intent === 'youtube_request') {
+            session.currentFlow = 'idle';
+            const topic = session.healthData?.identifiedCategory || intent.extractedData || message;
+            const vids = await nativeAi.getYouTubeRecommendations(topic);
+            responseText = `Here are some helpful Ayurvedic videos for you 🎬`;
+            responseMetadata = { type: 'videos', videos: vids.videos };
+
+        } else if (intent.intent === 'check_booking') {
+            session.currentFlow = 'idle';
+            if (!(session.isRegistered || isRegistered)) {
+                responseText = `To check your bookings, you must be logged in. Would you like to log in now?`;
+                responseMetadata = {
+                    type: 'options',
+                    options: [
+                        { label: '🔑 Log in', action: '/signin' },
+                        { label: '🌿 Register as Patient', action: '/signup-patient' }
+                    ]
+                };
+            } else {
+                let bookedStr = "You have no recent bookings.";
+                try {
+                    const recents = await Booking.find({ $or: [{ patientId: userId }, { patientEmail: session.profile?.email }] }).sort({ createdAt: -1 }).limit(1);
+                    if (recents && recents.length > 0) {
+                        const b = recents[0];
+                        const dName = b.doctorName || "Doctor";
+                        const dDate = new Date(b.dateOfAppointment).toLocaleDateString();
+                        const timeSlot = b.timeSlot || "Scheduled Time";
+                        const status = b.requestAccept || "Pending";
+                        let statusText = status;
+                        if (status === 'accepted') statusText = '✅ Accepted — ' + (b.meetLink && b.meetLink !== 'no' ? b.meetLink : 'Link to be provided');
+                        else if (status === 'rejected') statusText = '❌ Rejected';
+                        else statusText = '⏳ Pending Approval';
+
+                        bookedStr = `Your last booking is with **Dr. ${dName}** on **${dDate}** at **${timeSlot}**.\n\nStatus: ${statusText}`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+                responseText = bookedStr;
+                responseMetadata = { type: 'options', options: [{ label: '📅 Go to Appointments Dashboard', action: '/patient/appointments' }] };
+            }
+
+        } else if (intent.intent === 'want_recommendations') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                userName: session.profile?.firstName,
+                healthData: session.healthData,
+                customInstruction: 'Provide a warm, specific Ayurvedic health recommendation. If they mentioned a condition before, use that context.'
+            });
+            // Give relevant follow-up options
+            responseMetadata = {
+                type: 'options',
+                options: ['🥗 Get Diet Plan', '🧘 Get Yoga Plan', '📺 Watch Videos']
+            };
+
+        } else if (intent.intent === 'farewell') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                userName: session.profile?.firstName,
+                customInstruction: 'Say a warm, friendly goodbye and wish them good health.'
+            });
 
         } else {
-            // 5. ── AI-FIRST INTENT DETECTION ──────────────────────────────────────
-            const intent = await nativeAi.detectIntent(message, session.currentFlow, session.conversationHistory);
-            const lang = intent.language || 'English';
+            // General question / platform info / anything else
+            // ALWAYS clear sticky flows here so old context never leaks
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                userName: session.profile?.firstName,
+                healthData: session.healthData,
+                currentFlow: 'idle'
+            });
+        }
 
-            console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow} | Lang: ${lang} | Confidence: ${intent.confidence}`);
-
-            // ── Route based purely on AI intent ──────────────────────────────────
-
-            if (intent.intent === 'greeting') {
-                session.currentFlow = 'idle';
-                session.healthData = {};
-                if (session.isRegistered || isRegistered) {
-                    const ctxInfo = { userName: session.profile?.firstName, currentFlow: 'greeting', isReturning: true };
-                    responseText = await nativeAi.generateResponse(message, session.conversationHistory, ctxInfo);
-                } else {
-                    responseText = `Namaste 🙏 Myself Sanjeevani AI.\n\nAre you registered on our platform?`;
-                    responseMetadata = {
-                        type: 'options',
-                        options: [
-                            { label: '🔑 Log in', action: '/signin' },
-                            { label: '🌿 Register as Patient', action: '/signup-patient' },
-                            { label: '⚕️ Register as Doctor', action: '/signup-doctor' },
-                            { label: '🏪 Register as Retailer', action: '/signup-retailer' },
-                            'Continue as Guest'
-                        ]
-                    };
-                }
-
-            } else if (intent.intent === 'want_registration') {
-                session.currentFlow = 'register_patient';
-                if (!session.healthData) session.healthData = {};
-                session.healthData.consultationStep = 'ask_firstname';
-                responseText = `I'd love to help you register! 🌿\n\nLet's start — what's your First Name?`;
-
-            } else if (intent.intent === 'want_login') {
-                session.currentFlow = 'login_user';
-                if (!session.healthData) session.healthData = {};
-                session.healthData.consultationStep = 'ask_email';
-                responseText = `Sure! Please enter your registered Email Address.`;
-
-            } else if (message === 'Continue as Guest' || intent.intent === 'register_no') {
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateResponse(
-                    "The user wants to continue as a guest. Greet them warmly and let them know they can ask health questions or explore the platform.",
-                    [], { currentFlow: 'idle' }
-                );
-
-            } else if (intent.intent === 'health_concern') {
-                session.currentFlow = 'health_consultation';
-                const symptoms = intent.extractedData || message;
-                if (!session.healthData) session.healthData = {};
-                session.healthData.symptoms = symptoms;
-
-                const assessment = await nativeAi.quickHealthAssessment(symptoms, session.profile?.firstName, lang);
-                session.healthData.identifiedCategory = assessment.category;
-                session.healthData.consultationStep = 'quick_assessment';
-
-                responseText = assessment.quickAdvice;
-                responseMetadata = {
-                    type: 'options',
-                    options: ['🩺 Find a Specialist', '🧘 Yoga Plan', '🥗 Diet Plan', '📺 Wellness Videos']
-                };
-
-            } else if (intent.intent === 'book_doctor') {
-                if (!(session.isRegistered || isRegistered)) {
-                    session.currentFlow = 'idle';
-                    responseText = `You need to log in to our platform to book a consultation with doctors. Since you haven't logged in yet, would you like to log in now?`;
-                    responseMetadata = {
-                        type: 'options',
-                        options: [
-                            { label: '🔑 Log in', action: '/signin' },
-                            { label: '🌿 Register as Patient', action: '/signup-patient' }
-                        ]
-                    };
-                } else {
-                    // Fetch from real DB, rank by AI, show actual cards
-                    session.currentFlow = 'doctor_matching';
-                    const category = intent.extractedData || session.healthData?.identifiedCategory || '';
-                    const symptoms = session.healthData?.symptoms || message;
-                    const { doctors, reason } = await getTopDoctors(category, symptoms);
-
-                    if (doctors.length > 0) {
-                        const name = session.profile?.firstName ? `, ${session.profile.firstName}` : '';
-                        const catLabel = category ? ` for ${category}` : '';
-                        responseText = `Here are the best matched Ayurvedic specialists${catLabel} available on our platform${name} 🩺`;
-                        responseMetadata = { type: 'doctors_list', category, reason, doctors };
-                    } else {
-                        responseText = `I couldn't find any doctors listed right now. Please visit our Doctors page to browse all available specialists.`;
-                        responseMetadata = { type: 'action_fetch_doctors', category: category || 'General' };
-                    }
-                }
-
-            } else if (intent.intent === 'diet_plan') {
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateDietPlan(message, session.profile?.firstName, session.healthData);
-
-            } else if (intent.intent === 'yoga_plan') {
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateYogaPlan(message, session.profile?.firstName, session.healthData);
-
-            } else if (intent.intent === 'youtube_request') {
-                session.currentFlow = 'idle';
-                const topic = session.healthData?.identifiedCategory || intent.extractedData || message;
-                const vids = await nativeAi.getYouTubeRecommendations(topic);
-                responseText = `Here are some helpful Ayurvedic videos for you 🎬`;
-                responseMetadata = { type: 'videos', videos: vids.videos };
-
-            } else if (intent.intent === 'check_booking') {
-                session.currentFlow = 'idle';
-                if (!(session.isRegistered || isRegistered)) {
-                    responseText = `To check your bookings, you must be logged in. Would you like to log in now?`;
-                    responseMetadata = {
-                        type: 'options',
-                        options: [
-                            { label: '🔑 Log in', action: '/signin' },
-                            { label: '🌿 Register as Patient', action: '/signup-patient' }
-                        ]
-                    };
-                } else {
-                    let bookedStr = "You have no recent bookings.";
-                    try {
-                        const recents = await Booking.find({ $or: [{ patientId: userId }, { patientEmail: session.profile?.email }] }).sort({ createdAt: -1 }).limit(1);
-                        if (recents && recents.length > 0) {
-                            const b = recents[0];
-                            const dName = b.doctorName || "Doctor";
-                            const dDate = new Date(b.dateOfAppointment).toLocaleDateString();
-                            const timeSlot = b.timeSlot || "Scheduled Time";
-                            const status = b.requestAccept || "Pending";
-                            let statusText = status;
-                            if (status === 'accepted') statusText = '✅ Accepted — ' + (b.meetLink && b.meetLink !== 'no' ? b.meetLink : 'Link to be provided');
-                            else if (status === 'rejected') statusText = '❌ Rejected';
-                            else statusText = '⏳ Pending Approval';
-
-                            bookedStr = `Your last booking is with **Dr. ${dName}** on **${dDate}** at **${timeSlot}**.\n\nStatus: ${statusText}`;
-                        }
-                    } catch (e) {
-                        console.error(e);
-                    }
-                    responseText = bookedStr;
-                    responseMetadata = { type: 'options', options: [{ label: '📅 Go to Appointments Dashboard', action: '/patient/appointments' }] };
-                }
-
-            } else if (intent.intent === 'want_recommendations') {
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
-                    userName: session.profile?.firstName,
-                    healthData: session.healthData,
-                    customInstruction: 'Provide a warm, specific Ayurvedic health recommendation. If they mentioned a condition before, use that context.'
-                });
-                // Give relevant follow-up options
-                responseMetadata = {
-                    type: 'options',
-                    options: ['🥗 Get Diet Plan', '🧘 Get Yoga Plan', '📺 Watch Videos']
-                };
-
-            } else if (intent.intent === 'farewell') {
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
-                    userName: session.profile?.firstName,
-                    customInstruction: 'Say a warm, friendly goodbye and wish them good health.'
-                });
-
-            } else {
-                // General question / platform info / anything else
-                // ALWAYS clear sticky flows here so old context never leaks
-                session.currentFlow = 'idle';
-                responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
-                    userName: session.profile?.firstName,
-                    healthData: session.healthData,
-                    currentFlow: 'idle'
-                });
-            }
-
-            // ── Translate response if user's language is non-English ─────────────
-            if (lang && lang.toLowerCase() !== 'english' && lang.toLowerCase() !== 'en' && responseText) {
-                responseText = await nativeAi.translateMessage(responseText, lang);
-            }
+        // ── Translate response if user's language is non-English ─────────────
+        if (lang && lang.toLowerCase() !== 'english' && lang.toLowerCase() !== 'en' && responseText) {
+            responseText = await nativeAi.translateMessage(responseText, lang);
         }
 
         // 6. Save assistant response to history
