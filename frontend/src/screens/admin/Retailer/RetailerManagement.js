@@ -162,11 +162,10 @@ const RetailerManagement = () => {
 										</td>
 										<td>
 											<span
-												className={`rm-status-pill ${
-													(retailer.status || "").toLowerCase() === "active"
+												className={`rm-status-pill ${(retailer.status || "").toLowerCase() === "active"
 														? "rm-active"
 														: "rm-inactive"
-												}`}
+													}`}
 											>
 												{retailer.status}
 											</span>

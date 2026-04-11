@@ -202,7 +202,9 @@ function DoctorDetail() {
 					<p>Education: {doctor.education}</p>
 					<p>Gender: {doctor.gender}</p>
 					<p>Age: {doctor.age}</p>
-					<p>Location: {doctor.location}</p>
+					<p>Location: {typeof doctor.location === "object" && doctor.location !== null
+						? (doctor.location.specific || doctor.location.pincode || "N/A")
+						: (doctor.location || "N/A")}</p>
 					<p>Price: Rs. {doctor.pricepoint}</p>
 					{/* Additional details can be listed here */}
 				</div>

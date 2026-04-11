@@ -213,14 +213,14 @@ const DoctorManagement = () => {
 
 									<td data-label="Specialization">
 										{Array.isArray(doctor.specialization) &&
-										doctor.specialization.length > 0
+											doctor.specialization.length > 0
 											? (() => {
-													const specStr =
-														doctor.specialization.join(", ");
-													return specStr.length > 45
-														? specStr.slice(0, 45) + "..."
-														: specStr;
-											  })()
+												const specStr =
+													doctor.specialization.join(", ");
+												return specStr.length > 45
+													? specStr.slice(0, 45) + "..."
+													: specStr;
+											})()
 											: "Not specified"}
 									</td>
 
@@ -228,7 +228,9 @@ const DoctorManagement = () => {
 										{doctor.experience} years
 									</td>
 
-									<td data-label="Location">{doctor.zipCode}</td>
+									<td data-label="Location">{typeof doctor.zipCode === "object" && doctor.zipCode !== null
+										? (doctor.zipCode.specific || doctor.zipCode.pincode || "N/A")
+										: (doctor.zipCode || "N/A")}</td>
 
 									<td
 										data-label="Actions"
@@ -359,7 +361,9 @@ const EditModal = ({ isOpen, onClose, doctor, onSave }) => {
 						<input
 							type="text"
 							name="zipCode"
-							value={formData.zipCode}
+							value={typeof formData.zipCode === "object" && formData.zipCode !== null
+								? (formData.zipCode.specific || formData.zipCode.pincode || "")
+								: (formData.zipCode || "")}
 							onChange={handleChange}
 						/>
 					</div>

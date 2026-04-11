@@ -44,28 +44,30 @@ const DetailsTab = ({ doctor }) => {
 							)}
 						</li>
 					</ul>
-				
 
-				{/* Professional Info */}
-				<div className="detail-item">
-					<h4>
-						<Briefcase size={16} /> Professional Info
-					</h4>
-					<p>
-						<span className="label">Specialization:</span>{" "}
-						{doctor.specialization?.length > 0
-							? doctor.specialization.join(", ")
-							: "Not specified"}
-					</p>
-					<p>
-						<span className="label">Experience:</span>{" "}
-						{doctor.experience || 0} years
-					</p>
-					<p>
-						<span className="label">Zip Code:</span>{" "}
-						{doctor.zipCode || "Not specified"}
-					</p>
-				</div>
+
+					{/* Professional Info */}
+					<div className="detail-item">
+						<h4>
+							<Briefcase size={16} /> Professional Info
+						</h4>
+						<p>
+							<span className="label">Specialization:</span>{" "}
+							{doctor.specialization?.length > 0
+								? doctor.specialization.join(", ")
+								: "Not specified"}
+						</p>
+						<p>
+							<span className="label">Experience:</span>{" "}
+							{doctor.experience || 0} years
+						</p>
+						<p>
+							<span className="label">Zip Code:</span>{" "}
+							{typeof doctor.zipCode === "object" && doctor.zipCode !== null
+								? (doctor.zipCode.specific || doctor.zipCode.pincode || "Not specified")
+								: (doctor.zipCode || "Not specified")}
+						</p>
+					</div>
 
 				</div>
 			</div>
