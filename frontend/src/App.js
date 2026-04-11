@@ -59,6 +59,7 @@ import Notification from './screens/Patients/Notification'; // Patient notificat
 import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor notifications
 import RetailerNotification from './screens/Retailers/RetailerNotification';
 import MobileChatApp from './screens/MobileChatApp';
+import BackToChatFab from './components/BackToChatFab';
 import { AuthContext } from './context/AuthContext';
 import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 
@@ -182,6 +183,7 @@ function App() {
           <SanjeevaniChatbot />
         </>
       )}
+      <BackToChatFab />
     </Router>
   );
 }
