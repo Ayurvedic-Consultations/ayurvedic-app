@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-const SanjeevaniChatbot = () => {
-    const [isOpen, setIsOpen] = useState(false);
+const SanjeevaniChatbot = ({ isFullScreen = false }) => {
+    const [isOpen, setIsOpen] = useState(isFullScreen);
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -59,10 +59,10 @@ const SanjeevaniChatbot = () => {
             }
         };
 
-        if (id) {
+        if (id && (isOpen || isFullScreen)) {
             initChat();
         }
-    }, [auth]);
+    }, [auth, isOpen, isFullScreen]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -215,15 +215,17 @@ const SanjeevaniChatbot = () => {
     };
 
     return (
-        <div className="sanjeevani-container">
-            {isOpen ? (
-                <div className="sanjeevani-window">
+        <div className={`sanjeevani-container ${isFullScreen ? 'sanjeevani-full-screen-app' : ''}`}>
+            {(isOpen || isFullScreen) ? (
+                <div className={`sanjeevani-window ${isFullScreen ? 'sanjeevani-window-full' : ''}`}>
                     <div className="sanjeevani-header">
                         <div className="sanjeevani-header-info">
                             <h3>Sanjeevani AI ✨</h3>
                             <span className="sanjeevani-status">Online and Ready</span>
                         </div>
-                        <button className="sanjeevani-close-btn" onClick={() => setIsOpen(false)}>×</button>
+                        {!isFullScreen && (
+                            <button className="sanjeevani-close-btn" onClick={() => setIsOpen(false)}>×</button>
+                        )}
                     </div>
 
                     <div className="sanjeevani-messages">
@@ -258,7 +260,9 @@ const SanjeevaniChatbot = () => {
                         </button>
                     </div>
                 </div>
-            ) : (
+            ) : null}
+
+            {(!isOpen && !isFullScreen) && (
                 <button className="sanjeevani-fab" onClick={() => setIsOpen(true)}>
                     <span className="sanjeevani-fab-icon">🌿</span>
                     <div className="sanjeevani-fab-tooltip">Chat with Sanjeevani AI</div>

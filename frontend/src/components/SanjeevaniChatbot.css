@@ -6,6 +6,25 @@
     font-family: 'Inter', sans-serif;
 }
 
+/* Full screen app mode modifiers */
+.sanjeevani-full-screen-app {
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    background: #e8f5e9;
+}
+
+.sanjeevani-window-full {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+}
+
 .sanjeevani-fab {
     width: 65px;
     height: 65px;

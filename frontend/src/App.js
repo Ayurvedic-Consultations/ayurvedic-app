@@ -58,6 +58,7 @@ import Footer from './screens/Footer';
 import Notification from './screens/Patients/Notification'; // Patient notifications
 import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor notifications
 import RetailerNotification from './screens/Retailers/RetailerNotification';
+import MobileChatApp from './screens/MobileChatApp';
 import { AuthContext } from './context/AuthContext';
 import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 
@@ -95,8 +96,9 @@ function App() {
 
   return (
     <Router>
-      {renderNavBar()}
+      {window.location.pathname !== '/chatbot-app' && renderNavBar()}
       <Routes>
+        <Route path="/chatbot-app" element={<MobileChatApp />} />
         <Route path="/" element={<HomeScreen />} />
         <Route path="/signin" element={<SignInScreen />} />
         <Route path="/signup" element={<SignUpScreen />} />
@@ -174,8 +176,12 @@ function App() {
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>
       </Routes>
-      <Footer />
-      <SanjeevaniChatbot />
+      {window.location.pathname !== '/chatbot-app' && (
+        <>
+          <Footer />
+          <SanjeevaniChatbot />
+        </>
+      )}
     </Router>
   );
 }
