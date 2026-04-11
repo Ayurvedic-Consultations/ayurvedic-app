@@ -8,7 +8,7 @@ import NavBar from './screens/Navbar';
 import PatientNavBar from './screens/Patients/PatientNavBar';  // Patient specific navbar
 import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific navbar
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
-import ChatbotWidget from './components/ChatbotWidget';
+import SanjeevaniChatbot from './components/SanjeevaniChatbot';
 
 // import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
