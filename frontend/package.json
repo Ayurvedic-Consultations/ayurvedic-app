@@ -32,7 +32,6 @@
     "framer-motion": "^11.13.1",
     "gapi-script": "^1.2.0",
     "gsap": "^3.12.5",
-    "infuseai-sdk": "^2.1.2",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.468.0",

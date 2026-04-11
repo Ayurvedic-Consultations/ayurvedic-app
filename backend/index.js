@@ -72,8 +72,9 @@ app.use("/api/webhook", generateBlogRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/retailers", retailerRoutes);
 app.use("/api/patient-records", getAllRecords);
-app.use("/api/knowledge-base", knowledgeBaseRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/knowledge", knowledgeBaseRoutes);
+
 
 // Start the scheduler
 startScheduler();
