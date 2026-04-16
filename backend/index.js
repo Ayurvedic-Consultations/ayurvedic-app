@@ -40,8 +40,8 @@ const allowedOrigins = [
   "http://localhost:3000", // For local development
   "https://ayurvedic-app-frontend.onrender.com",
   "https://agiagentworld.com",
-  "https://www.jeevanhub.com",
-  "https://jeevanhub.com"
+  "https://jeevanhub.com",
+  "https://www.jeevanhub.com"
   // Add other necessary frontend origins here if applicable
 ];
 
@@ -55,6 +55,10 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads")); // Serve images from the uploads folder
+
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
