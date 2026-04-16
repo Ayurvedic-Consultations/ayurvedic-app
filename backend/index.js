@@ -21,7 +21,7 @@ const getAllRecords = require("./routes/patientRecordsRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const retailerRoutes = require("./routes/retailerRoutes");
 const cartRoutes = require("./routes/cartRoutes");
-const { startScheduler : scheduler} = require('./scheduler');
+const { startScheduler: scheduler } = require('./scheduler');
 
 
 mongoose.set('debug', true);
@@ -37,7 +37,9 @@ mongoose
 const allowedOrigins = [
   "http://localhost:3000", // For local development
   "https://ayurvedic-app-frontend.onrender.com",
-  "https://agiagentworld.com"
+  "https://agiagentworld.com",
+  "https://jeevanhub.com",
+  "https://www.jeevanhub.com"
   // Add other necessary frontend origins here if applicable
 ];
 
