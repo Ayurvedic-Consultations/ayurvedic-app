@@ -48,7 +48,9 @@ function DoctorsScreen() {
               : doctor.price >= 500 && doctor.price <= 1000
                 ? "Medium"
                 : "High",
-          location: doctor.zipCode || "N/A",
+          location: typeof doctor.zipCode === "object" && doctor.zipCode !== null
+            ? (doctor.zipCode?.specific || doctor.zipCode?.pincode || "N/A")
+            : (doctor.zipCode || "N/A"),
           language: "English",
           rating: 4.0,
           gender:
@@ -84,8 +86,9 @@ function DoctorsScreen() {
               : doctor.fee >= 500 && doctor.fee <= 1000
                 ? "Medium"
                 : "High",
-          location:
-            doctor.location?.specific || doctor.location?.pincode || "N/A",
+          location: typeof doctor.location === "object" && doctor.location !== null
+            ? (doctor.location?.specific || doctor.location?.pincode || "N/A")
+            : (doctor.location || "N/A"),
           language: doctor.languages?.join(", ") || "English",
           rating: 4.0, // or generate randomly if needed
           gender: doctor.gender
@@ -93,20 +96,20 @@ function DoctorsScreen() {
             : "Other",
           age: doctor.dob
             ? (() => {
-                const [day, month, year] = doctor.dob.split("/").map(Number);
-                if (!day || !month || !year) return "";
-                const birthDate = new Date(year, month - 1, day);
-                const today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const m = today.getMonth() - birthDate.getMonth();
-                if (
-                  m < 0 ||
-                  (m === 0 && today.getDate() < birthDate.getDate())
-                ) {
-                  age--;
-                }
-                return `${age}`;
-              })()
+              const [day, month, year] = doctor.dob.split("/").map(Number);
+              if (!day || !month || !year) return "";
+              const birthDate = new Date(year, month - 1, day);
+              const today = new Date();
+              let age = today.getFullYear() - birthDate.getFullYear();
+              const m = today.getMonth() - birthDate.getMonth();
+              if (
+                m < 0 ||
+                (m === 0 && today.getDate() < birthDate.getDate())
+              ) {
+                age--;
+              }
+              return `${age}`;
+            })()
             : "",
         }));
 
@@ -126,10 +129,10 @@ function DoctorsScreen() {
         : true) &&
       (filters.experience
         ? (filters.experience === "1" && parseInt(doctor.experience) <= 1) ||
-          (filters.experience === "2-5" &&
-            parseInt(doctor.experience) >= 2 &&
-            parseInt(doctor.experience) <= 5) ||
-          (filters.experience === "5+" && parseInt(doctor.experience) > 5)
+        (filters.experience === "2-5" &&
+          parseInt(doctor.experience) >= 2 &&
+          parseInt(doctor.experience) <= 5) ||
+        (filters.experience === "5+" && parseInt(doctor.experience) > 5)
         : true) &&
       (filters.priceRange ? doctor.priceRange === filters.priceRange : true) &&
       (filters.location ? doctor.location === filters.location : true) &&

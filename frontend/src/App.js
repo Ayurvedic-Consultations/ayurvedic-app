@@ -8,7 +8,7 @@ import NavBar from './screens/Navbar';
 import PatientNavBar from './screens/Patients/PatientNavBar';  // Patient specific navbar
 import DoctorNavBar from './screens/Doctors/DoctorNavBar';    // Doctor specific navbar
 import RetailerNavBar from './screens/Retailers/RetailerNavBar'; // Retailer specific navbar
-import ChatbotWidget from './components/ChatbotWidget';
+import SanjeevaniChatbot from './components/SanjeevaniChatbot';
 
 // import BlogsVideosScreen from './screens/BlogsVideosScreen';
 import BlogsVideosScreen from './screens/BlogVideos/BlogsVideosScreen';
@@ -58,6 +58,7 @@ import Footer from './screens/Footer';
 import Notification from './screens/Patients/Notification'; // Patient notifications
 import DoctorNotification from './screens/Doctors/DoctorNotification'; // Doctor notifications
 import RetailerNotification from './screens/Retailers/RetailerNotification';
+import MobileChatApp from './screens/MobileChatApp';
 import { AuthContext } from './context/AuthContext';
 import PaymentPage from './screens/Patients/Appointments/PaymentPage';
 
@@ -95,8 +96,9 @@ function App() {
 
   return (
     <Router>
-      {renderNavBar()}
+      {window.location.pathname !== '/chatbot-app' && renderNavBar()}
       <Routes>
+        <Route path="/chatbot-app" element={<MobileChatApp />} />
         <Route path="/" element={<HomeScreen />} />
         <Route path="/signin" element={<SignInScreen />} />
         <Route path="/signup" element={<SignUpScreen />} />
@@ -133,7 +135,7 @@ function App() {
         <Route path="/profile/doctor/:id" element={<DoctorFullDetails />} />
         <Route path="/profile/retailer/:id" element={<RetailerFullDetails />} />
         <Route path="/profile/patient/:id" element={<Patientprofile />} />
-        <Route path="/prakritiassessment" element={<PrakritiAssessment/>} />
+        <Route path="/prakritiassessment" element={<PrakritiAssessment />} />
 
 
 
@@ -174,8 +176,12 @@ function App() {
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>
       </Routes>
-      <Footer />
-      <ChatbotWidget />
+      {window.location.pathname !== '/chatbot-app' && (
+        <>
+          <Footer />
+          <SanjeevaniChatbot />
+        </>
+      )}
     </Router>
   );
 }

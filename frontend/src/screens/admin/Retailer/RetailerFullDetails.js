@@ -68,9 +68,9 @@ const RetailerFullDetails = () => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
-	    if (retailerId) {
-	        fetchRetailerById(retailerId, setRetailer, setLoading, setError);
-	    }
+		if (retailerId) {
+			fetchRetailerById(retailerId, setRetailer, setLoading, setError);
+		}
 	}, [retailerId]);
 
 	// Define the tabs for the retailer page
