@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const WebChatSession = require('../models/WebChatSession');
+// const WebChatSession = require('../models/WebChatSession');
 const nativeAi = require('../services/nativeAiService');
 const Doctor = require('../models/Doctor');
 const DoctorData = require('../models/DoctorData');
@@ -47,10 +47,10 @@ router.post('/message', async (req, res) => {
         if (!userId || !message) return res.status(400).json({ error: 'userId and message are required' });
 
         // 1. Get or create session
-        let session = await WebChatSession.findOne({ userId });
-        if (!session) {
-            session = new WebChatSession({ userId });
-        }
+        // let session = await WebChatSession.findOne({ userId });
+        // if (!session) {
+        //     session = new WebChatSession({ userId });
+        // }
         // Hydrate profile from token if logged in
         if (isRegistered && !session.isRegistered) {
             session.isRegistered = true;

@@ -56,6 +56,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads")); // Serve images from the uploads folder
 
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/medicines", medicineRoutes);
