@@ -36,7 +36,7 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
         // Initial check with backend to get dynamic greeting and fetch HISTORY
         const initChat = async () => {
             try {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/chat/message`, {
+                const response = await axios.post(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL || ''}/api/chat/message`, {
                     userId: id,
                     message: 'INIT_CHAT_EVENT',
                     isRegistered: !!token,
@@ -83,7 +83,7 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/chat/message`, {
+            const response = await axios.post(`${process.env.REACT_APP_AYURVEDA_BACKEND_URL || ''}/api/chat/message`, {
                 userId,
                 message: textToSend,
                 isRegistered: !!localStorage.getItem('token')

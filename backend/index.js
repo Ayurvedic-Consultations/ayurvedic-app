@@ -39,7 +39,9 @@ mongoose
 const allowedOrigins = [
   "http://localhost:3000", // For local development
   "https://ayurvedic-app-frontend.onrender.com",
-  "https://agiagentworld.com"
+  "https://agiagentworld.com",
+  "https://www.jeevanhub.com",
+  "https://jeevanhub.com"
   // Add other necessary frontend origins here if applicable
 ];
 
