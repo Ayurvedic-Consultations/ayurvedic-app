@@ -104,13 +104,39 @@ router.post('/message', async (req, res) => {
         let responseText = '';
         let responseMetadata = null;
 
-        // 4. ── AI-FIRST INTENT DETECTION ──────────────────────────────────────
-        const intent = await nativeAi.detectIntent(message, session.currentFlow, session.conversationHistory);
+        // ── QUICK-ROUTE: Handle exact button clicks from option menus ─────────
+        // These are the exact label strings sent when users click our preset buttons.
+        // We match them directly to skip AI intent detection (which often misclassifies them).
+        const msgTrimmed = message.trim();
+        const BUTTON_TO_INTENT = {
+            '📺 Wellness Videos': 'youtube_request',
+            '📺 Watch Videos': 'youtube_request',
+            'Watch Videos': 'youtube_request',
+            '🥗 Diet Plan': 'diet_plan',
+            '🥗 Get Diet Plan': 'diet_plan',
+            '🧘 Yoga Plan': 'yoga_plan',
+            '🧘 Get Yoga Plan': 'yoga_plan',
+            '🩺 Find a Specialist': 'book_doctor',
+            'Continue as Guest': 'register_no',
+        };
+
+        let intent;
+        if (BUTTON_TO_INTENT[msgTrimmed]) {
+            intent = {
+                intent: BUTTON_TO_INTENT[msgTrimmed],
+                extractedData: session.healthData?.symptoms || session.healthData?.identifiedCategory || '',
+                confidence: 1.0,
+                language: 'English'
+            };
+        } else {
+            // 4. ── AI-FIRST INTENT DETECTION ──────────────────────────────────────
+            intent = await nativeAi.detectIntent(message, session.currentFlow, session.conversationHistory);
+        }
         const lang = intent.language || 'English';
 
         console.log(`[WebChat] Intent: ${intent.intent} | Flow: ${session.currentFlow} | Lang: ${lang} | Confidence: ${intent.confidence}`);
 
-        // ── Route based purely on AI intent ──────────────────────────────────
+        // ── Route based on intent ──────────────────────────────────────
 
         if (intent.intent === 'greeting') {
             session.currentFlow = 'idle';
@@ -208,17 +234,32 @@ router.post('/message', async (req, res) => {
 
         } else if (intent.intent === 'diet_plan') {
             session.currentFlow = 'idle';
-            responseText = await nativeAi.generateDietPlan(message, session.profile?.firstName, session.healthData);
+            const dietContext = intent.extractedData || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
+            responseText = await nativeAi.generateDietPlan(dietContext, session.profile?.firstName, session.healthData);
 
         } else if (intent.intent === 'yoga_plan') {
             session.currentFlow = 'idle';
-            responseText = await nativeAi.generateYogaPlan(message, session.profile?.firstName, session.healthData);
+            const yogaContext = intent.extractedData || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
+            responseText = await nativeAi.generateYogaPlan(yogaContext, session.profile?.firstName, session.healthData);
 
         } else if (intent.intent === 'youtube_request') {
             session.currentFlow = 'idle';
-            const topic = session.healthData?.identifiedCategory || intent.extractedData || message;
+            // Prefer extractedData (the actual health topic) over generic category
+            const topic = intent.extractedData || session.healthData?.identifiedCategory || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
             const vids = await nativeAi.getYouTubeRecommendations(topic);
-            responseText = `Here are some helpful Ayurvedic videos for you 🎬`;
+            responseText = `Here are the top videos for "${topic}":`;
             responseMetadata = { type: 'videos', videos: vids.videos };
 
         } else if (intent.intent === 'check_booking') {
@@ -268,6 +309,65 @@ router.post('/message', async (req, res) => {
                 type: 'options',
                 options: ['🥗 Get Diet Plan', '🧘 Get Yoga Plan', '📺 Watch Videos']
             };
+
+        } else if (intent.intent === 'confirmation_yes') {
+            // Smart context-aware confirmation: check what the bot last offered
+            const lastBotMsg = [...session.conversationHistory].reverse().find(m => m.role === 'assistant');
+            const lastText = (lastBotMsg?.content || '').toLowerCase();
+
+            if (lastText.includes('video') || lastText.includes('wellness video') || lastText.includes('watch')) {
+                // User confirmed they want videos
+                const topic = session.healthData?.identifiedCategory || session.healthData?.symptoms || 'Ayurvedic wellness';
+                const vids = await nativeAi.getYouTubeRecommendations(topic);
+                responseText = `Here are the top videos for ${topic}:`;
+                responseMetadata = { type: 'videos', videos: vids.videos };
+            } else if (lastText.includes('doctor') || lastText.includes('specialist') || lastText.includes('consult')) {
+                // User confirmed they want to book a doctor — re-trigger book flow
+                intent.intent = 'book_doctor';
+                session.currentFlow = 'booking';
+                const category = session.healthData?.identifiedCategory || 'General Ayurveda';
+                const allDoctors = await Doctor.find({}).lean();
+                const allDoctorData = await DoctorData.find({}).lean();
+                const merged = allDoctors.map(d => {
+                    const dd = allDoctorData.find(x => x.email === d.email) || {};
+                    return { ...d, ...dd };
+                });
+                const ranking = await nativeAi.rankDoctorsForCondition(merged, category, session.healthData?.symptoms || '');
+                const sorted = (ranking.rankedIndices || []).map(i => merged[i]).filter(Boolean).slice(0, 3);
+                if (sorted.length > 0) {
+                    const doctors = sorted.map(d => ({
+                        id: d._id, name: `${d.firstName || ''} ${d.lastName || ''}`.trim(),
+                        specialization: d.specialization || 'General', experience: d.experience || 0,
+                        price: d.price || d.consultationFee || 500, rating: d.rating || 0,
+                        location: typeof d.location === 'object' ? (d.location.specific || d.location.pincode || '') : (d.location || ''),
+                        languages: d.languages || '', about: d.aboutMe || ''
+                    }));
+                    responseText = `Here are the best specialists for you:`;
+                    responseMetadata = { type: 'doctors_list', category, reason: ranking.topPickReason, doctors };
+                } else {
+                    responseText = `Please browse our doctors page for available specialists.`;
+                    responseMetadata = { type: 'options', options: [{ label: 'Browse Doctors', action: '/doctors' }] };
+                }
+            } else if (lastText.includes('diet') || lastText.includes('food') || lastText.includes('eat')) {
+                responseText = await nativeAi.generateDietPlan(message, session.profile?.firstName, session.healthData);
+            } else if (lastText.includes('yoga') || lastText.includes('exercise') || lastText.includes('asana')) {
+                responseText = await nativeAi.generateYogaPlan(message, session.profile?.firstName, session.healthData);
+            } else {
+                responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                    userName: session.profile?.firstName, healthData: session.healthData, currentFlow: session.currentFlow
+                });
+            }
+
+        } else if (intent.intent === 'off_topic') {
+            session.currentFlow = 'idle';
+            responseText = "I appreciate your curiosity, but I'm specifically designed to help with Ayurvedic health guidance and navigating the JeevanHub platform. I can help you with health concerns, diet plans, yoga routines, doctor consultations, and platform-related queries. How can I assist you with your wellness today?";
+
+        } else if (intent.intent === 'platform_question') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                userName: session.profile?.firstName,
+                customInstruction: 'The user is asking about platform features or navigation. Use the PLATFORM KNOWLEDGE section to give accurate, specific answers with exact page routes. Be concise and helpful.'
+            });
 
         } else if (intent.intent === 'farewell') {
             session.currentFlow = 'idle';
