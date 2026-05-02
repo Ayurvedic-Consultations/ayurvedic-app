@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomeScreen from './screens/HomeScreen';
 import MedicinesScreen from './screens/Medicines';
@@ -78,10 +78,8 @@ import BuyerFeedback from './screens/Patients/BuyerFeedback';
 import MedicineIdDetails from './screens/MedicineIdDetails';
 import PrakritiAssessment from './screens/Patients/PrakritiAssessment';
 
-function AppLayout() {
+function App() {
   const { auth } = useContext(AuthContext);
-  const location = useLocation();
-  const isChatbotApp = location.pathname === '/chatbot-app' || location.pathname === '/chatbot-app/';
   const renderNavBar = () => {
     switch (auth.role) {
       case 'patient':
@@ -98,8 +96,8 @@ function AppLayout() {
   };
 
   return (
-    <>
-      {!isChatbotApp && renderNavBar()}
+    <Router>
+      {window.location.pathname !== '/chatbot-app' && renderNavBar()}
       <Routes>
         <Route path="/chatbot-app" element={<MobileChatApp />} />
         <Route path="/" element={<HomeScreen />} />
@@ -179,21 +177,13 @@ function AppLayout() {
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>
       </Routes>
-      {!isChatbotApp && (
+      {window.location.pathname !== '/chatbot-app' && (
         <>
           <Footer />
           <SanjeevaniChatbot />
         </>
       )}
-      {!isChatbotApp && <BackToChatFab />}
-    </>
-  );
-}
-
-function App() {
-  return (
-    <Router>
-      <AppLayout />
+      <BackToChatFab />
     </Router>
   );
 }
