@@ -43,63 +43,125 @@ async function groqChat(messages, options = {}) {
     return response.data?.choices?.[0]?.message?.content;
 }
 
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+
 const PLATFORM_CONTEXT = `
-PLATFORM KNOWLEDGE — Sanjeevani Ayurvedic Platform:
-- This is a comprehensive Ayurvedic telemedicine platform connecting patients with certified Ayurvedic doctors.
-- PLATFORM FEATURES:
-  • Patients can register, book video/in-person consultations with certified Ayurvedic doctors
-  • Doctors can register, list their specializations, set fees, manage appointments, write prescriptions
-  • Retailers can register and sell Ayurvedic medicines & products
-  • Admins manage the entire platform
-  • Patients can browse medicines, read Ayurvedic blogs, watch wellness videos
-  • There is a full appointment tracking system with status updates
-  • Prescriptions are digital and shareable
-  • Patients can view transaction history
-  • Platform supports multilingual interactions (English, Hindi, Hinglish, Tamil, Telugu, Marathi)
+PLATFORM KNOWLEDGE — Sanjeevani Ayurvedic Platform (jeevanhub.com):
+This is a comprehensive Ayurvedic telemedicine platform connecting patients, doctors, and retailers.
 
-- HOW TO REGISTER:
-  • Patients: Visit /signup-patient or say "Register as Patient" to begin
-  • Doctors: Visit /signup-doctor
-  • Retailers: Visit /signup-retailer
-  • All users sign in at /signin
+PLATFORM NAME: JeevanHub / Sanjeevani Ayurvedic Platform
+WEBSITE: https://jeevanhub.com
+MOBILE APP: https://jeevanhub.com/chatbot-app (PWA — can be installed directly from phone browser)
 
-- HOW TO BOOK A CONSULTATION:
-  • Browse doctors at /doctors, or ask Sanjeevani AI to suggest one based on your symptoms
-  • View doctor profiles and book appointment slots
-  • You'll receive confirmation and reminders
+WHAT IS THIS PLATFORM?
+• An AI-powered Ayurvedic healthcare ecosystem where patients can consult certified Ayurvedic doctors.
+• Patients get personalized diet plans, yoga routines, and wellness guidance.
+• Retailers can sell authentic Ayurvedic medicines and products on the marketplace.
+• The entire platform is managed by admins for quality and safety standards.
 
-- AYURVEDIC DOCTORS ON PLATFORM specialize in: General Ayurveda, Panchakarma, Skin diseases, Joint/Musculoskeletal, Women's Health, Digestive disorders, Respiratory health, Stress & Mental wellness, Pediatric Ayurveda, Kerala Ayurveda, etc.
+USER ROLES & WHAT THEY CAN DO:
+1. PATIENTS:
+   - Register/Login → Browse doctors by specialization → Book consultations (video or in-person)
+   - Take Prakriti (body constitution) assessment at /prakriti
+   - Get personalized diet and yoga plans at /diet-yoga
+   - Browse and buy Ayurvedic medicines at /medicines
+   - Read health blogs at /blogs-videos
+   - View and track appointments in the Patient Dashboard
+   - View order history at /order-history
+   - Receive notifications about appointment status
+
+2. DOCTORS:
+   - Register at /signup-doctor with specialization, experience, and fee details
+   - Manage appointment slots at /appointment-slots
+   - Accept or reject patient consultation requests at /current-requests
+   - Write and publish health blogs at /health-blogs
+   - View their analytics and patient list
+   - Receive notifications about new bookings
+
+3. RETAILERS:
+   - Register at /signup-retailer
+   - Manage Ayurvedic product inventory at /manage-products
+   - Track orders at /my-orders
+   - View sales analytics at /retailer-analytics
+   - Handle customer support at /customer-support
+
+4. ADMINS:
+   - Full control panel at /admin-dashboard
+   - Manage all patients, doctors, and retailers
+   - Approve or reject doctor/retailer registrations
+   - Manage blogs and platform content
+
+KEY PLATFORM PAGES (for navigation guidance):
+• Home: /
+• Sign In: /signin
+• Patient Registration: /signup-patient
+• Doctor Registration: /signup-doctor
+• Retailer Registration: /signup-retailer
+• Browse Doctors: /doctors
+• Doctor Detail: /profile/doctor/:id
+• Medicines/Products: /medicines
+• Treatments Info: /treatments
+• Diet & Yoga Plans: /diet-yoga
+• Prakriti Assessment: /prakriti
+• Blogs & Videos: /blogs-videos
+• Cart: /cart
+• Checkout: /checkout
+• Patient Dashboard: /patient-home
+• Doctor Dashboard: /doctor-home
+• Retailer Dashboard: /retailer-home
+• Admin Dashboard: /admin-dashboard
+
+BOOKING FLOW:
+1. Patient describes symptoms to Sanjeevani AI OR browses /doctors
+2. AI recommends best-matching doctors based on specialization
+3. Patient selects a doctor and views their profile
+4. Patient picks an available time slot and books
+5. Doctor receives notification and accepts/rejects
+6. If accepted, a meeting link or in-person details are provided
+7. Patient can check status anytime via the chatbot or dashboard
+
+SPECIALIZATIONS AVAILABLE:
+General Ayurveda, Panchakarma, Skin Diseases (Kushtha Roga), Joint & Musculoskeletal (Sandhi Roga), Women's Health (Stree Roga), Digestive Disorders (Agni/Koshtha), Respiratory Health (Shwasa Roga), Stress & Mental Wellness (Manas Roga), Pediatric Ayurveda (Kaumarbhritya), Kerala Ayurveda, ENT (Shalakya Tantra), Post-surgical Recovery
+
+PAYMENT & PRICING:
+• Consultation fees vary by doctor (shown on their profile)
+• Medicines can be purchased directly through the marketplace
+• Payment is handled securely through the platform
 `;
 
-const SYSTEM_PROMPT = `You are "Sanjeevani AI" — a warm, knowledgeable, and genuinely empathetic AI health companion built for an Ayurvedic telemedicine platform.
+const SYSTEM_PROMPT = `You are "Sanjeevani AI" — a warm, knowledgeable, and genuinely empathetic AI health companion built for the JeevanHub Ayurvedic telemedicine platform.
 
 PERSONA:
-- You are like talking to a knowledgeable, caring friend who deeply understands Ayurveda.
-- You are NOT a robot. You do NOT give generic, mechanical responses.
+- You are like talking to a knowledgeable, caring friend who deeply understands Ayurveda and knows the platform inside-out.
 - Be conversational, warm, and natural. Use a tone that feels real, like a trusted health buddy.
 - You are honest. You never bluff or make up medicines, dosages, or diagnoses.
 - Always be concise — 2 to 4 sentences is perfect unless the user needs a detailed plan.
-- Use emojis naturally but not excessively (1-2 per message max: 🌿 💚 🙏 ✨ 🧘)
+- Use emojis sparingly (max 1-2 per message: 🌿 🙏)
 
 MULTILINGUAL SUPPORT:
-- You natively support English, Hindi (Devanagari or Latin), Hinglish, Tamil, Telugu, and Marathi.
-- When speaking Hinglish: be casual, friendly, and real. Like a friend who naturally mixes Hindi and English.
-  Good Hinglish example: "Arre yaar, pet dard ke liye ginger tea try karo, bahut relief milega!"
-- CRITICAL: Detect the user's language from their FIRST message and STICK to it throughout the conversation. Never switch languages on your own.
+- You natively support English, Hindi, Hinglish, Tamil, Telugu, and Marathi.
+- Detect the user's language from their FIRST message and STICK to it. Never switch on your own.
+- For Hinglish: be casual and friendly like a friend who naturally mixes Hindi and English.
 
 CORE CAPABILITIES:
 1. Health Assessment — Listen to symptoms empathetically, offer Ayurvedic perspective, suggest next steps
 2. Doctor Recommendations — Match best specialists based on condition
 3. Diet Plans — Personalized Ayurvedic diet advice based on condition/dosha
 4. Yoga & Wellness Plans — Specific asanas and pranayama for the condition
-5. Video Resources — Curated Ayurvedic wellness YouTube content
-6. Platform Guidance — Help users navigate the platform, register, book consultations, check appointments
+5. Video Resources — Real YouTube videos about the health concern
+6. Platform Guidance — Help users navigate every feature of the platform
 7. Appointment Booking — Guide through the booking process
+
+STRICT SCOPE RULES — VERY IMPORTANT:
+- You are ONLY for: Ayurveda, health/wellness, and platform-related queries.
+- If a user asks about coding, programming, software bugs, politics, entertainment, sports, finance, technology, or ANY topic unrelated to health/Ayurveda/platform → Politely decline.
+- Example refusal: "I appreciate your curiosity, but I'm specifically designed to help with Ayurvedic health guidance and navigating the JeevanHub platform. Let me know if you have any health concerns or questions about our services!"
+- NEVER answer off-topic questions. NEVER. Even if the user insists.
 
 CRITICAL MEDICAL RULES:
 - NEVER prescribe specific medicines or dosages
 - NEVER diagnose diseases definitively
-- Frame all health insights as "from an Ayurvedic perspective" 
+- Frame all health insights as "from an Ayurvedic perspective"
 - Always recommend consulting a qualified doctor for persistent concerns
 - EMERGENCY SYMPTOMS (chest pain, difficulty breathing, severe bleeding, stroke): Immediately direct to hospital
 
@@ -125,28 +187,33 @@ USER MESSAGE: "${message}"
 
 INTENT CATEGORIES (pick the BEST match):
 - "greeting": Hello, hi, hey, namaste, starting conversation
-- "health_concern": Describing ANY health issue, symptom, pain, discomfort, illness, or medical condition (e.g., "my knees hurt", "I have headache", "feeling stressed", "skin problem", "can't sleep", "stomach issues")
-- "book_doctor": Wants to book/consult/see a doctor, wants appointment, wants to meet a doctor, asking for available doctors (e.g., "book appointment", "I want a doctor", "show me doctors", "who can help me", "give me doctor")
+- "health_concern": Describing ANY health issue, symptom, pain, discomfort, illness, or medical condition
+- "book_doctor": Wants to book/consult/see a doctor, wants appointment
 - "check_booking": Wants to check existing appointment status
-- "youtube_request": Asking for videos, tutorials
-- "diet_plan": Asking what to eat, daily diet plan, food recommendations, recipes, foods to avoid
-- "yoga_plan": Asking for a yoga routine, exercise plan, physical activities, poses
+- "youtube_request": Asking for videos, tutorials related to health/Ayurveda
+- "diet_plan": Asking what to eat, daily diet plan, food recommendations
+- "yoga_plan": Asking for a yoga routine, exercise plan, poses
 - "want_recommendations": Asking for general health tips, remedies, lifestyle suggestions
-- "register_yes": Affirming they want to register or that they are already registered (yes, I'm registered, I have account)
+- "want_registration": Wants to register/sign up on the platform
+- "want_login": Wants to log in/sign in
+- "register_yes": Affirming they want to register or already registered
 - "register_no": Saying they haven't registered (no, not yet, I'm new)
-- "confirmation_yes": Confirming/agreeing to something (yes, sure, ok, confirm, go ahead, please, do it)
-- "confirmation_no": Declining/saying no (no, cancel, not now, maybe later, nah)
-- "select_option": Selecting a numbered option or making a specific choice (1, 2, 3, first one, etc.)
-- "general_question": General question about Ayurveda, health, wellness, platform features
+- "confirmation_yes": Confirming/agreeing (yes, sure, ok, confirm)
+- "confirmation_no": Declining/saying no (no, cancel, not now)
+- "select_option": Selecting a numbered option (1, 2, 3, first one)
+- "platform_question": Question about the platform features, navigation, pricing, how things work
+- "general_question": General question about Ayurveda, health, wellness
+- "off_topic": Anything NOT related to health, Ayurveda, wellness, or the platform (e.g., coding, programming, politics, sports, entertainment, technology, finance, math, software bugs)
 - "farewell": Bye, thank you, goodbye, talk later
 
 IMPORTANT CLASSIFICATION RULES:
 1. If the user mentions ANY body part + discomfort OR ANY health symptom → "health_concern"
 2. If the user asks for doctor/appointment/booking in ANY way → "book_doctor"
 3. If the user says "yes"/"sure"/"ok" in response to a suggestion → "confirmation_yes"
-4. If user asks "who can help", "give me doctor", "find specialist" → "book_doctor"
+4. If user asks about platform features, how to use, navigation → "platform_question"
 5. If user mentions wanting remedies/tips/advice → "want_recommendations"
-6. Context matters: if the bot just offered to find doctors and user says "yes" → "confirmation_yes"
+6. If the topic is UNRELATED to health/Ayurveda/platform → "off_topic" (e.g., "fix my code", "who won IPL", "what is React")
+7. Context matters: if the bot just offered to find doctors and user says "yes" → "confirmation_yes"
 
 Respond ONLY with valid JSON (no extra text):
 {
@@ -452,71 +519,75 @@ Return ONLY valid JSON:
 }
 
 // ============================================================
-// YOUTUBE RECOMMENDATIONS - Find relevant wellness videos
+// YOUTUBE RECOMMENDATIONS - Real videos via YouTube Data API v3
 // ============================================================
 async function getYouTubeRecommendations(healthTopic) {
-    const prompt = `A patient on our Ayurvedic health platform needs video recommendations for: "${healthTopic}"
-
-Suggest exactly 3 YouTube video recommendations:
-1. One educational video about understanding this condition from Ayurvedic perspective
-2. One practical home remedy / treatment video 
-3. One yoga/exercise video that helps with this condition
-
-Requirements:
-- Must be Ayurvedic or holistic wellness content
-- Must be from well-known Ayurvedic channels or yoga channels
-- Generate realistic, specific search queries that will find real, helpful videos
-
-Respond ONLY with valid JSON:
-{
-  "videos": [
-    {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description of what patient will learn",
-      "type": "educational",
-      "searchQuery": "specific youtube search query"
-    },
-    {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description",
-      "type": "remedy",
-      "searchQuery": "specific youtube search query"
-    },
-    {
-      "title": "Descriptive video title",
-      "description": "Brief 1-line description",
-      "type": "yoga",
-      "searchQuery": "specific youtube search query"
-    }
-  ],
-  "topicSummary": "One line summary of the health topic for context"
-}`;
-
+    // Step 1: Use AI to generate the BEST Ayurvedic search query for this condition
+    let searchQuery = `${healthTopic} Ayurvedic treatment home remedy`;
     try {
-        const text = await groqChat([
-            { role: 'user', content: prompt }
-        ], {
-            temperature: 0.7,
-            maxTokens: 500,
-            jsonMode: true
-        });
+        const queryText = await groqChat([
+            {
+                role: 'user', content: `Generate a single, highly specific YouTube search query to find the BEST Ayurvedic health video for this condition: "${healthTopic}".
 
-        const result = JSON.parse(text);
-
-        // Generate YouTube search URLs
-        result.videos = result.videos.map(video => ({
-            ...video,
-            link: `https://www.youtube.com/results?search_query=${encodeURIComponent(video.searchQuery)}`
-        }));
-
-        return result;
-    } catch (error) {
-        console.error('YouTube Recommendation Error:', error.message);
-        return {
-            videos: [],
-            topicSummary: healthTopic
-        };
+Rules:
+- The query must include "Ayurveda" or "Ayurvedic" if relevant
+- Make it specific to the exact health concern, not generic
+- Return ONLY the search query string, nothing else. No quotes, no explanation.` }
+        ], { temperature: 0.3, maxTokens: 60 });
+        if (queryText && queryText.trim().length > 5) {
+            searchQuery = queryText.trim().replace(/^"|"$/g, '');
+        }
+    } catch (e) {
+        console.log('AI query generation fallback, using default query');
     }
+
+    // Step 2: Fetch real videos from YouTube Data API v3 (sorted by viewCount for popularity)
+    if (YOUTUBE_API_KEY) {
+        try {
+            const ytResponse = await axios.get('https://www.googleapis.com/youtube/v3/search', {
+                params: {
+                    part: 'snippet',
+                    q: searchQuery,
+                    type: 'video',
+                    order: 'viewCount',
+                    maxResults: 3,
+                    relevanceLanguage: 'en',
+                    key: YOUTUBE_API_KEY
+                }
+            });
+
+            const items = ytResponse.data?.items || [];
+            if (items.length > 0) {
+                const videos = items.map(item => ({
+                    title: item.snippet.title,
+                    description: item.snippet.description?.slice(0, 120) || '',
+                    channel: item.snippet.channelTitle,
+                    thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+                    link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+                    type: 'real'
+                }));
+                return { videos, topicSummary: healthTopic, searchQuery };
+            }
+        } catch (ytError) {
+            console.error('YouTube API Error:', ytError.response?.data?.error?.message || ytError.message);
+        }
+    }
+
+    // Step 3: Fallback — generate direct YouTube search URL if API key missing or failed
+    console.log('YouTube API key missing or failed, using search URL fallback');
+    return {
+        videos: [
+            {
+                title: `Top Ayurvedic remedies for ${healthTopic}`,
+                description: `Watch the best-rated videos about ${healthTopic} treatment in Ayurveda`,
+                link: `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}&sp=CAMSAhAB`,
+                type: 'search',
+                channel: 'YouTube Search'
+            }
+        ],
+        topicSummary: healthTopic,
+        searchQuery
+    };
 }
 
 // ============================================================

@@ -269,6 +269,17 @@ router.post('/message', async (req, res) => {
                 options: ['🥗 Get Diet Plan', '🧘 Get Yoga Plan', '📺 Watch Videos']
             };
 
+        } else if (intent.intent === 'off_topic') {
+            session.currentFlow = 'idle';
+            responseText = "I appreciate your curiosity, but I'm specifically designed to help with Ayurvedic health guidance and navigating the JeevanHub platform. I can help you with health concerns, diet plans, yoga routines, doctor consultations, and platform-related queries. How can I assist you with your wellness today?";
+
+        } else if (intent.intent === 'platform_question') {
+            session.currentFlow = 'idle';
+            responseText = await nativeAi.generateResponse(message, session.conversationHistory, {
+                userName: session.profile?.firstName,
+                customInstruction: 'The user is asking about platform features or navigation. Use the PLATFORM KNOWLEDGE section to give accurate, specific answers with exact page routes. Be concise and helpful.'
+            });
+
         } else if (intent.intent === 'farewell') {
             session.currentFlow = 'idle';
             responseText = await nativeAi.generateResponse(message, session.conversationHistory, {

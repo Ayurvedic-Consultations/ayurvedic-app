@@ -203,8 +203,12 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
                         <div className="sanjeevani-videos">
                             {msg.metadata.videos.map((vid, i) => (
                                 <a key={i} href={vid.link} target="_blank" rel="noreferrer" className="sanjeevani-video-link">
-                                    ▶️ {vid.title}
-                                    <span className="sanjeevani-vid-desc">{vid.description}</span>
+                                    {vid.thumbnail && (
+                                        <img src={vid.thumbnail} alt={vid.title} style={{ width: '100%', borderRadius: '6px', marginBottom: '6px' }} />
+                                    )}
+                                    <span style={{ fontWeight: 600 }}>▶ {vid.title}</span>
+                                    {vid.channel && <span className="sanjeevani-vid-desc">Channel: {vid.channel}</span>}
+                                    {vid.description && <span className="sanjeevani-vid-desc">{vid.description}</span>}
                                 </a>
                             ))}
                         </div>
