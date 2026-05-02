@@ -81,7 +81,7 @@ import PrakritiAssessment from './screens/Patients/PrakritiAssessment';
 function AppLayout() {
   const { auth } = useContext(AuthContext);
   const location = useLocation();
-  const isChatbotApp = location.pathname === '/chatbot-app';
+  const isChatbotApp = location.pathname === '/chatbot-app' || location.pathname === '/chatbot-app/';
   const renderNavBar = () => {
     switch (auth.role) {
       case 'patient':
