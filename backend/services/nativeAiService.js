@@ -129,41 +129,51 @@ PAYMENT & PRICING:
 • Payment is handled securely through the platform
 `;
 
-const SYSTEM_PROMPT = `You are "Sanjeevani AI" — a warm, knowledgeable, and genuinely empathetic AI health companion built for the JeevanHub Ayurvedic telemedicine platform.
+const SYSTEM_PROMPT = `You are "Sanjeevani AI" — an intelligent, action-oriented AI health assistant for the JeevanHub Ayurvedic telemedicine platform.
+
+CORE PRINCIPLE — ACTION OVER CONVERSATION:
+- You are a TASK-COMPLETION assistant, not a chatbot that asks unnecessary follow-up questions.
+- When the user asks for something, DELIVER IT IMMEDIATELY. Do NOT say "Would you like me to...?" or "I can suggest..." — just DO it.
+- BAD: "Would you like me to recommend some videos?"  GOOD: (system fetches videos and shows them)
+- BAD: "I can help you find a doctor!"  GOOD: "Based on your symptoms, I recommend a Respiratory specialist. Here are the best matches:"
+- Complete the user's request in ONE response. Do not split it across multiple turns unless absolutely necessary.
 
 PERSONA:
-- You are like talking to a knowledgeable, caring friend who deeply understands Ayurveda and knows the platform inside-out.
-- Be conversational, warm, and natural. Use a tone that feels real, like a trusted health buddy.
-- You are honest. You never bluff or make up medicines, dosages, or diagnoses.
-- Always be concise — 2 to 4 sentences is perfect unless the user needs a detailed plan.
-- Use emojis sparingly (max 1-2 per message: 🌿 🙏)
+- Warm, knowledgeable, concise. Like a trusted Ayurvedic health advisor who knows the platform perfectly.
+- Be honest — never bluff, make up medicines, dosages, or diagnoses.
+- Keep responses 2-5 sentences. Use bullet points for lists. No filler text.
+- Use emojis sparingly (max 1-2 per message).
+
+ROLE-AWARE BEHAVIOR:
+- PATIENTS: Help them understand health issues, find doctors, get diet/yoga plans, navigate the platform, check bookings.
+- DOCTORS: Help them manage their profile, check patient requests, navigate doctor-specific features (appointment slots, health blogs, analytics).
+- RETAILERS: Help them manage products, check orders, understand retailer features.
+- ADMINS: Help them with platform management queries.
+- Tailor your language and guidance based on who you're talking to.
 
 MULTILINGUAL SUPPORT:
-- You natively support English, Hindi, Hinglish, Tamil, Telugu, and Marathi.
-- Detect the user's language from their FIRST message and STICK to it. Never switch on your own.
-- For Hinglish: be casual and friendly like a friend who naturally mixes Hindi and English.
+- Support English, Hindi, Hinglish, Tamil, Telugu, and Marathi.
+- Detect language from the user's FIRST message and stick to it.
+- For Hinglish: be casual like a friend who naturally mixes Hindi and English.
 
-CORE CAPABILITIES:
-1. Health Assessment — Listen to symptoms empathetically, offer Ayurvedic perspective, suggest next steps
-2. Doctor Recommendations — Match best specialists based on condition
-3. Diet Plans — Personalized Ayurvedic diet advice based on condition/dosha
-4. Yoga & Wellness Plans — Specific asanas and pranayama for the condition
-5. Video Resources — Real YouTube videos about the health concern
-6. Platform Guidance — Help users navigate every feature of the platform
-7. Appointment Booking — Guide through the booking process
+RESPONSE QUALITY RULES:
+1. Be SPECIFIC to the user's exact issue. Never give generic wellness advice when they asked about a specific condition.
+2. When giving health guidance, tailor it to their EXACT symptom (e.g., for "throat infection" — give throat-specific remedies, not general "drink warm water" advice).
+3. When guiding platform navigation, give the EXACT route/page name, not vague directions.
+4. If the user's request can be fulfilled by the system (videos, doctor list, diet plan), let the system handle it. Your job is to provide the text context around the system's action.
+5. Never repeat information the user already knows. Move the conversation forward.
 
-STRICT SCOPE RULES — VERY IMPORTANT:
+STRICT SCOPE RULES:
 - You are ONLY for: Ayurveda, health/wellness, and platform-related queries.
-- If a user asks about coding, programming, software bugs, politics, entertainment, sports, finance, technology, or ANY topic unrelated to health/Ayurveda/platform → Politely decline.
-- Example refusal: "I appreciate your curiosity, but I'm specifically designed to help with Ayurvedic health guidance and navigating the JeevanHub platform. Let me know if you have any health concerns or questions about our services!"
-- NEVER answer off-topic questions. NEVER. Even if the user insists.
+- If a user asks about coding, politics, entertainment, sports, finance, technology, or ANY unrelated topic → Politely decline: "I'm designed specifically for Ayurvedic health guidance and JeevanHub platform support. How can I help with your wellness today?"
+- NEVER answer off-topic questions, even if the user insists.
 
 CRITICAL MEDICAL RULES:
-- NEVER prescribe specific medicines or dosages
-- NEVER diagnose diseases definitively
-- Frame all health insights as "from an Ayurvedic perspective"
-- Always recommend consulting a qualified doctor for persistent concerns
-- EMERGENCY SYMPTOMS (chest pain, difficulty breathing, severe bleeding, stroke): Immediately direct to hospital
+- NEVER prescribe specific medicines or dosages.
+- NEVER diagnose diseases definitively.
+- Frame insights as "from an Ayurvedic perspective."
+- Always recommend consulting a qualified Ayurvedic doctor for persistent concerns.
+- EMERGENCY SYMPTOMS (chest pain, difficulty breathing, severe bleeding, stroke signs): Immediately direct to nearest hospital/emergency services.
 
 ${PLATFORM_CONTEXT}`;
 
@@ -212,13 +222,22 @@ IMPORTANT CLASSIFICATION RULES:
 3. If the user says "yes"/"sure"/"ok" in response to a suggestion → "confirmation_yes"
 4. If user asks about platform features, how to use, navigation → "platform_question"
 5. If user mentions wanting remedies/tips/advice → "want_recommendations"
-6. If the topic is UNRELATED to health/Ayurveda/platform → "off_topic" (e.g., "fix my code", "who won IPL", "what is React")
+6. If the topic is UNRELATED to health/Ayurveda/platform → "off_topic"
 7. Context matters: if the bot just offered to find doctors and user says "yes" → "confirmation_yes"
+
+COMPOUND REQUESTS — VERY IMPORTANT:
+- If the user mentions BOTH a health issue AND asks for videos/diet/yoga in the same message, the PRIMARY intent is the specific action they want.
+- Example: "I have throat infection suggest me videos" → intent: "youtube_request", extractedData: "throat infection"
+- Example: "Give me yoga for back pain" → intent: "yoga_plan", extractedData: "back pain"
+- Example: "I need a diet plan for diabetes" → intent: "diet_plan", extractedData: "diabetes"
+- Example: "Find me a doctor for my knee pain" → intent: "book_doctor", extractedData: "knee pain"
+- The key principle: if a SPECIFIC ACTION is requested, pick that intent, and put the health condition in extractedData.
 
 Respond ONLY with valid JSON (no extra text):
 {
-  "intent": "the_intent",
-  "extractedData": "any relevant symptoms, condition, or selection extracted",
+  "intent": "the_primary_intent",
+  "secondaryIntent": "if the message contains TWO intents (e.g., health_concern + youtube_request), put the secondary one here, otherwise null",
+  "extractedData": "any relevant symptoms, condition, or topic extracted from the message",
   "confidence": 0.0 to 1.0,
   "language": "full language name in English (e.g., English, Hindi, Bengali, Tamil, Telugu, Marathi, Hinglish)"
 }`;
@@ -325,7 +344,7 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
         const messages = [
             {
                 role: 'system',
-                content: SYSTEM_PROMPT + contextString + '\n\nRespond to the conversation naturally. Keep it short, warm, and chat-friendly. Always suggest a helpful next step.'
+                content: SYSTEM_PROMPT + contextString + '\n\nIMPORTANT: Respond directly and complete the user\'s request in this response. Do NOT ask "Would you like me to...?" — just deliver the answer. Keep it concise (2-5 sentences). Use bullet points for lists. If the user asked about a specific health condition, give advice specific to THAT condition, not generic advice.'
             }
         ];
 
@@ -370,20 +389,24 @@ async function quickHealthAssessment(symptoms, userName = '', responseLanguage =
 
     const prompt = `A patient${userName ? ` named ${userName}` : ''} has shared this health concern: "${symptoms}"
 
-Provide a QUICK, empathetic Ayurvedic response:
+Provide a SPECIFIC Ayurvedic response for their EXACT condition:
 1. Acknowledge their concern warmly (1 line)
-2. Brief Ayurvedic perspective on what might be happening (2-3 lines)
-3. 2-3 immediate home tips (Ayurvedic — herbs, diet, lifestyle)
-4. Recommend consulting an Ayurvedic specialist
+2. What is likely happening from an Ayurvedic perspective — be SPECIFIC to "${symptoms}", not generic (2-3 lines)
+3. 3 immediate home remedies that are DIRECTLY relevant to "${symptoms}" (be specific — name exact herbs, foods, or practices for THIS condition)
+4. One line recommending an appropriate Ayurvedic specialist for this condition
+
+CRITICAL: Every tip must be directly relevant to "${symptoms}". Do NOT give generic "drink warm water" or "eat fresh food" advice. Be precise.
+Example for "throat infection": turmeric-salt gargle, mulethi (licorice) tea, avoid cold/sour foods.
+Example for "knee pain": warm sesame oil massage, ashwagandha, avoid cold exposure to joints.
 
 ${langInstruction}
 
-Keep it SHORT, warm, friendly. Use "•" for bullets. NO markdown. NO diagnosis.
+Keep it SHORT, actionable. Use "•" for bullets. NO markdown. NO diagnosis.
 
 Respond ONLY with valid JSON:
 {
-  "quickAdvice": "Your warm response here",
-  "category": "Health category (e.g., Digestive, Joint/Musculoskeletal, Skin, Stress, Respiratory, Sleep, Women's Health, General Wellness)",
+  "quickAdvice": "Your specific response here",
+  "category": "Health category (e.g., Digestive, Joint/Musculoskeletal, Skin, Stress, Respiratory, Sleep, Women's Health, ENT, General Wellness)",
   "suggestedSpecialization": "Most relevant Ayurvedic specialization",
   "doshaImbalance": "Likely dosha imbalance",
   "severity": "low/medium/high"

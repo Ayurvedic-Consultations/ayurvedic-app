@@ -234,17 +234,32 @@ router.post('/message', async (req, res) => {
 
         } else if (intent.intent === 'diet_plan') {
             session.currentFlow = 'idle';
-            responseText = await nativeAi.generateDietPlan(message, session.profile?.firstName, session.healthData);
+            const dietContext = intent.extractedData || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
+            responseText = await nativeAi.generateDietPlan(dietContext, session.profile?.firstName, session.healthData);
 
         } else if (intent.intent === 'yoga_plan') {
             session.currentFlow = 'idle';
-            responseText = await nativeAi.generateYogaPlan(message, session.profile?.firstName, session.healthData);
+            const yogaContext = intent.extractedData || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
+            responseText = await nativeAi.generateYogaPlan(yogaContext, session.profile?.firstName, session.healthData);
 
         } else if (intent.intent === 'youtube_request') {
             session.currentFlow = 'idle';
-            const topic = session.healthData?.identifiedCategory || intent.extractedData || message;
+            // Prefer extractedData (the actual health topic) over generic category
+            const topic = intent.extractedData || session.healthData?.identifiedCategory || session.healthData?.symptoms || message;
+            if (intent.extractedData && !session.healthData?.symptoms) {
+                if (!session.healthData) session.healthData = {};
+                session.healthData.symptoms = intent.extractedData;
+            }
             const vids = await nativeAi.getYouTubeRecommendations(topic);
-            responseText = `Here are some helpful Ayurvedic videos for you 🎬`;
+            responseText = `Here are the top videos for "${topic}":`;
             responseMetadata = { type: 'videos', videos: vids.videos };
 
         } else if (intent.intent === 'check_booking') {
