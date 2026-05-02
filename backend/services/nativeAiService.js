@@ -43,7 +43,7 @@ async function groqChat(messages, options = {}) {
     return response.data?.choices?.[0]?.message?.content;
 }
 
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+
 
 const PLATFORM_CONTEXT = `
 PLATFORM KNOWLEDGE — Sanjeevani Ayurvedic Platform (jeevanhub.com):
@@ -545,6 +545,9 @@ Return ONLY valid JSON:
 // YOUTUBE RECOMMENDATIONS - Real videos via YouTube Data API v3
 // ============================================================
 async function getYouTubeRecommendations(healthTopic) {
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    console.log('[YouTube] Topic:', healthTopic, '| API Key present:', !!YOUTUBE_API_KEY);
+
     // Step 1: Use AI to generate the BEST Ayurvedic search query for this condition
     let searchQuery = `${healthTopic} Ayurvedic treatment home remedy`;
     try {
@@ -564,9 +567,12 @@ Rules:
         console.log('AI query generation fallback, using default query');
     }
 
+    console.log('[YouTube] Search query:', searchQuery);
+
     // Step 2: Fetch real videos from YouTube Data API v3 (sorted by viewCount for popularity)
     if (YOUTUBE_API_KEY) {
         try {
+            console.log('[YouTube] Calling YouTube Data API v3...');
             const ytResponse = await axios.get('https://www.googleapis.com/youtube/v3/search', {
                 params: {
                     part: 'snippet',
@@ -589,6 +595,7 @@ Rules:
                     link: `https://www.youtube.com/watch?v=${item.id.videoId}`,
                     type: 'real'
                 }));
+                console.log('[YouTube] SUCCESS — Found', videos.length, 'real videos');
                 return { videos, topicSummary: healthTopic, searchQuery };
             }
         } catch (ytError) {
