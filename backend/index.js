@@ -24,7 +24,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const knowledgeBaseRoutes = require("./routes/knowledgeBaseRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const { startScheduler } = require("./scheduler");
-
+const paymentRoutes = require("./routes/paymentRoutes");
 
 mongoose.set('debug', true);
 const app = express();
@@ -80,6 +80,8 @@ app.use("/api/retailers", retailerRoutes);
 app.use("/api/patient-records", getAllRecords);
 app.use("/api/chat", chatRoutes);
 app.use("/api/knowledge", knowledgeBaseRoutes);
+
+app.use("/api/payment", paymentRoutes);
 
 
 // Start the scheduler

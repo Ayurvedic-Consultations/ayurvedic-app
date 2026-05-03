@@ -151,6 +151,53 @@ const CheckoutScreen = () => {
 		}
 	};
 
+	const handleOnlinePayment = async (orderDataFromBackend) => {
+		try {
+			// 1. Create Razorpay order from backend
+			const res = await axios.post(
+				`${process.env.REACT_APP_AYURVEDA_BACKEND_URL}/api/payment/create-order`,
+				{ amount: totalPrice }
+			);
+
+			const order = res.data;
+
+			// 2. Open Razorpay
+			const options = {
+				key: "rzp_test_Sl1TIKLxwNWCKt",
+				amount: order.amount,
+				currency: "INR",
+				name: "Ayurveda Platform",
+				description: "Test Payment",
+				order_id: order.id,
+
+				handler: async function (response) {
+					console.log("Payment success:", response);
+
+					// simulate success flow
+					localStorage.removeItem('cart');
+					setCurrentStep(5);
+				},
+
+				prefill: {
+					name: `${auth.user.firstName} ${auth.user.lastName}`,
+					email: "test@test.com",
+					contact: "9999999999",
+				},
+
+				theme: {
+					color: "#3399cc",
+				},
+			};
+
+			const rzp = new window.Razorpay(options);
+			rzp.open();
+
+		} catch (err) {
+			console.error("Payment error:", err);
+			setError("Payment failed");
+		}
+	};
+
 	// Submit order to backend
 	const placeOrder = async () => {
 		try {
@@ -178,7 +225,7 @@ const CheckoutScreen = () => {
 				paymentMethod
 			};
 
-			console.log('Placing order with data:', orderData);	
+			console.log('Placing order with data:', orderData);
 
 			let responseData = null;
 			let currentOrderId = null;
@@ -244,9 +291,8 @@ const CheckoutScreen = () => {
 				localStorage.removeItem('cart');
 				// Skip to confirmation page directly
 				setCurrentStep(5);
-			} else {
-				// For online payment, proceed to payment step
-				nextStep();
+			} else if (paymentMethod === 'onlinePayment') {
+				await handleOnlinePayment(responseData);
 			}
 
 		} catch (err) {
