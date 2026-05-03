@@ -11,6 +11,7 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userId, setUserId] = useState('');
     const messagesEndRef = useRef(null);
+    const initializedId = useRef(null);
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext);
 
@@ -24,11 +25,17 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
         localStorage.removeItem('sanjeevani_chat_id');
 
         // If officially logged into the platform, sync the Chatbot memory to their DB Profile
-        if (token && auth && auth.user && auth.user._id) {
-            id = auth.user._id;
+        const currentUserId = auth?.user?.id || auth?.user?._id;
+        if (token && currentUserId) {
+            id = currentUserId;
         } else {
-            // Fresh ID every time the component loads (refresh causes complete wipe for guests!)
-            id = 'guest_' + Math.random().toString(36).substr(2, 9);
+            // Use session storage so guests don't lose history just by minimizing the chat widget
+            let guestId = sessionStorage.getItem('sanjeevani_guest_id');
+            if (!guestId) {
+                guestId = 'guest_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('sanjeevani_guest_id', guestId);
+            }
+            id = guestId;
         }
 
         setUserId(id);
@@ -59,7 +66,10 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
             }
         };
 
-        if (id && (isOpen || isFullScreen)) {
+        // Only call initChat if we haven't already initialized this specific user ID
+        // This prevents the chat from refreshing and fetching history/greetings every time the widget is opened/closed
+        if (id && (isOpen || isFullScreen) && initializedId.current !== id) {
+            initializedId.current = id;
             initChat();
         }
     }, [auth, isOpen, isFullScreen]);
@@ -127,8 +137,14 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
                                 <button key={i} onClick={() => {
                                     const label = typeof opt === 'string' ? opt : opt.label;
                                     if (opt.action) {
-                                        setIsOpen(false);
-                                        navigate(opt.action);
+                                        if (isFullScreen) {
+                                            // PWA mode: open platform pages in new tab since hash-app can't SPA-route
+                                            const base = window.location.origin;
+                                            window.open(base + opt.action, '_blank');
+                                        } else {
+                                            setIsOpen(false);
+                                            navigate(opt.action);
+                                        }
                                     } else {
                                         handleSend(label);
                                     }
@@ -145,8 +161,12 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
                             <button
                                 className="sanjeevani-primary-btn"
                                 onClick={() => {
-                                    setIsOpen(false);
-                                    navigate('/book-consultation');
+                                    if (isFullScreen) {
+                                        window.open(window.location.origin + '/doctors', '_blank');
+                                    } else {
+                                        setIsOpen(false);
+                                        navigate('/doctors');
+                                    }
                                 }}>
                                 Browse Doctors Now
                             </button>
@@ -188,10 +208,29 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
                                         <button
                                             className="sanjeevani-book-btn"
                                             onClick={() => {
-                                                setIsOpen(false);
-                                                navigate('/profile/doctor/' + doc.id);
+                                                // Map chatbot doctor data to match DoctorDetailPage's expected format
+                                                const doctorForPage = {
+                                                    _id: doc.id,
+                                                    name: doc.name?.replace(/^Dr\.\s*/i, '') || doc.name,
+                                                    email: doc.email || '',
+                                                    specialization: doc.specialization,
+                                                    experience: doc.experience,
+                                                    pricepoint: doc.price,
+                                                    price: doc.price,
+                                                    location: doc.location || '',
+                                                    languages: doc.languages || '',
+                                                    about: doc.about || '',
+                                                    rating: doc.rating || 0
+                                                };
+                                                if (isFullScreen) {
+                                                    // PWA: can't pass state, open doctors list instead
+                                                    window.open(window.location.origin + '/doctors', '_blank');
+                                                } else {
+                                                    setIsOpen(false);
+                                                    navigate('/doctor-detail', { state: { doctor: doctorForPage } });
+                                                }
                                             }}>
-                                            View &amp; Book →
+                                            View & Book →
                                         </button>
                                     </div>
                                 </div>
@@ -203,8 +242,12 @@ const SanjeevaniChatbot = ({ isFullScreen = false }) => {
                         <div className="sanjeevani-videos">
                             {msg.metadata.videos.map((vid, i) => (
                                 <a key={i} href={vid.link} target="_blank" rel="noreferrer" className="sanjeevani-video-link">
-                                    ▶️ {vid.title}
-                                    <span className="sanjeevani-vid-desc">{vid.description}</span>
+                                    {vid.thumbnail && (
+                                        <img src={vid.thumbnail} alt={vid.title} style={{ width: '100%', borderRadius: '6px', marginBottom: '6px' }} />
+                                    )}
+                                    <span style={{ fontWeight: 600 }}>▶ {vid.title}</span>
+                                    {vid.channel && <span className="sanjeevani-vid-desc">Channel: {vid.channel}</span>}
+                                    {vid.description && <span className="sanjeevani-vid-desc">{vid.description}</span>}
                                 </a>
                             ))}
                         </div>

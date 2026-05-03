@@ -80,6 +80,22 @@ import PrakritiAssessment from './screens/Patients/PrakritiAssessment';
 
 function App() {
   const { auth } = useContext(AuthContext);
+
+  // ── HASH-BASED PWA DETECTION ──────────────────────────────────────
+  // When phone users visit jeevanhub.com/#chatbot, render ONLY the
+  // full-screen chatbot. The hash is never sent to the server, so
+  // no hosting rewrites/redirects are needed. Works on ANY platform.
+  const isChatbotPWA = window.location.hash === '#chatbot' || window.location.hash === '#/chatbot';
+
+  if (isChatbotPWA) {
+    return (
+      <Router>
+        <MobileChatApp />
+      </Router>
+    );
+  }
+
+  // ── NORMAL WEBSITE FLOW ───────────────────────────────────────────
   const renderNavBar = () => {
     switch (auth.role) {
       case 'patient':
@@ -97,9 +113,8 @@ function App() {
 
   return (
     <Router>
-      {window.location.pathname !== '/chatbot-app' && renderNavBar()}
+      {renderNavBar()}
       <Routes>
-        <Route path="/chatbot-app" element={<MobileChatApp />} />
         <Route path="/" element={<HomeScreen />} />
         <Route path="/signin" element={<SignInScreen />} />
         <Route path="/signup" element={<SignUpScreen />} />
@@ -177,12 +192,8 @@ function App() {
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Route>
       </Routes>
-      {window.location.pathname !== '/chatbot-app' && (
-        <>
-          <Footer />
-          <SanjeevaniChatbot />
-        </>
-      )}
+      <Footer />
+      <SanjeevaniChatbot />
       <BackToChatFab />
     </Router>
   );

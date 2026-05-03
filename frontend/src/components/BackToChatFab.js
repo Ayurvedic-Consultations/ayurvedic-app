@@ -3,8 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 /**
  * Floating "Back to Chat" button that appears on ALL routes
- * ONLY when the user originally entered via the /chatbot-app PWA.
- * Hidden on /chatbot-app itself since they're already there.
+ * ONLY when the user originally entered via the /#chatbot PWA hash.
+ * Also works when a user navigates from the chatbot widget to a platform page
+ * (e.g. clicking "Log in" or "View Doctor" from the chatbot).
  */
 const BackToChatFab = () => {
     const navigate = useNavigate();
@@ -12,19 +13,26 @@ const BackToChatFab = () => {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        // If user is currently ON the chatbot-app, mark the session flag
-        if (location.pathname === '/chatbot-app') {
+        // Mark session if user came from the chatbot PWA
+        if (window.location.hash === '#chatbot' || window.location.hash === '#/chatbot') {
             sessionStorage.setItem('sanjeevani_pwa_session', 'true');
         }
 
         // Show the FAB only if:
-        // 1. User came from /chatbot-app during this browser session
-        // 2. User is NOT currently on /chatbot-app
+        // 1. User came from the PWA during this browser session, AND
+        // 2. They're now on a normal platform route (not the chatbot itself)
         const fromPwa = sessionStorage.getItem('sanjeevani_pwa_session') === 'true';
-        setShow(fromPwa && location.pathname !== '/chatbot-app');
+        const isOnChatbot = window.location.hash === '#chatbot' || window.location.hash === '#/chatbot';
+        setShow(fromPwa && !isOnChatbot);
     }, [location.pathname]);
 
     if (!show) return null;
+
+    const handleBackToChat = () => {
+        // Navigate back to the chatbot PWA
+        window.location.href = window.location.origin + '/#chatbot';
+        window.location.reload();
+    };
 
     return (
         <>
@@ -66,11 +74,11 @@ const BackToChatFab = () => {
             `}</style>
             <button
                 className="back-to-chat-fab"
-                onClick={() => navigate('/chatbot-app')}
+                onClick={handleBackToChat}
                 aria-label="Back to Chat"
             >
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" /></svg>
-                Back to Chat
+                ← Back to Chat
             </button>
         </>
     );
