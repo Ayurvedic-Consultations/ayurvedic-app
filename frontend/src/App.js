@@ -154,9 +154,6 @@ function App() {
         <Route path="/prakritiassessment" element={<PrakritiAssessment />} />
 
 
-        <Route path="/checkout" element={<CheckoutScreen />} />
-
-
 
 
         <Route element={<ProtectedRoute />}>
@@ -185,7 +182,7 @@ function App() {
           <Route path="/manage-products" element={<ManageProducts />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/doctor-reviews" element={<DoctorReviewsPage />} />
-          {/* <Route path="/checkout" element={<CheckoutScreen />} /> */}
+          <Route path="/checkout" element={<CheckoutScreen />} />
           <Route path="/retailer-analytics" element={<RetailerAnalytics />} />
           <Route path="/retailer-notifications" element={<RetailerNotification />} />
           <Route path="/my-orders" element={<MyOrders />} />

@@ -35,12 +35,13 @@ const CheckoutScreen = () => {
 
 	// get saved cart and user profile on mount
 	useEffect(() => {
+		// TEMP FIX FOR DEMO
 		const savedCart = localStorage.getItem('cart');
+
 		if (savedCart) {
 			setCartItems(JSON.parse(savedCart));
 		} else {
-			// Redirect if cart is empty
-			navigate('/cart');
+			console.log("No local cart, but allowing checkout for demo");
 		}
 
 		// Instead of fetching user profile, check if address is in localStorage
