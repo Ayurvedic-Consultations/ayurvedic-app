@@ -98,18 +98,19 @@ KEY PLATFORM PAGES (for navigation guidance):
 • Doctor Registration: /signup-doctor
 • Retailer Registration: /signup-retailer
 • Browse Doctors: /doctors
-• Doctor Detail: /profile/doctor/:id
+• Doctor Detail / Book: /doctor-detail
 • Medicines/Products: /medicines
 • Treatments Info: /treatments
 • Diet & Yoga Plans: /diet-yoga
-• Prakriti Assessment: /prakriti
+• Prakriti Assessment: /prakritiassessment
 • Blogs & Videos: /blogs-videos
 • Cart: /cart
 • Checkout: /checkout
 • Patient Dashboard: /patient-home
 • Doctor Dashboard: /doctor-home
 • Retailer Dashboard: /retailer-home
-• Admin Dashboard: /admin-dashboard
+• Admin Dashboard: /admin-home
+• Mobile Chatbot PWA: /#chatbot
 
 BOOKING FLOW:
 1. Patient describes symptoms to Sanjeevani AI OR browses /doctors

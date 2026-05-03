@@ -8,13 +8,14 @@ const bcrypt = require('bcryptjs');
 const Patient = require('../models/Patient');
 const Booking = require('../models/Booking');
 
-// ─── Utility: Fetch doctors from DB and rank by AI for given condition ────────
+// ─── Utility: Fetch doctors from DB, filter by specialization, rank by AI ─────
 async function getTopDoctors(category, symptoms) {
     const [doctors1, doctors2] = await Promise.all([Doctor.find().lean(), DoctorData.find().lean()]);
 
     const normalize = (d) => ({
         id: d._id.toString(),
         name: `Dr. ${d.firstName || d.firstname || ''} ${d.lastName || d.lastname || ''}`.trim(),
+        email: d.email || '',
         specialization: Array.isArray(d.specialization)
             ? d.specialization.join(', ')
             : (d.specialization || 'General Ayurveda'),
@@ -35,9 +36,48 @@ async function getTopDoctors(category, symptoms) {
 
     if (allDocs.length === 0) return { doctors: [], reason: '' };
 
-    const ranking = await nativeAi.rankDoctorsForCondition(allDocs, category || 'General', symptoms || '');
-    const topDoctors = (ranking.rankedIndices || []).slice(0, 3).map(idx => allDocs[idx]).filter(Boolean);
-    return { doctors: topDoctors, reason: ranking.topPickReason || '' };
+    // Pre-filter: prioritize doctors whose specialization matches the category
+    const categoryLower = (category || '').toLowerCase();
+    const symptomsLower = (symptoms || '').toLowerCase();
+
+    const scored = allDocs.map(doc => {
+        const specLower = doc.specialization.toLowerCase();
+        let score = 0;
+        // Direct specialization match
+        if (categoryLower && (specLower.includes(categoryLower) || categoryLower.includes(specLower))) score += 10;
+        // Keyword overlap with symptoms
+        const specWords = specLower.split(/[,\s\/]+/).filter(w => w.length > 2);
+        const symptomWords = symptomsLower.split(/\s+/).filter(w => w.length > 3);
+        for (const sw of symptomWords) {
+            if (specWords.some(sp => sp.includes(sw) || sw.includes(sp))) score += 3;
+        }
+        // General Ayurveda catch-all (lower priority)
+        if (specLower.includes('general') || specLower.includes('ayurved')) score += 1;
+        // Experience bonus
+        const exp = parseInt(doc.experience) || 0;
+        if (exp >= 10) score += 2;
+        else if (exp >= 5) score += 1;
+        return { ...doc, _score: score };
+    });
+
+    // Sort by relevance score, take top matches
+    scored.sort((a, b) => b._score - a._score);
+    const candidateDocs = scored.slice(0, 10); // Narrow down to top 10 for AI ranking
+
+    if (candidateDocs.length <= 3) {
+        // If 3 or fewer, no need for AI ranking
+        return { doctors: candidateDocs.slice(0, 3), reason: candidateDocs[0]?._score > 5 ? `Best specialization match for ${category}` : '' };
+    }
+
+    // AI ranking on the pre-filtered set
+    try {
+        const ranking = await nativeAi.rankDoctorsForCondition(candidateDocs, category || 'General', symptoms || '');
+        const topDoctors = (ranking.rankedIndices || []).slice(0, 3).map(idx => candidateDocs[idx]).filter(Boolean);
+        return { doctors: topDoctors.length > 0 ? topDoctors : candidateDocs.slice(0, 3), reason: ranking.topPickReason || '' };
+    } catch (e) {
+        console.error('AI ranking failed, using score-based fallback:', e.message);
+        return { doctors: candidateDocs.slice(0, 3), reason: '' };
+    }
 }
 
 // ─── Main Chat Handler ────────────────────────────────────────────────────────
@@ -294,7 +334,7 @@ router.post('/message', async (req, res) => {
                     console.error(e);
                 }
                 responseText = bookedStr;
-                responseMetadata = { type: 'options', options: [{ label: '📅 Go to Appointments Dashboard', action: '/patient/appointments' }] };
+                responseMetadata = { type: 'options', options: [{ label: '📅 Go to My Dashboard', action: '/patient-home' }] };
             }
 
         } else if (intent.intent === 'want_recommendations') {
@@ -322,28 +362,15 @@ router.post('/message', async (req, res) => {
                 responseText = `Here are the top videos for ${topic}:`;
                 responseMetadata = { type: 'videos', videos: vids.videos };
             } else if (lastText.includes('doctor') || lastText.includes('specialist') || lastText.includes('consult')) {
-                // User confirmed they want to book a doctor — re-trigger book flow
-                intent.intent = 'book_doctor';
-                session.currentFlow = 'booking';
+                // User confirmed they want to book a doctor — use proper getTopDoctors flow
+                session.currentFlow = 'doctor_matching';
                 const category = session.healthData?.identifiedCategory || 'General Ayurveda';
-                const allDoctors = await Doctor.find({}).lean();
-                const allDoctorData = await DoctorData.find({}).lean();
-                const merged = allDoctors.map(d => {
-                    const dd = allDoctorData.find(x => x.email === d.email) || {};
-                    return { ...d, ...dd };
-                });
-                const ranking = await nativeAi.rankDoctorsForCondition(merged, category, session.healthData?.symptoms || '');
-                const sorted = (ranking.rankedIndices || []).map(i => merged[i]).filter(Boolean).slice(0, 3);
-                if (sorted.length > 0) {
-                    const doctors = sorted.map(d => ({
-                        id: d._id, name: `${d.firstName || ''} ${d.lastName || ''}`.trim(),
-                        specialization: d.specialization || 'General', experience: d.experience || 0,
-                        price: d.price || d.consultationFee || 500, rating: d.rating || 0,
-                        location: typeof d.location === 'object' ? (d.location.specific || d.location.pincode || '') : (d.location || ''),
-                        languages: d.languages || '', about: d.aboutMe || ''
-                    }));
+                const symptoms = session.healthData?.symptoms || '';
+                const { doctors, reason } = await getTopDoctors(category, symptoms);
+
+                if (doctors.length > 0) {
                     responseText = `Here are the best specialists for you:`;
-                    responseMetadata = { type: 'doctors_list', category, reason: ranking.topPickReason, doctors };
+                    responseMetadata = { type: 'doctors_list', category, reason, doctors };
                 } else {
                     responseText = `Please browse our doctors page for available specialists.`;
                     responseMetadata = { type: 'options', options: [{ label: 'Browse Doctors', action: '/doctors' }] };
