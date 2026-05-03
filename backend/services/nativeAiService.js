@@ -630,19 +630,42 @@ Rules:
 // CUSTOM PLAN GENERATORS
 // ============================================================
 async function generateDietPlan(message, userName, healthData) {
-    const prompt = `Generate a customized 1-day Ayurvedic diet plan (Breakfast, Lunch, Dinner, Snacks) for a patient${userName ? ` named ${userName}` : ''}.
-Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
+    const durationInstruction = /(day\s*wise|1\s*day|one\s*day|daily|today)/i.test(message)
+        ? "Generate a detailed 1-day Ayurvedic diet plan."
+        : "Generate a highly detailed and well-structured 7-day (weekly) Ayurvedic diet plan. You can group days (e.g., 'DAYS 1-3', 'DAYS 4-7') if the diet is consistent, but ensure it covers a full week.";
 
-Format it clearly with dot points. Keep it warm and chat-friendly. Emphasize it's an Ayurvedic perspective. End by asking if they need a doctor consultation.`;
-    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
+    const prompt = `${durationInstruction}
+Patient Name: ${userName || 'User'}
+Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}
+
+Requirements:
+1. Make the plan PERFECTLY tailored to address the specific health concern above.
+2. Format clearly with bullet points. Use ALL CAPS for section headers (e.g. BREAKFAST, LUNCH, DAYS 1-3) because markdown asterisks (**bold**) are NOT supported.
+3. Include specific Ayurvedic herbs, spices, and foods to favor vs. avoid.
+4. Keep the tone warm, empathetic, and chat-friendly.
+5. End by gently recommending a consultation with a specialist if symptoms persist.`;
+
+    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }], { maxTokens: 1000 });
 }
 
 async function generateYogaPlan(message, userName, healthData) {
-    const prompt = `Generate a customized Ayurvedic Yoga & Pranayama routine (3-4 specific poses/exercises) for a patient${userName ? ` named ${userName}` : ''}.
-Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}.
+    const durationInstruction = /(day\s*wise|1\s*day|one\s*day|daily|today)/i.test(message)
+        ? "Generate a detailed 1-day Ayurvedic Yoga & Pranayama routine."
+        : "Generate a highly detailed and well-structured 7-day (weekly) Ayurvedic Yoga & Pranayama progression plan. You can group days (e.g., 'DAYS 1-3: Gentle Start', 'DAYS 4-7: Building Strength') but ensure it covers a full week.";
 
-Explain briefly how each pose helps. Format it clearly with dot points. Keep it warm and chat-friendly.`;
-    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }]);
+    const prompt = `${durationInstruction}
+Patient Name: ${userName || 'User'}
+Condition/Symptoms: ${healthData?.identifiedCategory || healthData?.symptoms || message || 'General Wellness'}
+
+Requirements:
+1. Make the routine PERFECTLY tailored to safely address the specific health concern above.
+2. Include 3-5 specific asanas (poses) and pranayama (breathing techniques).
+3. Explain briefly exactly *how* and *why* each pose helps their condition.
+4. Add clear precautions (e.g., "Avoid this pose if...").
+5. Format clearly with bullet points. Use ALL CAPS for section headers (e.g. DAYS 1-3, MORNING ROUTINE) because markdown asterisks (**bold**) are NOT supported.
+6. Keep the tone warm, encouraging, and chat-friendly.`;
+
+    return await groqChat([{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }], { maxTokens: 1000 });
 }
 
 // ============================================================
