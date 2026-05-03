@@ -379,7 +379,8 @@ const CheckoutScreen = () => {
 							))}
 						</div>
 						<div className="order-summary-total">
-							<h3>Total: ₹{totalPrice.toFixed(2)}</h3>
+							{/* <h3>Total: ₹{totalPrice.toFixed(2)}</h3> */}
+							<h3>Total: ₹1.00 (Demo Payment)</h3>
 						</div>
 						<div className="navigation-buttons">
 							<button onClick={() => navigate('/cart')} className="back-btn">
@@ -514,7 +515,9 @@ const CheckoutScreen = () => {
 						</div>
 
 						<div className="order-final-summary">
-							<h3>Order Total: ₹{totalPrice.toFixed(2)}</h3>
+							{/* <h3>Order Total: ₹{totalPrice.toFixed(2)}</h3> */}
+							<h3>Order Total: ₹1.00 (Demo Payment)</h3>
+
 						</div>
 
 						{error && <div className="error-message">{error}</div>}
