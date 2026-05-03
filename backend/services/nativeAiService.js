@@ -383,12 +383,17 @@ async function generateResponse(userMessage, conversationHistory = [], contextIn
 // ============================================================
 // QUICK HEALTH ASSESSMENT - Immediate helpful response
 // ============================================================
-async function quickHealthAssessment(symptoms, userName = '', responseLanguage = 'English') {
+async function quickHealthAssessment(symptoms, userName = '', responseLanguage = 'English', conversationHistory = []) {
     const langInstruction = responseLanguage && responseLanguage.toLowerCase() !== 'english'
         ? `CRITICAL: Write the entire "quickAdvice" response in ${responseLanguage}. ${responseLanguage === 'Hinglish' ? 'Use casual, friendly Hinglish like: "Arre yaar, pet dard ke liye..."' : ''}`
         : '';
 
+    const recentContext = conversationHistory.slice(-4).map(m => `${m.role}: ${m.content}`).join('\n');
+
     const prompt = `A patient${userName ? ` named ${userName}` : ''} has shared this health concern: "${symptoms}"
+
+RECENT CONVERSATION CONTEXT:
+${recentContext || 'No prior context'}
 
 Provide a SPECIFIC Ayurvedic response for their EXACT condition:
 1. Acknowledge their concern warmly (1 line)

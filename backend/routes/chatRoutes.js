@@ -229,11 +229,25 @@ router.post('/message', async (req, res) => {
 
         } else if (intent.intent === 'health_concern') {
             session.currentFlow = 'health_consultation';
-            const symptoms = intent.extractedData || message;
+            const newSymptoms = intent.extractedData || message;
+            
             if (!session.healthData) session.healthData = {};
-            session.healthData.symptoms = symptoms;
+            
+            // If we already have symptoms and this looks like a follow-up, append it instead of wiping the context
+            if (session.healthData.symptoms && session.healthData.symptoms !== newSymptoms) {
+                if (!session.healthData.symptoms.includes(newSymptoms)) {
+                    session.healthData.symptoms = session.healthData.symptoms + " | " + newSymptoms;
+                }
+            } else {
+                session.healthData.symptoms = newSymptoms;
+            }
 
-            const assessment = await nativeAi.quickHealthAssessment(symptoms, session.profile?.firstName, lang);
+            const assessment = await nativeAi.quickHealthAssessment(
+                session.healthData.symptoms, 
+                session.profile?.firstName, 
+                lang, 
+                session.conversationHistory
+            );
             session.healthData.identifiedCategory = assessment.category;
             session.healthData.consultationStep = 'quick_assessment';
 
