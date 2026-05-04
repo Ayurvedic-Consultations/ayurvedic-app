@@ -127,6 +127,7 @@ router.get("/user", auth, async (req, res) => {
         gender: user.gender,
         email: user.email,
         role: user.role,
+        profileImage: user.profileImage,
       },
     });
   } catch (error) {

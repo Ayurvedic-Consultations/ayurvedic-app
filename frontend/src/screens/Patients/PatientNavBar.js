@@ -23,7 +23,7 @@ function PatientNavBar() {
 		auth.user?.address || "Not available"
 	);
 
-	const profilePic = "";
+	const profilePic = auth.user?.profileImage || null;
 	const userFirstName = auth.user ? auth.user.firstName : "Guest";
 	const userLastName = auth.user ? auth.user.lastName : "";
 	const userName = userFirstName + " " + userLastName;
@@ -177,7 +177,16 @@ function PatientNavBar() {
 						&times;
 					</div>
 					<div className="user-profile" >
-						<img src="https://images.unsplash.com/photo-1458696352784-ffe1f47c2edc?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="imgae" /></div>
+						<img
+							src={profilePic || defaultProfilePic}
+							alt="Profile"
+							style={{
+								width: "100px",
+								height: "100px",
+								borderRadius: "50%",
+								objectFit: "cover"
+							}}
+						/></div>
 					<h2>User Profile</h2>
 					<div className="profile-details">
 						<p>

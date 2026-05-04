@@ -12,6 +12,9 @@ const PatientSchema = new mongoose.Schema({
   address: { type: String },
   password: { type: String, required: true },
   role: { type: String, default: 'patient' },
+  profileImage: {
+    type: String
+  },
   resetPasswordOTP: {
     type: String,
     default: null

@@ -168,6 +168,20 @@ const PatientProfile = () => {
 
 		const handleImageUpload = (e) => {
 			const file = e.target.files?.[0];
+			if (!file) return;
+
+			// 500 KB limit
+			if (file.size > 100 * 1024) {
+				alert("Image must be less than 500KB");
+				return;
+			}
+
+			// optional but sane
+			if (!file.type.startsWith("image/")) {
+				alert("Only image files allowed");
+				return;
+			}
+
 			if (file) {
 				const reader = new FileReader();
 				reader.onloadend = () => {
@@ -448,8 +462,7 @@ const PatientProfile = () => {
 						gender: (patientData.gender),
 						address: (patientData.address) || "",
 						pincode: patientData.zipCode,
-						profileImage:
-							"https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=400&auto=format&fit=crop",
+						profileImage: patientData.profileImage || null
 					}}
 				/>
 			)}
@@ -463,7 +476,22 @@ const PatientProfile = () => {
 
 			<div className="profile-container">
 				<div className="left-panel">
-					<div className="avatar">{patientData.firstName.charAt(0)}</div>
+					<div className="avatar">
+						{patientData.profileImage ? (
+							<img
+								src={patientData.profileImage}
+								alt="Profile"
+								style={{
+									width: "100%",
+									height: "100%",
+									objectFit: "cover",
+									borderRadius: "50%",
+								}}
+							/>
+						) : (
+							patientData.firstName.charAt(0)
+						)}
+					</div>
 					<h2>{patientData.firstName}</h2>
 					<p className="muted">Patient ID: {patientData._id}</p>
 
